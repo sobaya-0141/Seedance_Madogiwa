@@ -32,8 +32,8 @@ test("uses Three.js and the shared voxel rig contract", async () => {
     readFile(new URL("../app/CharacterLab.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/voxel-character-kit.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/character-catalog.ts", import.meta.url), "utf8"),
-    readFile(new URL("../tools/build_takosan_voxel_model.py", import.meta.url), "utf8"),
-    readFile(new URL("../tools/build_yametaro_voxel_model.py", import.meta.url), "utf8"),
+    readFile(new URL("../../04_GAME_ASSETS/voxel/tools/build_takosan_voxel_model.py", import.meta.url), "utf8"),
+    readFile(new URL("../../04_GAME_ASSETS/voxel/tools/build_yametaro_voxel_model.py", import.meta.url), "utf8"),
   ]);
   assert.match(viewer, /new THREE\.WebGLRenderer/);
   assert.match(viewer, /new OrbitControls/);
@@ -56,9 +56,10 @@ test("uses Three.js and the shared voxel rig contract", async () => {
   await access(new URL("../public/models/sobaya.glb", import.meta.url));
   await access(new URL("../public/models/takosan.glb", import.meta.url));
   await access(new URL("../public/models/yametaro.glb", import.meta.url));
-  await access(new URL("../model_source/textures/takosan_face_albedo_v2.png", import.meta.url));
-  await access(new URL("../model_source/textures/takosan_robe_front_albedo.png", import.meta.url));
-  await access(new URL("../model_source/textures/yametaro_face_albedo_v2.png", import.meta.url));
-  await access(new URL("../model_source/textures/yametaro_shirt_front_albedo_v2.png", import.meta.url));
-  await access(new URL("../model_source/textures/yametaro_shirt_back_albedo_v1.png", import.meta.url));
+  const textures = new URL("../../04_GAME_ASSETS/voxel/model_source/textures/", import.meta.url);
+  await access(new URL("takosan_face_albedo_v2.png", textures));
+  await access(new URL("takosan_robe_front_albedo.png", textures));
+  await access(new URL("yametaro_face_albedo_v2.png", textures));
+  await access(new URL("yametaro_shirt_front_albedo_v2.png", textures));
+  await access(new URL("yametaro_shirt_back_albedo_v1.png", textures));
 });

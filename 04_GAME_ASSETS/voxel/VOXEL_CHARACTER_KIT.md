@@ -45,8 +45,9 @@ Three.jsのアクションAPIを共通化します。太い人型のそば屋、
 
 ```bash
 blender --background --python tools/validate_voxel_character.py -- \
-  --input public/models/sobaya.glb --rig-type biped
+  --input models/sobaya.glb --rig-type biped
 ```
 
-ボクセルモデルを別ゲームへ持ち出す場合は、GLB、キャラクター定義、
-`voxel-character-kit.ts`を一緒にコピーします。
+ボクセルモデルを別ゲームで使う場合は、GLBをコピーせず`04_GAME_ASSETS/voxel/models/`への
+相対symlinkを`public/models/`に張り、キャラクター定義と`voxel-character-kit.ts`を
+ゲーム側へ用意します。

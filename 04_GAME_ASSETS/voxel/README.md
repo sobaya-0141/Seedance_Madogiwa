@@ -1,39 +1,57 @@
-# ボクセルモデル（ゲーム開発用）
+# 共用ボクセルキャラクターアセット
 
-窓際族物語の全キャラクターのボクセルモデル。MagicaVoxel形式（`.vox`, version 150）で、
-MagicaVoxelでそのまま開けるほか、Unity（VoxelImporter等）、Godot、Unrealのvoxインポータで利用できる。
+窓際族物語の全ゲームで共用する、リグ付きボクセルキャラクターモデル（GLB）の正典的な置き場です。
+モデルの作成・修正は `build-voxel-character-from-image` スキル（`.claude/skills/build-voxel-character-from-image/`）のワークフローに従ってください。
 
-## ファイル構成
+## 構成
 
-| ファイル | キャラクター | 備考 |
-|---|---|---|
-| `models/01_sobaya.vox` | そば屋 | 白い仮面・赤い縦筋・灰色の肌・筋肉質・ビールジョッキ |
-| `models/02_takosan.vox` | たこさん | 黒フード付きローブ・白い顔・黒丸目・触手6本・人間の腕2本 |
-| `models/03_tokun.vox` | とーくん | アロハ・麦わら帽子・ウクレレ・サングラス・レイ |
-| `models/04_yotan.vox` | よーたん | 金髪・黒レザージャケット・ギター・サングラス |
-| `models/05_fukuchan.vox` | 福ちゃん | おしゃれ服・名札とSPONSORストラップ・ギュンギュンポーズ |
-| `models/06_yametaro.vox` | 無職やめたろう | 紫ワイシャツ・丸メガネ・特大デフォルメ頭身 |
-| `models/07_okayaman.vox` | 窓際王おかやまん | 大型スクリーンへのリモート出演スタイル（モニタ込み） |
-| `models/08_yumemin.vox` | ゆめみん | 青い丸い体・点目・バクの鼻・木槌・お尻は白 |
+- `models/*.glb` … Web/Three.js用の正典モデル。**各ゲームはここを参照する**（`public/models/` からの相対symlink）。手作業で編集せず、`tools/build_*_voxel_model.py` から再生成する
+- `model_source/` … 編集用Blenderマスター（`*_voxel_master.blend`）、テクスチャ、承認済みターンアラウンド（`concepts/`）、確認用4方向レンダー（`previews/`）
+- `tools/` … Blender Python ビルドスクリプトと共通キット
+  - `voxel_character_kit.py` … ボックス生成・材質・共通リグ（rig contract v1）
+  - `build_<キャラ>_voxel_model.py` … キャラ固有の形状・色・テクスチャパネル
+  - `validate_voxel_character.py` … GLBのリグ検証
+- `VOXEL_CHARACTER_KIT.md` … リグ契約（`VoxelRig_*` ノード）とキャラ追加手順
 
-`previews/` に各モデルの正面ビュー＋アイソメビューのレンダリング（PNG）がある。
-`previews/all_characters.png` が全キャラの一覧。
+## モデル一覧
 
-## 再生成・調整
+| キャラクター | GLB | リグ | 参照ゲーム |
+|---|---|---|---|
+| そば屋 | `models/sobaya.glb` | 二足（両腕＋両脚＋ジョッキ用ハンドソケット） | 05, 06 |
+| たこさん | `models/takosan.glb` | 両腕＋触手6本（`VoxelRig_Locomotion_00`〜`05`） | 06 |
+| とーくん | `models/tokun.glb` | 二足 | 06 |
+| よーたん | `models/yotan.glb` | 二足 | 06 |
+| ふくちゃん | `models/fukuchan.glb` | 二足 | 06 |
+| 無職やめ太郎 | `models/yametaro.glb` | 二足 | 06 |
+| おかやまん | `models/okayaman.glb` | 二足 | 06 |
+| ゆめみん | `models/yumemin.glb` | 二足 | 06 |
 
-モデルはすべて `generate_voxels.py` がコードから生成する（手作業編集はしない）。
-調整するときはスクリプトを編集して再実行する:
+各キャラのデザイン固定事項（NG変更）は `02_CHARACTERS/*.md` を参照。モデルにも同じ制約が適用されます。
+
+## 再生成手順
+
+このディレクトリ（`04_GAME_ASSETS/voxel/`）から実行します:
 
 ```bash
-python3 generate_voxels.py   # 要: Pillow（プレビュー生成に使用）
+blender --background --python tools/build_<キャラ>_voxel_model.py -- \
+  --face-texture model_source/textures/<キャラ>_face_albedo.png \
+  ...（キャラごとの引数は各スクリプト冒頭を参照）... \
+  --output-glb models/<キャラ>.glb \
+  --output-blend model_source/<キャラ>_voxel_master.blend \
+  --preview model_source/<キャラ>_voxel_preview.png \
+  --turnaround-dir model_source/previews/<キャラ>-<日付>
 ```
 
-- 座標系: x=左右, y=奥行き（y小が正面）, z=上下。MagicaVoxelと同じz-up。
-- パレットは全モデル共通（`C(r, g, b)` で登録）。ゲーム側で色を差し替える場合もインデックスが揃っている。
-- スケール目安: 人型キャラは高さ約26〜29ボクセル ≒ 身長1.7m前後として扱う。
+検証:
 
-## 制作上の注意
+```bash
+blender --background --python tools/validate_voxel_character.py -- \
+  --input models/<キャラ>.glb --rig-type biped   # たこさんは tentacled
+```
 
-各キャラのNG変更（`02_CHARACTERS/*.md` 参照）はモデルにも適用済み。
-仮面・ジョッキ・ローブ・触手・アロハ・帽子・ウクレレ・ギター・金髪・ギュンギュンポーズ・
-スクリーン越し出演・青い体と鼻などのデザイン要素は、ゲーム内でも削除・変更しないこと。
+## ゲームからの参照方法
+
+1. ゲームの `public/models/<キャラ>.glb` に、ここの `models/<キャラ>.glb` への相対symlinkを張る
+2. Three.js側は各ゲームの `voxel-character-kit.ts` で読み込み、`VoxelRig_*` ノードを回転させて歩行・スマッシュを再生する（スケルタルリグ不要）
+
+新しいゲームを作る場合も、モデルをコピーせずこの置き場をsymlinkで参照してください。
