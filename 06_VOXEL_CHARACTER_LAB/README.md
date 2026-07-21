@@ -28,17 +28,20 @@ npm test
 
 ```bash
 blender --background --python tools/build_takosan_voxel_model.py -- \
-  --face-texture model_source/textures/takosan_face_albedo.png \
+  --face-texture model_source/textures/takosan_face_albedo_v2.png \
+  --robe-texture model_source/textures/takosan_robe_front_albedo.png \
   --output-glb public/models/takosan.glb \
   --output-blend model_source/takosan_voxel_master.blend \
   --preview model_source/takosan_voxel_preview.png
 
 blender --background --python tools/build_yametaro_voxel_model.py -- \
-  --face-texture model_source/textures/yametaro_face_albedo.png \
+  --face-texture model_source/textures/yametaro_face_albedo_v2.png \
+  --shirt-texture model_source/textures/yametaro_shirt_front_albedo_v2.png \
   --output-glb public/models/yametaro.glb \
   --output-blend model_source/yametaro_voxel_master.blend \
   --preview model_source/yametaro_voxel_preview.png
 ```
 
-顔は共通の前面UVパネルにimagegen生成アルベドを貼る方式です。目やメガネを
-立体パーツで再現せず、元画像の顔つきを保ったままテクスチャ1枚だけ交換できます。
+頭部はマイクラ寄りの完全な立方体、胴体もベベルなしの直方体です。顔と服は
+共通の前面UVパネルへimagegen生成アルベドを貼り、テクスチャだけ交換できます。
+やめ太郎の襟・ボタン・植物模様は1枚のシャツ画像へ統合しています。

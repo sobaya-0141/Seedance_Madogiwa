@@ -42,12 +42,16 @@ test("uses Three.js and the shared voxel rig contract", async () => {
   assert.match(kit, /VoxelRig_Locomotion_/);
   assert.match(catalog, /TENTACLED \/ 8 PIVOTS/);
   assert.match(takosanBuilder, /--face-texture/);
+  assert.match(takosanBuilder, /--robe-texture/);
   assert.match(takosanBuilder, /add_textured_front_panel/);
   assert.match(yametaroBuilder, /--face-texture/);
+  assert.match(yametaroBuilder, /--shirt-texture/);
   assert.match(yametaroBuilder, /add_textured_front_panel/);
   await access(new URL("../public/models/sobaya.glb", import.meta.url));
   await access(new URL("../public/models/takosan.glb", import.meta.url));
   await access(new URL("../public/models/yametaro.glb", import.meta.url));
-  await access(new URL("../model_source/textures/takosan_face_albedo.png", import.meta.url));
-  await access(new URL("../model_source/textures/yametaro_face_albedo.png", import.meta.url));
+  await access(new URL("../model_source/textures/takosan_face_albedo_v2.png", import.meta.url));
+  await access(new URL("../model_source/textures/takosan_robe_front_albedo.png", import.meta.url));
+  await access(new URL("../model_source/textures/yametaro_face_albedo_v2.png", import.meta.url));
+  await access(new URL("../model_source/textures/yametaro_shirt_front_albedo_v2.png", import.meta.url));
 });

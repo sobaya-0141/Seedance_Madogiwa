@@ -80,6 +80,7 @@ def make_texture_material(
     *,
     image_name: str,
     roughness: float = 0.62,
+    emission_strength: float = 0.0,
 ) -> bpy.types.Material:
     """Create an embedded sRGB albedo material for replaceable face art."""
     mat = bpy.data.materials.new(name)
@@ -96,6 +97,9 @@ def make_texture_material(
     texture.interpolation = "Closest"
     texture.extension = "EXTEND"
     mat.node_tree.links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
+    if emission_strength > 0.0:
+        mat.node_tree.links.new(texture.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = emission_strength
     return mat
 
 
@@ -148,20 +152,22 @@ def add_textured_front_panel(
     *,
     parent=None,
     uv_name: str = "VoxelFaceUV",
+    uv_bounds: tuple[float, float, float, float] = (0.0, 0.0, 1.0, 1.0),
 ) -> bpy.types.Object:
     """Build a thin box whose camera-facing -Y side displays one full texture."""
     width, _depth, height = dimensions
     panel = add_box(name, location, dimensions, edge_mat, parent=parent)
     panel.data.materials.append(surface_mat)
     uv_layer = panel.data.uv_layers.active or panel.data.uv_layers.new(name=uv_name)
+    u_min, v_min, u_max, v_max = uv_bounds
     for polygon in panel.data.polygons:
         if polygon.normal.y < -0.9:
             polygon.material_index = 1
             for loop_index in polygon.loop_indices:
                 vertex = panel.data.vertices[panel.data.loops[loop_index].vertex_index].co
                 uv_layer.data[loop_index].uv = (
-                    0.5 + vertex.x / width,
-                    0.5 + vertex.z / height,
+                    u_min + (0.5 + vertex.x / width) * (u_max - u_min),
+                    v_min + (0.5 + vertex.z / height) * (v_max - v_min),
                 )
     return panel
 
