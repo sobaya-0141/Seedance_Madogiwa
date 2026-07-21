@@ -1,0 +1,4 @@
+interface:
+  display_name: "Image to Voxel Character"
+  short_description: "Build rigged voxel GLBs from character reference images"
+  default_prompt: "Use $build-voxel-character-from-image to turn this character reference image into a reusable rigged voxel GLB."
