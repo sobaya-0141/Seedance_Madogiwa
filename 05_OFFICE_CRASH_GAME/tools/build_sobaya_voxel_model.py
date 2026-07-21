@@ -18,6 +18,20 @@ import sys
 import bpy
 from mathutils import Vector
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)
+
+from voxel_character_kit import (  # noqa: E402
+    RigGroup,
+    VoxelRigDefinition,
+    add_box,
+    add_empty,
+    build_voxel_rig,
+    ensure_parent,
+    make_material,
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -27,38 +41,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--preview", required=True)
     script_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     return parser.parse_args(script_args)
-
-
-def ensure_parent(path: str) -> None:
-    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
-
-
-def make_material(
-    name: str,
-    color: tuple[float, float, float, float],
-    *,
-    roughness: float = 0.78,
-    metallic: float = 0.0,
-    emission: tuple[float, float, float, float] | None = None,
-    emission_strength: float = 0.0,
-) -> bpy.types.Material:
-    mat = bpy.data.materials.new(name)
-    mat.diffuse_color = color
-    mat.use_nodes = True
-    bsdf = mat.node_tree.nodes.get("Principled BSDF")
-    bsdf.inputs["Base Color"].default_value = color
-    bsdf.inputs["Alpha"].default_value = color[3]
-    bsdf.inputs["Roughness"].default_value = roughness
-    bsdf.inputs["Metallic"].default_value = metallic
-    if emission is not None:
-        bsdf.inputs["Emission Color"].default_value = emission
-        bsdf.inputs["Emission Strength"].default_value = emission_strength
-    if color[3] < 1.0:
-        if hasattr(mat, "surface_render_method"):
-            mat.surface_render_method = "DITHERED"
-        elif hasattr(mat, "blend_method"):
-            mat.blend_method = "BLEND"
-    return mat
 
 
 def make_texture_material(name: str, path: str) -> bpy.types.Material:
@@ -77,65 +59,6 @@ def make_texture_material(name: str, path: str) -> bpy.types.Material:
     texture.extension = "EXTEND"
     mat.node_tree.links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
     return mat
-
-
-def add_empty(name: str, location: tuple[float, float, float], parent=None) -> bpy.types.Object:
-    obj = bpy.data.objects.new(name, None)
-    obj.location = location
-    bpy.context.scene.collection.objects.link(obj)
-    if parent:
-        obj.parent = parent
-    return obj
-
-
-def group_parts(
-    root: bpy.types.Object,
-    name: str,
-    pivot_location: tuple[float, float, float],
-    prefixes: tuple[str, ...],
-) -> bpy.types.Object:
-    """Place rigid voxel parts under a rotation pivot without moving them."""
-    pivot = add_empty(name, pivot_location, root)
-    bpy.context.view_layer.update()
-    for obj in list(root.children):
-        if obj is pivot or not obj.name.startswith(prefixes):
-            continue
-        world_matrix = obj.matrix_world.copy()
-        obj.parent = pivot
-        obj.matrix_world = world_matrix
-    bpy.context.view_layer.update()
-    return pivot
-
-
-def add_box(
-    name: str,
-    location: tuple[float, float, float],
-    dimensions: tuple[float, float, float],
-    mat: bpy.types.Material,
-    *,
-    rotation: tuple[float, float, float] = (0.0, 0.0, 0.0),
-    parent=None,
-    bevel: float = 0.0,
-) -> bpy.types.Object:
-    bpy.ops.mesh.primitive_cube_add(location=location, rotation=rotation)
-    obj = bpy.context.active_object
-    obj.name = name
-    obj.dimensions = dimensions
-    bpy.context.view_layer.objects.active = obj
-    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    obj.data.materials.append(mat)
-    if bevel > 0.0:
-        modifier = obj.modifiers.new("VoxelEdge", "BEVEL")
-        modifier.width = bevel
-        modifier.segments = 1
-        modifier.affect = "EDGES"
-        bpy.context.view_layer.objects.active = obj
-        bpy.ops.object.modifier_apply(modifier=modifier.name)
-    if parent:
-        obj.parent = parent
-    for polygon in obj.data.polygons:
-        polygon.use_smooth = False
-    return obj
 
 
 def add_mask_panel(
@@ -284,44 +207,42 @@ def build_character(mask_texture: str) -> bpy.types.Object:
     add_hair(root, hair)
     add_mug(root, amber, foam, glass, mask_edge)
 
-    # Named pivots are exported to glTF and driven by Three.js. Grouping the
-    # rigid blocks keeps the web animation lightweight and avoids skinning.
-    group_parts(
+    # The standard rigid-part contract is shared by all game characters.
+    # Character-specific mesh names stay here; Three.js only sees VoxelRig_*.
+    build_voxel_rig(
         root,
-        "SobayaVoxel_MugArmPivot",
-        (0.56, 0.0, 1.55),
-        (
-            "SobayaVoxel_Sleeve_Mug",
-            "SobayaVoxel_UpperArm_Mug",
-            "SobayaVoxel_Forearm_Mug",
-            "SobayaVoxel_Hand_Mug",
-            "SobayaVoxel_Mug",
-            "SobayaVoxel_Foam",
+        VoxelRigDefinition(
+            primary_arm=RigGroup(
+                (0.56, 0.0, 1.55),
+                (
+                    "SobayaVoxel_Sleeve_Mug",
+                    "SobayaVoxel_UpperArm_Mug",
+                    "SobayaVoxel_Forearm_Mug",
+                    "SobayaVoxel_Hand_Mug",
+                    "SobayaVoxel_Mug",
+                    "SobayaVoxel_Foam",
+                ),
+            ),
+            secondary_arm=RigGroup(
+                (-0.56, 0.0, 1.55),
+                (
+                    "SobayaVoxel_Sleeve_Free",
+                    "SobayaVoxel_UpperArm_Free",
+                    "SobayaVoxel_Forearm_Free",
+                    "SobayaVoxel_Fist_Free",
+                    "SobayaVoxel_Knuckle",
+                ),
+            ),
+            left_leg=RigGroup(
+                (-0.235, 0.0, 0.94),
+                ("SobayaVoxel_PantsLeg_-1", "SobayaVoxel_Shoe_-1"),
+            ),
+            right_leg=RigGroup(
+                (0.235, 0.0, 0.94),
+                ("SobayaVoxel_PantsLeg_1", "SobayaVoxel_Shoe_1"),
+            ),
+            primary_hand_socket_local=(0.15, -0.11, -0.71),
         ),
-    )
-    group_parts(
-        root,
-        "SobayaVoxel_FreeArmPivot",
-        (-0.56, 0.0, 1.55),
-        (
-            "SobayaVoxel_Sleeve_Free",
-            "SobayaVoxel_UpperArm_Free",
-            "SobayaVoxel_Forearm_Free",
-            "SobayaVoxel_Fist_Free",
-            "SobayaVoxel_Knuckle",
-        ),
-    )
-    group_parts(
-        root,
-        "SobayaVoxel_LegPivot_NegX",
-        (-0.235, 0.0, 0.94),
-        ("SobayaVoxel_PantsLeg_-1", "SobayaVoxel_Shoe_-1"),
-    )
-    group_parts(
-        root,
-        "SobayaVoxel_LegPivot_PosX",
-        (0.235, 0.0, 0.94),
-        ("SobayaVoxel_PantsLeg_1", "SobayaVoxel_Shoe_1"),
     )
 
     # A tiny whole-character idle bob keeps the asset animation-ready without
@@ -415,6 +336,7 @@ def main() -> None:
         export_animations=True,
         export_animation_mode="ACTIONS",
         export_materials="EXPORT",
+        export_extras=True,
         export_cameras=False,
         export_lights=False,
         export_apply=True,

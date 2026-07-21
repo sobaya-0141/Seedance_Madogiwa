@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { SOBAYA_CHARACTER } from "./characters/sobaya";
+import {
+  loadVoxelCharacter,
+  type VoxelActionController,
+} from "./characters/voxel-character-kit";
 
 type GameStatus = "ready" | "playing" | "gameover";
 type GameApi = {
@@ -10,11 +14,6 @@ type GameApi = {
   smash: () => void;
   pause: () => void;
   toggleSound: () => boolean;
-};
-
-type SobayaAnimator = {
-  triggerSmash: (powered: boolean) => void;
-  update: (dt: number, elapsed: number, moving: boolean) => void;
 };
 
 type Breakable = {
@@ -353,77 +352,19 @@ function makeSobaya() {
   markers.add(arrow);
   player.add(markers);
 
-  new GLTFLoader().load(
-    "/models/sobaya.glb?v=voxel-3",
-    (gltf) => {
-      const model = gltf.scene;
-      model.name = "sobaya-reusable-model";
-      model.scale.setScalar(1.32);
-      // The Blender source faces -Y, which exports toward +Z in glTF.
-      model.rotation.y = Math.PI;
-      model.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.castShadow = true;
-          object.receiveShadow = true;
-        }
-      });
-      player.add(model);
+  loadVoxelCharacter({
+    definition: SOBAYA_CHARACTER,
+    parent: player,
+    onReady: ({ mixer, actions }) => {
       fallback.visible = false;
       markers.visible = true;
-
-      if (gltf.animations.length > 0) {
-        const mixer = new THREE.AnimationMixer(model);
-        mixer.clipAction(gltf.animations[0]).play();
-        player.userData.mixer = mixer;
-      }
-
-      const mugArm = model.getObjectByName("SobayaVoxel_MugArmPivot");
-      const freeArm = model.getObjectByName("SobayaVoxel_FreeArmPivot");
-      const legNegX = model.getObjectByName("SobayaVoxel_LegPivot_NegX");
-      const legPosX = model.getObjectByName("SobayaVoxel_LegPivot_PosX");
-      if (mugArm && freeArm && legNegX && legPosX) {
-        let smashElapsed = 1;
-        let smashStrength = 1;
-        const animator: SobayaAnimator = {
-          triggerSmash: (powered) => {
-            smashElapsed = 0;
-            smashStrength = powered ? 1.16 : 1;
-          },
-          update: (dt, elapsed, moving) => {
-            const response = 1 - Math.exp(-dt * 22);
-            const stride = moving ? Math.sin(elapsed * 11.5) * 0.52 : 0;
-            legNegX.rotation.x = THREE.MathUtils.lerp(legNegX.rotation.x, stride, response);
-            legPosX.rotation.x = THREE.MathUtils.lerp(legPosX.rotation.x, -stride, response);
-
-            let mugTarget = moving ? stride * 0.16 : 0;
-            let freeTarget = moving ? -stride * 0.46 : 0;
-            smashElapsed += dt;
-            if (smashElapsed < 0.52) {
-              const phase = smashElapsed / 0.52;
-              if (phase < 0.28) {
-                const t = THREE.MathUtils.smoothstep(phase / 0.28, 0, 1);
-                mugTarget = THREE.MathUtils.lerp(0, 1.12 * smashStrength, t);
-              } else if (phase < 0.55) {
-                const t = THREE.MathUtils.smoothstep((phase - 0.28) / 0.27, 0, 1);
-                mugTarget = THREE.MathUtils.lerp(1.12 * smashStrength, -1.02 * smashStrength, t);
-              } else {
-                const t = THREE.MathUtils.smoothstep((phase - 0.55) / 0.45, 0, 1);
-                mugTarget = THREE.MathUtils.lerp(-1.02 * smashStrength, moving ? stride * 0.16 : 0, t);
-              }
-              freeTarget -= Math.sin(Math.PI * phase) * 0.22;
-            }
-            mugArm.rotation.x = THREE.MathUtils.lerp(mugArm.rotation.x, mugTarget, response);
-            freeArm.rotation.x = THREE.MathUtils.lerp(freeArm.rotation.x, freeTarget, response);
-          },
-        };
-        player.userData.animator = animator;
-      }
+      if (mixer) player.userData.mixer = mixer;
+      if (actions) player.userData.animator = actions;
     },
-    undefined,
-    (error) => {
+    onError: (error) => {
       console.warn("Sobaya GLB could not be loaded; using procedural fallback.", error);
     },
-  );
+  });
 
   return player;
 }
@@ -1048,7 +989,7 @@ export default function OfficeCrashGame() {
       if (!runtime.playing || runtime.paused || runtime.elapsed - runtime.lastSmash < 0.43) return;
       runtime.lastSmash = runtime.elapsed;
       const powered = runtime.powerUntil > runtime.elapsed;
-      (player.userData.animator as SobayaAnimator | undefined)?.triggerSmash(powered);
+      (player.userData.animator as VoxelActionController | undefined)?.triggerSmash(powered);
       tone(210, 0.08, "sawtooth", 0.032, 410);
       runtime.pendingSmash = { impactAt: runtime.elapsed + 0.2, powered };
     };
@@ -1235,7 +1176,7 @@ export default function OfficeCrashGame() {
       }
 
       if (!runtime.paused) {
-        (player.userData.animator as SobayaAnimator | undefined)?.update(
+        (player.userData.animator as VoxelActionController | undefined)?.update(
           dt,
           runtime.elapsed,
           isWalking && runtime.playing,

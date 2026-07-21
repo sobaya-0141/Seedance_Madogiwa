@@ -30,15 +30,17 @@ blender --background --python tools/build_sobaya_voxel_model.py -- \
   --preview model_source/sobaya_voxel_preview.png
 ```
 
-The voxel GLB exposes rigid-body animation pivots for reuse in Three.js:
+The voxel GLB exposes the Voxel Character Kit v1 rigid-body animation pivots:
 
-- `SobayaVoxel_MugArmPivot`: mug arm, hand, mug, and foam
-- `SobayaVoxel_FreeArmPivot`: opposite arm and fist
-- `SobayaVoxel_LegPivot_NegX`: left-side pants leg and shoe
-- `SobayaVoxel_LegPivot_PosX`: right-side pants leg and shoe
+- `VoxelRig_ArmPrimary`: mug arm, hand, mug, and foam
+- `VoxelRig_ArmSecondary`: opposite arm and fist
+- `VoxelRig_LegLeft`: left-side pants leg and shoe
+- `VoxelRig_LegRight`: right-side pants leg and shoe
+- `VoxelRig_PrimaryHandSocket`: attachment point for replaceable tools
 
 Rotate these objects around local X for the smash and walk cycles. No skeletal
-rig or skinning is required.
+rig or skinning is required. See `VOXEL_CHARACTER_KIT.md` for the optional
+tentacle/locomotion channels and the new-character workflow.
 
 ## Third-party base model
 
