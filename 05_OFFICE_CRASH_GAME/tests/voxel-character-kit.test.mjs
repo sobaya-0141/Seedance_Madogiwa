@@ -33,5 +33,9 @@ test("shares a stable optional-channel rig contract between Blender and Three.js
     assert.match(blender, new RegExp(node));
   }
   assert.match(runtime, /triggerSmash/);
+  assert.match(runtime, /smashDuration: 0\.44/);
+  assert.match(runtime, /impactHoldEnd: 0\.52/);
+  assert.match(runtime, /impactAngle: -1\.55/);
+  assert.match(runtime, /rootLeanAngle/);
   assert.match(blender, /build_voxel_rig/);
 });

@@ -31,6 +31,7 @@ body { font-family: "Arial Rounded MT Bold", "Hiragino Kaku Gothic ProN", "Yu Go
 .score-card strong { font-size: clamp(42px, 6vw, 94px); line-height: .82; font-weight: 900; letter-spacing: -.055em; -webkit-text-stroke: clamp(3px, .38vw, 7px) #16212a; paint-order: stroke fill; }
 .score-label { font-size: clamp(10px, 1vw, 16px); letter-spacing: .18em; font-weight: 900; margin-bottom: 8px; }
 .combo { margin-top: 10px; padding: 3px 15px 4px; border-radius: 999px; background: rgba(23,36,48,.82); color: #ffd333; font-weight: 900; font-size: clamp(15px, 1.5vw, 25px); border: 3px solid rgba(255,255,255,.9); opacity: .62; transform: scale(.9); transition: .16s ease; }
+.combo b { color: white; margin-left: 5px; }
 .combo-active { opacity: 1; transform: scale(1.06) rotate(-1deg); background: #f36b1e; box-shadow: 0 5px 0 #a83a05, 0 9px 18px rgba(0,0,0,.18); }
 .top-actions { justify-self: end; display: flex; gap: 12px; align-items: center; pointer-events: auto; }
 .timer { border: 4px solid white; box-shadow: 0 5px 0 #182633, 0 7px 14px rgba(0,0,0,.25); background: rgba(24,37,48,.88); color: #fff; border-radius: 20px; padding: 8px 17px; font-size: clamp(20px, 2vw, 33px); font-weight: 900; font-variant-numeric: tabular-nums; }
@@ -39,16 +40,14 @@ body { font-family: "Arial Rounded MT Bold", "Hiragino Kaku Gothic ProN", "Yu Go
 .sound-button { font-size: clamp(17px, 1.65vw, 25px); }
 .sound-button:active, .pause-button:active { transform: translateY(4px); box-shadow: 0 1px 0 #182633; }
 
-.power-meter { position: absolute; z-index: 3; left: clamp(18px, 2.4vw, 42px); top: 24%; width: clamp(66px, 6.5vw, 102px); text-align: center; filter: drop-shadow(0 5px 0 #152431) drop-shadow(0 8px 8px rgba(0,0,0,.2)); }
-.power-glass { height: clamp(118px, 18vh, 210px); overflow: hidden; position: relative; border: clamp(5px, .45vw, 8px) solid white; border-radius: 18px 18px 25px 25px; background: rgba(255,255,255,.36); box-shadow: inset 0 0 0 4px #233542; }
-.power-fill { position: absolute; left: 6px; right: 6px; bottom: 6px; border-radius: 9px 9px 15px 15px; background: linear-gradient(90deg, #eb8300, #ffc414 58%, #ed8600); transition: height .12s linear; }
-.power-meter strong { display: block; color: white; font-size: clamp(14px, 1.4vw, 22px); letter-spacing: -.04em; -webkit-text-stroke: 4px #172431; paint-order: stroke fill; margin-top: 7px; }
-.power-meter > span { color: #ffd21f; font-size: clamp(12px, 1vw, 17px); font-weight: 900; -webkit-text-stroke: 3px #172431; paint-order: stroke fill; }
-.foam { position: absolute; z-index: 2; top: -12px; left: 10px; right: 10px; display: flex; justify-content: center; }
-.foam i { width: 25px; height: 22px; margin: -3px; border-radius: 50%; background: #fffdf2; border: 3px solid #263743; }
-.beer-bubbles i { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.72); animation: bubbles 1.8s infinite linear; }
-.beer-bubbles i:nth-child(1) { left: 20%; bottom: 7%; }.beer-bubbles i:nth-child(2) { left: 60%; bottom: 19%; animation-delay: .6s; }.beer-bubbles i:nth-child(3) { left: 36%; bottom: 48%; animation-delay: 1.1s; }.beer-bubbles i:nth-child(4) { left: 72%; bottom: 63%; animation-delay: 1.4s; }
+.power-meter { position: absolute; z-index: 3; left: clamp(18px, 2.4vw, 42px); top: 25%; width: clamp(112px, 10vw, 154px); padding: 11px 10px 9px; text-align: center; border: 4px solid white; border-radius: 22px; background: rgba(23,36,48,.88); box-shadow: 0 6px 0 #152431, 0 11px 18px rgba(0,0,0,.2); }
+.power-meter strong { display: block; color: #ffd21f; font-size: clamp(16px, 1.4vw, 23px); letter-spacing: .06em; -webkit-text-stroke: 3px #172431; paint-order: stroke fill; }
+.power-meter > span { color: white; font-size: clamp(10px, .9vw, 14px); font-weight: 900; }
+.mega-charges { display: flex; justify-content: center; gap: 5px; margin: 5px 0 3px; }
+.mega-charges span { display: grid; place-items: center; width: clamp(36px, 3.4vw, 48px); aspect-ratio: 1; border: 3px dashed #80909a; border-radius: 12px; background: #243541; font-size: clamp(20px, 2vw, 29px); filter: grayscale(1); opacity: .35; }
+.mega-charges span.filled { border-style: solid; border-color: #fff; background: linear-gradient(145deg, #fff7c7, #ff9e0e); filter: none; opacity: 1; }
 .power-meter.is-powered { animation: powerGlow .45s infinite alternate; }
+.combo-freeze { position: absolute; z-index: 4; left: 50%; top: clamp(145px, 19vh, 185px); transform: translateX(-50%); padding: 7px 16px; border: 3px solid white; border-radius: 999px; background: #148fc8; box-shadow: 0 5px 0 #075176; color: white; font-size: clamp(12px, 1.15vw, 18px); font-weight: 900; font-variant-numeric: tabular-nums; }
 
 .joystick { position: absolute; z-index: 4; left: clamp(20px, 5vw, 86px); bottom: clamp(22px, 5vh, 72px); width: clamp(128px, 15vw, 214px); aspect-ratio: 1; border: 6px solid rgba(255,255,255,.8); border-radius: 50%; background: rgba(27,41,52,.52); box-shadow: 0 8px 0 rgba(20,32,41,.55), inset 0 0 45px rgba(255,255,255,.1); backdrop-filter: blur(5px); cursor: grab; }
 .joystick-arrows { position: absolute; inset: 13px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: rgba(255,255,255,.84); font-size: clamp(12px, 1.3vw, 20px); pointer-events: none; }
@@ -65,7 +64,7 @@ body { font-family: "Arial Rounded MT Bold", "Hiragino Kaku Gothic ProN", "Yu Go
 .game-toast.show { opacity: 1; transform: translate(-50%, 0) scale(1) rotate(-2deg); }
 
 .start-overlay, .pause-overlay { position: absolute; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: radial-gradient(circle at 50% 42%, rgba(207,241,255,.42), rgba(15,30,42,.68)); backdrop-filter: blur(7px); }
-.start-card { position: relative; width: min(760px, 94vw); border: 7px solid white; border-radius: 35px; padding: clamp(24px, 4vh, 44px) clamp(20px, 4vw, 52px) clamp(20px, 3vh, 34px); text-align: center; background: linear-gradient(155deg, rgba(255,255,255,.97), rgba(255,248,222,.95)); box-shadow: 0 14px 0 #1c2f3d, 0 25px 60px rgba(0,0,0,.36), inset 0 0 0 4px #ffd34d; }
+.start-card { position: relative; width: min(800px, 94vw); max-height: 94vh; overflow: auto; border: 7px solid white; border-radius: 35px; padding: clamp(24px, 4vh, 44px) clamp(20px, 4vw, 52px) clamp(20px, 3vh, 34px); text-align: center; background: linear-gradient(155deg, rgba(255,255,255,.97), rgba(255,248,222,.95)); box-shadow: 0 14px 0 #1c2f3d, 0 25px 60px rgba(0,0,0,.36), inset 0 0 0 4px #ffd34d; }
 .eyebrow { margin: 0 0 9px; color: #2a738d; letter-spacing: .18em; font-size: 12px; font-weight: 900; }
 .start-card h1 { margin: 0; display: flex; flex-direction: column; font-family: "Arial Black", "Hiragino Kaku Gothic StdN", sans-serif; color: #f26719; font-size: clamp(37px, 6vw, 70px); line-height: 1; letter-spacing: -.07em; -webkit-text-stroke: clamp(3px, .3vw, 5px) #172431; paint-order: stroke fill; text-shadow: 0 6px 0 #ffcc28; }
 .start-card h1 small { color: white; font-size: .5em; margin-bottom: 7px; }
@@ -79,11 +78,18 @@ body { font-family: "Arial Rounded MT Bold", "Hiragino Kaku Gothic ProN", "Yu Go
 .start-button:hover { filter: brightness(1.08); transform: translateY(-2px); }.start-button:active { transform: translateY(6px); box-shadow: 0 2px 0 #98260c; }
 .controls-note { margin: 17px 0 0; color: #61717b; font-size: 11px; font-weight: 800; }
 .round-over { position: absolute; right: -12px; top: -20px; transform: rotate(8deg); padding: 8px 18px; border-radius: 12px; background: #ffca21; border: 4px solid #172431; box-shadow: 0 5px 0 #172431; font-weight: 900; }
-.final-score { margin: 20px auto 8px; display: flex; flex-direction: column; }.final-score span { font-size: 13px; letter-spacing: .18em; color: #68808d; }.final-score strong { font-size: clamp(54px, 8vw, 90px); line-height: 1; color: #ec5c16; letter-spacing: -.06em; }
+.final-score { margin: 14px auto 8px; display: flex; flex-direction: column; align-items: center; }.final-score span { font-size: 13px; letter-spacing: .18em; color: #68808d; }.final-score strong { font-size: clamp(48px, 7vw, 76px); line-height: 1; color: #ec5c16; letter-spacing: -.06em; }.final-score em { margin-top: 5px; color: #172431; font-size: clamp(18px, 2vw, 27px); font-style: normal; font-weight: 900; }.final-score b { margin-top: 5px; padding: 3px 12px; border-radius: 999px; background: #ffcb23; color: #9b2707; font-size: 13px; }
+.result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0 16px; }
+.result-stats > div { display: flex; flex-direction: column; padding: 8px 5px; border: 2px solid #d8e3e7; border-radius: 14px; background: white; }
+.result-stats span { color: #61717b; font-size: 9px; font-weight: 900; letter-spacing: .08em; }
+.result-stats strong { color: #ef6419; font-size: clamp(17px, 1.7vw, 23px); }
+.share-actions { display: flex; justify-content: center; gap: 8px; margin-top: 11px; }
+.share-actions button { border: 3px solid #172431; border-radius: 999px; padding: 8px 15px; background: white; color: #172431; box-shadow: 0 4px 0 #172431; font-size: 12px; font-weight: 900; cursor: pointer; }
+.share-actions button:first-child { background: #172431; color: white; }
+.share-actions button:active { transform: translateY(3px); box-shadow: 0 1px 0 #172431; }
 .pause-overlay { z-index: 12; background: rgba(20,32,42,.58); }.pause-overlay > div { display: flex; flex-direction: column; gap: 20px; min-width: 260px; padding: 34px; border: 6px solid white; border-radius: 28px; background: #fff7d9; box-shadow: 0 12px 0 #172431; text-align: center; }.pause-overlay strong { font-size: 42px; }.pause-overlay button { border: 0; border-radius: 99px; padding: 13px 20px; background: #f5681d; color: white; font-weight: 900; cursor: pointer; }
 
 @keyframes pulse { to { transform: scale(1.08); } }
-@keyframes bubbles { from { transform: translateY(16px); opacity: 0; } 30% { opacity: 1; } to { transform: translateY(-40px); opacity: 0; } }
 @keyframes powerGlow { to { filter: drop-shadow(0 5px 0 #152431) drop-shadow(0 0 20px #ffc21a); transform: scale(1.05); } }
 @keyframes smashReady { to { filter: drop-shadow(0 0 22px #ffd83d); transform: rotate(2deg) scale(1.04); } }
 
@@ -93,9 +99,9 @@ body { font-family: "Arial Rounded MT Bold", "Hiragino Kaku Gothic ProN", "Yu Go
   .score-card strong { font-size: 45px; }.score-label { display: none; }.combo { margin-top: 5px; font-size: 13px; }
   .game-logo { font-size: clamp(17px, 4vw, 25px); max-width: 40vw; }
   .top-actions { grid-column: 2; gap: 6px; }.timer { font-size: 18px; padding: 6px 10px; border-width: 3px; }.sound-button, .pause-button { width: 42px; border-width: 3px; border-radius: 13px; }
-  .power-meter { left: 12px; top: 27%; width: 60px; }.power-glass { height: 112px; }.power-meter strong { font-size: 12px; }
+  .power-meter { left: 10px; top: 28%; width: 94px; padding: 7px 6px; border-width: 3px; }.power-meter strong { font-size: 12px; }.mega-charges { gap: 3px; }.mega-charges span { width: 34px; font-size: 19px; border-width: 2px; }.combo-freeze { top: 142px; }
   .joystick { left: 16px; bottom: 18px; width: 122px; border-width: 4px; }.smash-button { right: 16px; bottom: 20px; width: 128px; border-width: 6px; }
-  .start-card { padding: 23px 15px 20px; border-width: 5px; border-radius: 26px; }.start-card h1 { font-size: clamp(31px, 9vw, 48px); }.rules { gap: 6px; }.rules > div { min-height: 102px; padding: 9px 4px; border-width: 2px; }.rule-icon { width: 36px; height: 36px; font-size: 23px; }.rules strong { font-size: 11px; }.rules small { font-size: 9px; }.controls-note { display: none; }
+  .start-card { padding: 23px 15px 20px; border-width: 5px; border-radius: 26px; }.start-card h1 { font-size: clamp(31px, 9vw, 48px); }.rules { gap: 6px; }.rules > div { min-height: 102px; padding: 9px 4px; border-width: 2px; }.rule-icon { width: 36px; height: 36px; font-size: 23px; }.rules strong { font-size: 11px; }.rules small { font-size: 9px; }.controls-note { display: none; }.result-stats { grid-template-columns: repeat(2, 1fr); }.share-actions { flex-wrap: wrap; }
 }
 
 @media (max-height: 650px) {

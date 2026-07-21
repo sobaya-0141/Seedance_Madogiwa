@@ -19,10 +19,13 @@ export type VoxelMotionProfile = {
   smashDuration: number;
   windupEnd: number;
   impactEnd: number;
+  impactHoldEnd: number;
   windupAngle: number;
   impactAngle: number;
   poweredMultiplier: number;
   secondaryArmRecoil: number;
+  rootLeanAngle: number;
+  rootDrop: number;
 };
 
 export type VoxelCharacterDefinition = {
@@ -62,13 +65,16 @@ export const STANDARD_BIPED_MOTION: VoxelMotionProfile = {
   secondaryArmWalk: 0.46,
   extraLocomotionAngle: 0.18,
   responseSpeed: 22,
-  smashDuration: 0.52,
-  windupEnd: 0.28,
-  impactEnd: 0.55,
-  windupAngle: 1.12,
-  impactAngle: -1.02,
-  poweredMultiplier: 1.16,
-  secondaryArmRecoil: 0.22,
+  smashDuration: 0.44,
+  windupEnd: 0.2,
+  impactEnd: 0.39,
+  impactHoldEnd: 0.52,
+  windupAngle: 0.55,
+  impactAngle: -1.55,
+  poweredMultiplier: 1.08,
+  secondaryArmRecoil: 0.34,
+  rootLeanAngle: 0.12,
+  rootDrop: 0.06,
 };
 
 function findFirst(model: THREE.Object3D, names?: readonly string[]) {
@@ -109,6 +115,8 @@ export function createVoxelActionController(
   [primaryArm, secondaryArm, leftLeg, rightLeg, ...locomotionExtras].forEach((node) => {
     if (node) baseRotations.set(node, node.rotation.clone());
   });
+  const baseModelRotationX = model.rotation.x;
+  const baseModelPositionY = model.position.y;
 
   let smashElapsed = profile.smashDuration + 1;
   let smashStrength = 1;
@@ -143,6 +151,8 @@ export function createVoxelActionController(
 
       let primaryTarget = moving ? stride * profile.primaryArmWalk : 0;
       let secondaryTarget = moving ? -stride * profile.secondaryArmWalk : 0;
+      let rootLeanTarget = 0;
+      let rootDropTarget = 0;
       smashElapsed += dt;
       if (smashElapsed < profile.smashDuration) {
         const phase = smashElapsed / profile.smashDuration;
@@ -160,9 +170,11 @@ export function createVoxelActionController(
             profile.impactAngle * smashStrength,
             t,
           );
+        } else if (phase < profile.impactHoldEnd) {
+          primaryTarget = profile.impactAngle * smashStrength;
         } else {
           const t = THREE.MathUtils.smoothstep(
-            (phase - profile.impactEnd) / (1 - profile.impactEnd),
+            (phase - profile.impactHoldEnd) / (1 - profile.impactHoldEnd),
             0,
             1,
           );
@@ -173,10 +185,23 @@ export function createVoxelActionController(
           );
         }
         secondaryTarget -= Math.sin(Math.PI * phase) * profile.secondaryArmRecoil;
+        const leanProgress = phase < profile.impactEnd
+          ? THREE.MathUtils.smoothstep(phase / profile.impactEnd, 0, 1)
+          : phase < profile.impactHoldEnd
+            ? 1
+            : 1 - THREE.MathUtils.smoothstep(
+              (phase - profile.impactHoldEnd) / (1 - profile.impactHoldEnd),
+              0,
+              1,
+            );
+        rootLeanTarget = profile.rootLeanAngle * leanProgress;
+        rootDropTarget = -profile.rootDrop * leanProgress;
       }
 
       setRotationX(primaryArm, primaryTarget);
       setRotationX(secondaryArm, secondaryTarget);
+      model.rotation.x = THREE.MathUtils.lerp(model.rotation.x, baseModelRotationX + rootLeanTarget, response);
+      model.position.y = THREE.MathUtils.lerp(model.position.y, baseModelPositionY + rootDropTarget, response);
     },
   };
 }

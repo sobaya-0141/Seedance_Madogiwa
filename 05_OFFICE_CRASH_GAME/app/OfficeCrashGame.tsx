@@ -26,6 +26,7 @@ type Breakable = {
   maxHp: number;
   solid: boolean;
   label: string;
+  area: OfficeArea;
   bounds?: THREE.Box3;
   healthFill?: THREE.Mesh;
   alive: boolean;
@@ -33,12 +34,23 @@ type Breakable = {
 
 type Pickup = {
   group: THREE.Group;
-  kind: "beer" | "time";
+  kind: "beer" | "clock";
   baseY: number;
   active: boolean;
-  respawnAt: number;
-  maxRespawns: number;
-  remainingRespawns: number;
+};
+
+type OfficeArea = "窓際デスク" | "中央執務" | "書庫・ロッカー" | "複合機";
+
+type ResultStats = {
+  destroyed: number;
+  total: number;
+  maxCombo: number;
+  perfects: number;
+  maxMultiBreak: number;
+  areasCleared: number;
+  clearTime: number | null;
+  cleared: boolean;
+  previousBest: number;
 };
 
 type Debris = {
@@ -49,8 +61,58 @@ type Debris = {
 };
 
 const INITIAL_TIME = 45;
-const POWER_DURATION = 6;
-const TIME_BONUS = 5;
+const MEGA_MAX_CHARGES = 2;
+const COMBO_FREEZE_DURATION = 4;
+const COMBO_WINDOW = 2;
+const CLEAR_TIME_BONUS = 300;
+const PERFECT_DISTANCE = 0.55;
+const NORMAL_SMASH_RADIUS = 1.45;
+const MEGA_SMASH_RADIUS = 2.25;
+const SMASH_FORWARD_OFFSET = 1.1;
+const OFFICE_AREAS: OfficeArea[] = ["窓際デスク", "中央執務", "書庫・ロッカー", "複合機"];
+
+const EMPTY_RESULT: ResultStats = {
+  destroyed: 0,
+  total: 44,
+  maxCombo: 0,
+  perfects: 0,
+  maxMultiBreak: 0,
+  areasCleared: 0,
+  clearTime: null,
+  cleared: false,
+  previousBest: 0,
+};
+
+function getComboMultiplier(combo: number) {
+  if (combo >= 20) return 3;
+  if (combo >= 15) return 2.5;
+  if (combo >= 10) return 2;
+  if (combo >= 5) return 1.5;
+  return 1;
+}
+
+function getMultiBreakBonus(count: number) {
+  if (count >= 5) return 1200;
+  if (count === 4) return 700;
+  if (count === 3) return 300;
+  if (count === 2) return 100;
+  return 0;
+}
+
+function getRank(score: number) {
+  if (score >= 30000) return "伝説のそば屋";
+  if (score >= 22000) return "オフィス壊滅級";
+  if (score >= 14000) return "窓際の破壊王";
+  if (score >= 8000) return "デスククラッシャー";
+  return "クラッシュ見習い";
+}
+
+function getOfficeArea(x: number, z: number, label: string): OfficeArea {
+  if (label === "金の複合機" || label === "強化ゲート" || z < -9) return "複合機";
+  if (z < -4) return "書庫・ロッカー";
+  if (z < 2.5) return "中央執務";
+  return "窓際デスク";
+}
 
 function roundedBox(
   width: number,
@@ -536,7 +598,7 @@ function makePlant() {
   return g;
 }
 
-function makePickup(kind: "beer" | "time") {
+function makePickup(kind: "beer" | "clock") {
   const g = new THREE.Group();
   const color = kind === "beer" ? 0xffb000 : 0x19b8ff;
   const aura = new THREE.Mesh(
@@ -600,7 +662,10 @@ export default function OfficeCrashGame() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
   const [combo, setCombo] = useState(0);
-  const [powerLeft, setPowerLeft] = useState(0);
+  const [megaCharges, setMegaCharges] = useState(0);
+  const [comboFreezeLeft, setComboFreezeLeft] = useState(0);
+  const [resultStats, setResultStats] = useState<ResultStats>(EMPTY_RESULT);
+  const [bestScore, setBestScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const [toast, setToast] = useState("");
@@ -796,13 +861,19 @@ export default function OfficeCrashGame() {
       time: INITIAL_TIME,
       combo: 0,
       comboWindow: 0,
-      powerUntil: 0,
+      comboFreezeUntil: 0,
+      megaCharges: 0,
+      destroyed: 0,
+      maxCombo: 0,
+      perfects: 0,
+      maxMultiBreak: 0,
+      clearedAreas: new Set<OfficeArea>(),
       lastSmash: -10,
       lastBreakSound: -10,
       lastBump: -10,
       elapsed: 0,
       shake: 0,
-      pendingSmash: null as { impactAt: number; powered: boolean } | null,
+      pendingSmash: null as { impactAt: number; mega: boolean; center: THREE.Vector3 } | null,
     };
 
     const addBreakable = (
@@ -832,6 +903,7 @@ export default function OfficeCrashGame() {
         maxHp: hp,
         solid,
         label,
+        area: getOfficeArea(x, z, label),
         bounds: solid ? new THREE.Box3().setFromObject(group) : undefined,
         healthFill: group.userData.healthFill as THREE.Mesh | undefined,
         alive: true,
@@ -848,23 +920,23 @@ export default function OfficeCrashGame() {
         [-7.0, -8.5, 0.05], [7.0, -8.7, -0.08], [-1.7, -9.6, 0.08], [1.65, -11.3, -0.08],
       ];
       desks.forEach(([x, z, r], i) => {
-        addBreakable(makeDesk(i % 3 === 0 ? 0xd69b5e : 0xc88950), x, z, 1.25, 150, 0xc98b52, false, r);
+        addBreakable(makeDesk(i % 3 === 0 ? 0xd69b5e : 0xc88950), x, z, 1.25, 180, 0xc98b52, false, r, 2, false, "デスク");
         if (i % 2 === 0) addBreakable(makeChair(), x + 0.2, z + 1.2, 0.62, 80, 0x2d68a8, false, r + Math.PI);
       });
       [
         [-8.6, 3.2], [8.7, 2.7], [-8.5, -5.8], [8.6, -6.5], [-5.5, -11.8], [5.7, -12.0],
-      ].forEach(([x, z], i) => addBreakable(makeCabinet(i % 2 ? 0x7c8b93 : 0x8e9b9f), x, z, 0.78, 120, 0x7c8b93));
+      ].forEach(([x, z], i) => addBreakable(makeCabinet(i % 2 ? 0x7c8b93 : 0x8e9b9f), x, z, 0.78, 160, 0x7c8b93, false, 0, 2, false, "キャビネット"));
       [
         [-8.7, 7.4], [8.6, 7.0], [-8.5, -1.0], [8.4, -1.8], [-8.7, -10.2], [8.5, -11.2],
       ].forEach(([x, z]) => addBreakable(makePlant(), x, z, 0.62, 90, 0x5d9f54));
       [
         [1.2, 4.0], [-4.3, -0.8], [5.7, -5.9], [-0.2, -11.3],
-      ].slice(0, 3).forEach(([x, z]) => addBreakable(makeCopier(false), x, z, 0.82, 220, 0xd8dee3));
+      ].slice(0, 3).forEach(([x, z]) => addBreakable(makeCopier(false), x, z, 0.82, 350, 0xd8dee3, false, 0, 3, false, "複合機"));
 
-      addBreakable(makeReinforcedGate(), 0, -7.35, 3.45, 900, 0x4d616c, false, 0, 5, true, "強化ゲート");
-      addBreakable(makeReinforcedLocker(), -5.2, -5.35, 0.82, 520, 0x465c68, false, 0.08, 3, true, "強化ロッカー");
-      addBreakable(makeReinforcedLocker(), 5.25, -4.8, 0.82, 520, 0x465c68, false, -0.08, 3, true, "強化ロッカー");
-      addBreakable(makeCopier(true), 0, -12.25, 0.95, 1800, 0xf5b70a, true, 0, 2, false, "金の複合機");
+      addBreakable(makeReinforcedGate(), 0, -7.35, 3.45, 1200, 0x4d616c, false, 0, 6, true, "強化ゲート");
+      addBreakable(makeReinforcedLocker(), -5.2, -5.35, 0.82, 700, 0x465c68, false, 0.08, 4, true, "強化ロッカー");
+      addBreakable(makeReinforcedLocker(), 5.25, -4.8, 0.82, 700, 0x465c68, false, -0.08, 4, true, "強化ロッカー");
+      addBreakable(makeCopier(true), 0, -12.25, 0.95, 2500, 0xf5b70a, true, 0, 4, false, "金の複合機");
 
       const sofa = new THREE.Group();
       const sofaSeat = roundedBox(3.0, 0.68, 1.15, 0x3c6e7f);
@@ -873,19 +945,19 @@ export default function OfficeCrashGame() {
       const sofaBack = roundedBox(3.0, 1.1, 0.35, 0x447f91);
       sofaBack.position.set(0, 1.05, 0.48);
       sofa.add(sofaBack);
-      addBreakable(sofa, -6.3, -12.3, 1.7, 300, 0x3c6e7f);
+      addBreakable(sofa, -6.3, -12.3, 1.7, 450, 0x3c6e7f, false, 0, 3, false, "ソファ");
     };
 
-    const addPickup = (kind: "beer" | "time", x: number, z: number, maxRespawns = kind === "beer" ? 1 : 0) => {
+    const addPickup = (kind: "beer" | "clock", x: number, z: number) => {
       const group = makePickup(kind);
       group.position.set(x, 0.12, z);
       scene.add(group);
-      pickups.push({ group, kind, baseY: 0.12, active: true, respawnAt: 0, maxRespawns, remainingRespawns: maxRespawns });
+      pickups.push({ group, kind, baseY: 0.12, active: true });
     };
     addPickup("beer", -1.3, 3.4);
-    addPickup("time", 7.4, -6.2);
+    addPickup("clock", 7.4, -6.2);
     addPickup("beer", -6.3, -6.0);
-    addPickup("time", 0, -13.25);
+    addPickup("clock", 0, -13.25);
 
     const spawnDebris = (position: THREE.Vector3, color: number, amount: number) => {
       for (let i = 0; i < amount; i += 1) {
@@ -906,21 +978,29 @@ export default function OfficeCrashGame() {
       }
     };
 
-    const addScore = (points: number) => {
+    const addRawScore = (points: number) => {
+      runtime.score += points;
+      setScore(runtime.score);
+    };
+
+    const addScore = (points: number, perfect = false) => {
       runtime.combo += 1;
-      runtime.comboWindow = 2.25;
-      const multiplier = Math.min(1 + Math.floor(runtime.combo / 4), 5);
-      runtime.score += points * multiplier;
+      runtime.maxCombo = Math.max(runtime.maxCombo, runtime.combo);
+      runtime.comboWindow = COMBO_WINDOW;
+      const multiplier = getComboMultiplier(runtime.combo);
+      runtime.score += Math.round(points * multiplier * (perfect ? 1.25 : 1));
       setScore(runtime.score);
       setCombo(runtime.combo);
     };
 
-    const destroyObject = (item: Breakable) => {
-      if (!item.alive) return;
+    const destroyObject = (item: Breakable, perfect: boolean) => {
+      if (!item.alive) return false;
       item.alive = false;
       scene.remove(item.group);
       spawnDebris(item.group.position, item.color, item.special || item.maxHp > 1 ? 24 : 12);
-      addScore(item.points);
+      runtime.destroyed += 1;
+      if (perfect) runtime.perfects += 1;
+      addScore(item.points, perfect);
       runtime.shake = Math.max(runtime.shake, item.special || item.maxHp > 1 ? 0.34 : 0.17);
       if (item.special || item.maxHp > 1) {
         playSound("special");
@@ -930,17 +1010,16 @@ export default function OfficeCrashGame() {
       }
       navigator.vibrate?.(item.special || item.maxHp > 1 ? 35 : 14);
       if (item.special) {
-        runtime.powerUntil = Math.max(runtime.powerUntil, runtime.elapsed + POWER_DURATION);
-        notify("金の複合機！  +1,800 / POWER UP");
+        notify("金の複合機を破壊！ +2,500");
       }
+      return true;
     };
 
-    const damageObject = (item: Breakable, damage: number) => {
-      if (!item.alive) return;
+    const damageObject = (item: Breakable, damage: number, perfect: boolean) => {
+      if (!item.alive) return false;
       item.hp = Math.max(0, item.hp - damage);
       if (item.hp <= 0) {
-        destroyObject(item);
-        return;
+        return destroyObject(item, perfect);
       }
       const ratio = item.hp / item.maxHp;
       if (item.healthFill) {
@@ -953,6 +1032,7 @@ export default function OfficeCrashGame() {
       playSound("metal");
       navigator.vibrate?.(20);
       notify(`${item.label}  残り${item.hp}/${item.maxHp}`);
+      return false;
     };
 
     const distanceToBreakable = (item: Breakable, position: THREE.Vector3) => {
@@ -962,36 +1042,112 @@ export default function OfficeCrashGame() {
       return Math.hypot(dx, dz);
     };
 
-    const performSmashImpact = (powered: boolean) => {
-      const radius = powered ? 2.85 : 1.95;
+    const finishGame = (cleared: boolean) => {
+      if (!runtime.playing) return;
+      runtime.playing = false;
+      runtime.time = Math.max(0, runtime.time);
+      const clearTime = cleared ? Number((INITIAL_TIME - runtime.time).toFixed(1)) : null;
+      if (cleared) addRawScore(Math.ceil(runtime.time) * CLEAR_TIME_BONUS);
+      let previousBest = 0;
+      try {
+        previousBest = Number(window.localStorage.getItem("office-crash-best") ?? 0);
+      } catch {
+        // Private browsing policies can disable storage; the run still completes.
+      }
+      const nextBest = Math.max(previousBest, runtime.score);
+      try {
+        window.localStorage.setItem("office-crash-best", String(nextBest));
+      } catch {
+        // Keep the in-memory best score when persistence is unavailable.
+      }
+      setBestScore(nextBest);
+      setResultStats({
+        destroyed: runtime.destroyed,
+        total: breakables.length,
+        maxCombo: runtime.maxCombo,
+        perfects: runtime.perfects,
+        maxMultiBreak: runtime.maxMultiBreak,
+        areasCleared: runtime.clearedAreas.size,
+        clearTime,
+        cleared,
+        previousBest,
+      });
+      setTimeLeft(Math.ceil(runtime.time));
+      setStatus("gameover");
+      playSound(cleared ? "special" : "timeup");
+      notify(cleared ? "OFFICE CLEAR!" : "TIME UP!");
+    };
+
+    const awardAreaClears = () => {
+      for (const area of OFFICE_AREAS) {
+        if (runtime.clearedAreas.has(area)) continue;
+        const members = breakables.filter((item) => item.area === area);
+        if (members.length > 0 && members.every((item) => !item.alive)) {
+          runtime.clearedAreas.add(area);
+          addRawScore(800);
+          notify(`AREA CLEAR「${area}」+800`);
+        }
+      }
+    };
+
+    const performSmashImpact = (mega: boolean, center: THREE.Vector3) => {
+      const radius = mega ? MEGA_SMASH_RADIUS : NORMAL_SMASH_RADIUS;
       playSound("smash");
       const wave = new THREE.Mesh(
         new THREE.RingGeometry(0.35, 0.54, 40),
-        new THREE.MeshBasicMaterial({ color: powered ? 0xffbe19 : 0xffffff, transparent: true, opacity: 0.82, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color: mega ? 0xffbe19 : 0xffffff, transparent: true, opacity: 0.82, side: THREE.DoubleSide }),
       );
       wave.rotation.x = -Math.PI / 2;
-      wave.position.copy(player.position);
+      wave.position.copy(center);
       wave.position.y = 0.08;
       scene.add(wave);
       effects.push({ mesh: wave, life: 0.42 });
-      let hit = false;
+      runtime.shake = Math.max(runtime.shake, mega ? 0.38 : 0.22);
+      let hitCount = 0;
+      let destroyedCount = 0;
+      let perfectCount = 0;
       for (const item of breakables) {
         if (!item.alive) continue;
-        if (distanceToBreakable(item, player.position) < radius) {
-          damageObject(item, powered ? 2 : 1);
-          hit = true;
+        const distance = distanceToBreakable(item, center);
+        if (distance < radius) {
+          hitCount += 1;
+          const perfect = distance <= PERFECT_DISTANCE;
+          if (damageObject(item, mega ? 2 : 1, perfect)) {
+            destroyedCount += 1;
+            if (perfect) perfectCount += 1;
+          }
         }
       }
-      if (!hit) notify(powered ? "POWER SMASH!" : "SMASH!");
+      if (hitCount > 0) runtime.comboWindow = COMBO_WINDOW;
+      runtime.maxMultiBreak = Math.max(runtime.maxMultiBreak, destroyedCount);
+      const multiBonus = getMultiBreakBonus(destroyedCount);
+      if (multiBonus > 0) addRawScore(multiBonus);
+      awardAreaClears();
+      if (breakables.every((item) => !item.alive)) {
+        finishGame(true);
+      } else if (multiBonus > 0) {
+        notify(`MULTI BREAK ×${destroyedCount}  +${multiBonus}`);
+      } else if (perfectCount > 0) {
+        notify("PERFECT SMASH! ×1.25");
+      } else if (hitCount === 0) {
+        notify(mega ? "MEGA SMASH!" : "SMASH!");
+      }
     };
 
     const smash = () => {
-      if (!runtime.playing || runtime.paused || runtime.elapsed - runtime.lastSmash < 0.43) return;
+      if (!runtime.playing || runtime.paused || runtime.elapsed - runtime.lastSmash < 0.4) return;
       runtime.lastSmash = runtime.elapsed;
-      const powered = runtime.powerUntil > runtime.elapsed;
-      (player.userData.animator as VoxelActionController | undefined)?.triggerSmash(powered);
-      tone(210, 0.08, "sawtooth", 0.032, 410);
-      runtime.pendingSmash = { impactAt: runtime.elapsed + 0.2, powered };
+      const mega = runtime.megaCharges > 0;
+      if (mega) {
+        runtime.megaCharges -= 1;
+        setMegaCharges(runtime.megaCharges);
+      }
+      const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotation.y);
+      const center = player.position.clone().addScaledVector(forward, SMASH_FORWARD_OFFSET);
+      center.y = 0;
+      (player.userData.animator as VoxelActionController | undefined)?.triggerSmash(mega);
+      tone(260, 0.12, "sawtooth", mega ? 0.06 : 0.04, 720);
+      runtime.pendingSmash = { impactAt: runtime.elapsed + 0.17, mega, center };
     };
 
     const start = () => {
@@ -1006,7 +1162,13 @@ export default function OfficeCrashGame() {
       runtime.time = INITIAL_TIME;
       runtime.combo = 0;
       runtime.comboWindow = 0;
-      runtime.powerUntil = 0;
+      runtime.comboFreezeUntil = 0;
+      runtime.megaCharges = 0;
+      runtime.destroyed = 0;
+      runtime.maxCombo = 0;
+      runtime.perfects = 0;
+      runtime.maxMultiBreak = 0;
+      runtime.clearedAreas.clear();
       runtime.lastSmash = -10;
       runtime.lastBreakSound = -10;
       runtime.lastBump = -10;
@@ -1015,13 +1177,13 @@ export default function OfficeCrashGame() {
       for (const pickup of pickups) {
         pickup.active = true;
         pickup.group.visible = true;
-        pickup.respawnAt = 0;
-        pickup.remainingRespawns = pickup.maxRespawns;
       }
       setScore(0);
       setTimeLeft(INITIAL_TIME);
       setCombo(0);
-      setPowerLeft(0);
+      setMegaCharges(0);
+      setComboFreezeLeft(0);
+      setResultStats({ ...EMPTY_RESULT, total: breakables.length });
       setPaused(false);
       setStatus("playing");
       playSound("start");
@@ -1088,7 +1250,7 @@ export default function OfficeCrashGame() {
         if (runtime.pendingSmash && runtime.elapsed >= runtime.pendingSmash.impactAt) {
           const pendingSmash = runtime.pendingSmash;
           runtime.pendingSmash = null;
-          performSmashImpact(pendingSmash.powered);
+          performSmashImpact(pendingSmash.mega, pendingSmash.center);
         }
         const move = new THREE.Vector2(
           (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0) + joystickRef.current.x,
@@ -1097,7 +1259,7 @@ export default function OfficeCrashGame() {
         if (move.lengthSq() > 0.02) {
           isWalking = true;
           move.normalize();
-          const speed = runtime.powerUntil > runtime.elapsed ? 6.8 : 5.6;
+          const speed = 5.6;
           const next = player.position.clone().add(new THREE.Vector3(move.x * speed * dt, 0, move.y * speed * dt));
           next.x = THREE.MathUtils.clamp(next.x, -9.25, 9.25);
           next.z = THREE.MathUtils.clamp(next.z, -13.5, 11.7);
@@ -1118,48 +1280,33 @@ export default function OfficeCrashGame() {
           const bob = Math.sin(runtime.elapsed * 14) * 0.035;
           player.position.y = bob;
 
-          if (runtime.powerUntil > runtime.elapsed) {
-            for (const item of breakables) {
-              if (item.alive && !item.solid && item.maxHp === 1 && distanceToBreakable(item, player.position) < 0.9) {
-                destroyObject(item);
-              }
-            }
-          }
         } else {
           player.position.y = THREE.MathUtils.lerp(player.position.y, 0, 0.22);
         }
 
         for (const pickup of pickups) {
-          if (!pickup.active) {
-            if (pickup.remainingRespawns > 0 && runtime.elapsed > pickup.respawnAt) {
-              pickup.remainingRespawns -= 1;
-              pickup.active = true;
-              pickup.group.visible = true;
-            }
-            continue;
-          }
+          if (!pickup.active) continue;
           pickup.group.rotation.y += dt * 1.6;
           pickup.group.position.y = pickup.baseY + Math.sin(runtime.elapsed * 2.8 + pickup.group.position.x) * 0.11;
           if (pickup.group.position.distanceTo(player.position) < 1.15) {
+            if (pickup.kind === "beer" && runtime.megaCharges >= MEGA_MAX_CHARGES) continue;
             pickup.active = false;
             pickup.group.visible = false;
-            pickup.respawnAt = runtime.elapsed + 18;
             if (pickup.kind === "beer") {
-              runtime.powerUntil = Math.max(runtime.powerUntil, runtime.elapsed + POWER_DURATION);
-              addScore(250);
+              runtime.megaCharges += 1;
+              setMegaCharges(runtime.megaCharges);
               playSound("beer");
-              notify(`BEER GET!  POWER UP ${POWER_DURATION}秒`);
+              notify(`BEER GET!  MEGA ×${runtime.megaCharges}`);
             } else {
-              runtime.time += TIME_BONUS;
-              addScore(220);
+              runtime.comboFreezeUntil = runtime.elapsed + COMBO_FREEZE_DURATION;
               playSound("time");
-              setTimeLeft(Math.ceil(runtime.time));
-              notify(`TIME +${TIME_BONUS}秒（再出現なし）`);
+              setComboFreezeLeft(COMBO_FREEZE_DURATION);
+              notify(`COMBO FREEZE ${COMBO_FREEZE_DURATION}秒`);
             }
           }
         }
 
-        runtime.comboWindow -= dt;
+        if (runtime.elapsed >= runtime.comboFreezeUntil) runtime.comboWindow -= dt;
         if (runtime.comboWindow <= 0 && runtime.combo > 0) {
           runtime.combo = 0;
           setCombo(0);
@@ -1167,11 +1314,7 @@ export default function OfficeCrashGame() {
 
         if (runtime.time <= 0) {
           runtime.time = 0;
-          runtime.playing = false;
-          setTimeLeft(0);
-          setStatus("gameover");
-          playSound("timeup");
-          notify("TIME UP!");
+          finishGame(false);
         }
       }
 
@@ -1233,7 +1376,7 @@ export default function OfficeCrashGame() {
 
       if (frame % 6 === 0) {
         setTimeLeft(Math.max(0, Math.ceil(runtime.time)));
-        setPowerLeft(Math.max(0, runtime.powerUntil - runtime.elapsed));
+        setComboFreezeLeft(Math.max(0, runtime.comboFreezeUntil - runtime.elapsed));
       }
       frame += 1;
       renderer.render(scene, camera);
@@ -1278,6 +1421,28 @@ export default function OfficeCrashGame() {
 
   const formatScore = (value: number) => value.toLocaleString("ja-JP");
   const formatTime = (value: number) => `00:${Math.max(0, value).toString().padStart(2, "0")}`;
+  const shareText = `そば屋のオフィスクラッシュで${formatScore(score)}点！\n破壊数 ${resultStats.destroyed}/${resultStats.total}\n最大コンボ ${resultStats.maxCombo}\nPERFECT ${resultStats.perfects}回\n称号「${getRank(score)}」\n#そば屋のオフィスクラッシュ`;
+
+  const shareResult = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "そば屋のオフィスクラッシュ", text: shareText, url: window.location.href });
+        return;
+      }
+      await navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
+      notify("結果をコピーしました！");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      notify("共有できませんでした");
+    }
+  };
+
+  const shareOnX = () => {
+    const url = new URL("https://x.com/intent/post");
+    url.searchParams.set("text", shareText);
+    url.searchParams.set("url", window.location.href);
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <main className="game-shell" ref={hostRef}>
@@ -1292,7 +1457,9 @@ export default function OfficeCrashGame() {
         <div className="score-card" aria-live="polite">
           <span className="score-label">SCORE</span>
           <strong>{formatScore(score)}</strong>
-          <span className={`combo ${combo > 0 ? "combo-active" : ""}`}>COMBO ×{combo}</span>
+          <span className={`combo ${combo > 0 ? "combo-active" : ""}`}>
+            COMBO {combo} <b>×{getComboMultiplier(combo).toFixed(1)}</b>
+          </span>
         </div>
         <div className="top-actions">
           <div className={`timer ${timeLeft <= 10 && status === "playing" ? "timer-danger" : ""}`}>
@@ -1311,15 +1478,17 @@ export default function OfficeCrashGame() {
         </div>
       </header>
 
-      <aside className={`power-meter ${powerLeft > 0 ? "is-powered" : ""}`} aria-label={`破壊力アップ 残り${Math.ceil(powerLeft)}秒`}>
-        <div className="foam"><i /><i /><i /></div>
-        <div className="power-glass">
-          <div className="power-fill" style={{ height: `${powerLeft > 0 ? Math.max(14, (powerLeft / POWER_DURATION) * 100) : 7}%` }} />
-          <div className="beer-bubbles"><i /><i /><i /><i /></div>
+      <aside className={`power-meter ${megaCharges > 0 ? "is-powered" : ""}`} aria-label={`MEGAスマッシュ 残り${megaCharges}回`}>
+        <strong>MEGA</strong>
+        <div className="mega-charges" aria-hidden="true">
+          {[0, 1].map((slot) => <span className={slot < megaCharges ? "filled" : ""} key={slot}>🍺</span>)}
         </div>
-        <strong>POWER</strong>
-        <span>{powerLeft > 0 ? `${Math.ceil(powerLeft)}s` : "BEER!"}</span>
+        <span>{megaCharges > 0 ? `NEXT ×${megaCharges}` : "BEER GET!"}</span>
       </aside>
+
+      {comboFreezeLeft > 0 && (
+        <div className="combo-freeze" aria-live="polite">❄ COMBO FREEZE {comboFreezeLeft.toFixed(1)}s</div>
+      )}
 
       <div className={`game-toast ${toast ? "show" : ""}`} aria-live="assertive">{toast}</div>
 
@@ -1344,7 +1513,7 @@ export default function OfficeCrashGame() {
       </div>
 
       <button
-        className={`smash-button ${powerLeft > 0 ? "powered" : ""}`}
+        className={`smash-button ${megaCharges > 0 ? "powered" : ""}`}
         onPointerDown={(event) => {
           event.preventDefault();
           apiRef.current?.smash();
@@ -1358,25 +1527,45 @@ export default function OfficeCrashGame() {
       {status !== "playing" && (
         <section className="start-overlay" aria-labelledby="start-title">
           <div className="start-card">
-            {status === "gameover" && <span className="round-over">TIME UP!</span>}
+            {status === "gameover" && <span className="round-over">{resultStats.cleared ? "OFFICE CLEAR!" : "TIME UP!"}</span>}
             <p className="eyebrow">MADOGIWA 45 SECOND CHALLENGE</p>
             <h1 id="start-title"><small>そば屋の</small>オフィスクラッシュ</h1>
             {status === "gameover" ? (
-              <div className="final-score">
-                <span>FINAL SCORE</span>
-                <strong>{formatScore(score)}</strong>
-              </div>
+              <>
+                <div className="final-score">
+                  <span>FINAL SCORE</span>
+                  <strong>{formatScore(score)}</strong>
+                  <em>{getRank(score)}</em>
+                  {score > resultStats.previousBest && <b>NEW BEST! +{formatScore(score - resultStats.previousBest)}</b>}
+                </div>
+                <div className="result-stats">
+                  <div><span>破壊</span><strong>{resultStats.destroyed}/{resultStats.total}</strong></div>
+                  <div><span>MAX COMBO</span><strong>{resultStats.maxCombo}</strong></div>
+                  <div><span>PERFECT</span><strong>{resultStats.perfects}</strong></div>
+                  <div><span>MAX MULTI</span><strong>{resultStats.maxMultiBreak}</strong></div>
+                  <div><span>AREA CLEAR</span><strong>{resultStats.areasCleared}/4</strong></div>
+                  <div><span>{resultStats.clearTime !== null ? "CLEAR TIME" : "BEST"}</span><strong>{resultStats.clearTime !== null ? `${resultStats.clearTime}s` : formatScore(bestScore)}</strong></div>
+                </div>
+              </>
             ) : (
-              <p className="lead">45秒のルート勝負。強化ゲートの奥にある金の複合機を狙え！</p>
+              <p className="lead">45秒固定のルート勝負。壊し方とコンボでスコア差をつけろ！</p>
             )}
-            <div className="rules">
-              <div><span className="rule-icon beer-icon">🍺</span><strong>POWER 6秒</strong><small>体当たり破壊＋強化物へ2ダメージ</small></div>
-              <div><span className="rule-icon clock-icon">◷</span><strong>TIME +5</strong><small>時計は各1回だけ・再出現なし</small></div>
-              <div><span className="rule-icon copier-icon">▥</span><strong>強化ゲート</strong><small>5回攻撃。奥には高得点エリア</small></div>
-            </div>
+            {status !== "gameover" && (
+              <div className="rules">
+                <div><span className="rule-icon beer-icon">🍺</span><strong>MEGA SMASH</strong><small>次の一撃だけ範囲拡大＋2ダメージ</small></div>
+                <div><span className="rule-icon clock-icon">❄</span><strong>COMBO FREEZE</strong><small>ゲーム時間は止めずコンボだけ4秒保護</small></div>
+                <div><span className="rule-icon copier-icon">▥</span><strong>PERFECT / MULTI</strong><small>狙いと同時破壊でボーナス獲得</small></div>
+              </div>
+            )}
             <button className="start-button" onClick={() => apiRef.current?.start()}>
               {status === "gameover" ? "もう一度クラッシュ！" : "オフィスに突入！"}
             </button>
+            {status === "gameover" && (
+              <div className="share-actions">
+                <button onClick={shareOnX}>Xでスコア共有</button>
+                <button onClick={() => void shareResult()}>共有 / コピー</button>
+              </div>
+            )}
             <p className="controls-note">PC：WASD / 矢印で移動・SPACEでスマッシュ　　スマホ：画面のパッドとボタン</p>
           </div>
         </section>

@@ -40,6 +40,10 @@ test("uses Three.js and the shared voxel rig contract", async () => {
   assert.match(viewer, /triggerSmash/);
   assert.match(kit, /VoxelRig_ArmPrimary/);
   assert.match(kit, /VoxelRig_Locomotion_/);
+  assert.match(kit, /smashDuration: 0\.44/);
+  assert.match(kit, /impactHoldEnd: 0\.52/);
+  assert.match(kit, /impactAngle: -1\.55/);
+  assert.match(kit, /rootLeanAngle/);
   assert.match(catalog, /TENTACLED \/ 8 PIVOTS/);
   assert.match(takosanBuilder, /--face-texture/);
   assert.match(takosanBuilder, /--robe-texture/);
