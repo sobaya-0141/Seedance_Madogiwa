@@ -6,10 +6,20 @@
 |---|---|---|---|---|
 | そば屋 | `sobaya_voxel_master.blend` | `../models/sobaya.glb` | 仮面: `textures/sobaya_mask_albedo_voxel.png` | 両腕＋両脚＋ハンドソケット |
 | たこさん | `takosan_voxel_master.blend` | `../models/takosan.glb` | 顔: `textures/takosan_face_albedo_v2.png` / ローブ: `textures/takosan_robe_front_albedo.png` | 両腕＋触手6本 |
+| とーくん | `tokun_voxel_master.blend` | `../models/tokun.glb` | 顔: `textures/tokun_face_albedo.png` / アロハ前後: `textures/tokun_aloha_{front,back}_albedo.png` | 両腕＋両脚＋ウクレレ |
+| よーたん | `yotan_voxel_master.blend` | `../models/yotan.glb` | 顔: `textures/yotan_face_albedo.png` / ジャケット前後: `textures/yotan_jacket_{front,back}_albedo.png` | 両腕＋両脚＋ギター |
+| 福ちゃん | `fukuchan_voxel_master.blend` | `../models/fukuchan.glb` | 顔: `textures/fukuchan_face_albedo.png` / 服: `textures/fukuchan_outfit_front_albedo.png` | 両腕＋両脚 |
 | 無職やめ太郎 | `yametaro_voxel_master.blend` | `../models/yametaro.glb` | 顔: `textures/yametaro_face_albedo_v2.png` / シャツ前: `textures/yametaro_shirt_front_albedo_v2.png` / シャツ後: `textures/yametaro_shirt_back_albedo_v1.png` | 両腕＋両脚 |
+| 窓際王おかやまん | `okayaman_voxel_master.blend` | `../models/okayaman.glb` | 画面: `textures/okayaman_screen_albedo.png` | スクリーン（ArmPrimary）のみ |
+| ゆめみん | `yumemin_voxel_master.blend` | `../models/yumemin.glb` | 顔: `textures/yumemin_face_albedo.png` | 木槌アーム＋鼻（Locomotion_00） |
 
 いずれも第三者の3D素体を使わず、`02_CHARACTERS/` のキャラクター参照画像を基に
 Blender Pythonで生成したオリジナル形状です。
+
+とーくん・よーたん・福ちゃん・おかやまん・ゆめみんのテクスチャは
+`tools/generate_pixelart_textures.py` による決定論的なピクセルアートです
+（ビルド環境にimagegenが無いため。各キャラの推定事項と承認状態は
+`concepts/<キャラ>-turnaround-2026-07-22/TURNAROUND_STATUS.md` を参照）。
 
 ## 顔テクスチャ方式
 
