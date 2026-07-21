@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import math
 import os
 import sys
 
@@ -17,19 +16,20 @@ from voxel_character_kit import (  # noqa: E402
     RigGroup,
     VoxelRigDefinition,
     add_box,
-    add_cylinder,
     add_empty,
     add_idle_animation,
-    add_torus,
+    add_textured_front_panel,
     build_voxel_rig,
     ensure_parent,
     make_material,
+    make_texture_material,
     save_and_export,
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--face-texture", required=True)
     parser.add_argument("--output-glb", required=True)
     parser.add_argument("--output-blend", required=True)
     parser.add_argument("--preview", required=True)
@@ -37,21 +37,27 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args(script_args)
 
 
-def build_character() -> bpy.types.Object:
+def build_character(face_texture: str) -> bpy.types.Object:
     skin = make_material("YametaroVoxel_Skin", (1.0, 0.71, 0.47, 1.0), roughness=0.9)
     skin_shadow = make_material("YametaroVoxel_SkinShadow", (0.88, 0.55, 0.36, 1.0), roughness=0.9)
-    blush = make_material("YametaroVoxel_Blush", (1.0, 0.06, 0.33, 1.0), roughness=0.82)
     hair = make_material("YametaroVoxel_Hair", (0.012, 0.027, 0.034, 1.0), roughness=0.7)
     black = make_material("YametaroVoxel_Black", (0.005, 0.012, 0.016, 1.0), roughness=0.62)
     purple = make_material("YametaroVoxel_Shirt", (0.35, 0.27, 0.80, 1.0), roughness=0.88)
     purple_light = make_material("YametaroVoxel_Collar", (0.65, 0.61, 1.0, 1.0), roughness=0.9)
     pants = make_material("YametaroVoxel_Pants", (0.075, 0.09, 0.13, 1.0), roughness=0.86)
     shoes = make_material("YametaroVoxel_Shoes", (0.025, 0.035, 0.052, 1.0), roughness=0.78)
+    face_surface = make_texture_material(
+        "YametaroVoxel_FaceSurface",
+        face_texture,
+        image_name="YametaroVoxel_FaceAlbedo",
+        roughness=0.72,
+    )
 
     root = add_empty("YametaroVoxel_Root", (0.0, 0.0, 0.0))
     root["character"] = "Mushoku Yametaro"
     root["style"] = "large-head chibi voxel caricature"
     root["design_locks"] = "purple shirt,round glasses,black side-parted hair,chibi proportions"
+    root["face_workflow"] = "replaceable front-panel albedo texture"
 
     # Short biped body below an intentionally oversized head.
     for side in (-1, 1):
@@ -72,7 +78,7 @@ def build_character() -> bpy.types.Object:
     add_box("YametaroVoxel_SecondaryForearm", (-0.54, -0.03, 0.78), (0.22, 0.27, 0.28), skin, parent=root, bevel=0.03)
     add_box("YametaroVoxel_SecondaryHand", (-0.57, -0.08, 0.61), (0.25, 0.25, 0.22), skin_shadow, parent=root, bevel=0.05)
 
-    # Large square head, side-parted hair, circular glasses, and pink cheeks.
+    # Large square head and side-parted hair frame replaceable 2D face artwork.
     add_box("YametaroVoxel_Head", (0.0, 0.0, 1.62), (1.00, 0.62, 0.84), skin, parent=root, bevel=0.115)
     for side in (-1, 1):
         add_box(f"YametaroVoxel_Ear_{side}", (side * 0.53, -0.01, 1.58), (0.13, 0.22, 0.24), skin_shadow, parent=root, bevel=0.045)
@@ -80,41 +86,15 @@ def build_character() -> bpy.types.Object:
     add_box("YametaroVoxel_HairLeft", (-0.42, -0.01, 1.83), (0.19, 0.59, 0.45), hair, parent=root, bevel=0.035)
     add_box("YametaroVoxel_HairRight", (0.37, 0.02, 1.91), (0.27, 0.57, 0.31), hair, parent=root, bevel=0.035)
     add_box("YametaroVoxel_BangCenter", (-0.16, -0.325, 1.93), (0.32, 0.10, 0.32), hair, rotation=(0.0, 0.0, -0.26), parent=root, bevel=0.025)
-
-    for side in (-1, 1):
-        add_cylinder(
-            f"YametaroVoxel_Eye_{side}",
-            (side * 0.21, -0.337, 1.62),
-            0.048,
-            0.035,
-            black,
-            rotation=(math.pi / 2, 0.0, 0.0),
-            vertices=8,
-            parent=root,
-        )
-        add_torus(
-            f"YametaroVoxel_Glasses_{side}",
-            (side * 0.21, -0.365, 1.62),
-            0.17,
-            0.032,
-            black,
-            rotation=(math.pi / 2, 0.0, 0.0),
-            parent=root,
-        )
-        add_cylinder(
-            f"YametaroVoxel_Cheek_{side}",
-            (side * 0.33, -0.346, 1.38),
-            0.105,
-            0.028,
-            blush,
-            rotation=(math.pi / 2, 0.0, 0.0),
-            vertices=8,
-            parent=root,
-        )
-    add_box("YametaroVoxel_GlassesBridge", (0.0, -0.376, 1.62), (0.10, 0.035, 0.035), black, parent=root)
-    add_box("YametaroVoxel_Nose", (0.0, -0.355, 1.49), (0.065, 0.035, 0.055), skin_shadow, parent=root, bevel=0.01)
-    add_box("YametaroVoxel_SmileLeft", (-0.05, -0.365, 1.31), (0.13, 0.035, 0.045), black, rotation=(0.0, 0.0, -0.28), parent=root, bevel=0.01)
-    add_box("YametaroVoxel_SmileRight", (0.05, -0.365, 1.31), (0.13, 0.035, 0.045), black, rotation=(0.0, 0.0, 0.28), parent=root, bevel=0.01)
+    add_textured_front_panel(
+        "YametaroVoxel_FacePanel",
+        (0.0, -0.338, 1.56),
+        (0.88, 0.045, 0.66),
+        skin,
+        face_surface,
+        parent=root,
+        uv_name="YametaroVoxelFaceUV",
+    )
 
     build_voxel_rig(
         root,
@@ -136,7 +116,7 @@ def main() -> None:
     for path in (args.output_glb, args.output_blend, args.preview):
         ensure_parent(path)
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    build_character()
+    build_character(args.face_texture)
     save_and_export(
         output_glb=args.output_glb,
         output_blend=args.output_blend,

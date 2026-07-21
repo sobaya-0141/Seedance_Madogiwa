@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import math
 import os
 import sys
 
@@ -17,18 +16,20 @@ from voxel_character_kit import (  # noqa: E402
     RigGroup,
     VoxelRigDefinition,
     add_box,
-    add_cylinder,
     add_empty,
     add_idle_animation,
+    add_textured_front_panel,
     build_voxel_rig,
     ensure_parent,
     make_material,
+    make_texture_material,
     save_and_export,
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--face-texture", required=True)
     parser.add_argument("--output-glb", required=True)
     parser.add_argument("--output-blend", required=True)
     parser.add_argument("--preview", required=True)
@@ -69,19 +70,24 @@ def add_tentacle(
     return RigGroup((x, y, 0.66), (prefix,))
 
 
-def build_character() -> bpy.types.Object:
+def build_character(face_texture: str) -> bpy.types.Object:
     robe = make_material("TakosanVoxel_Robe", (0.035, 0.052, 0.067, 1.0), roughness=0.8)
     robe_mid = make_material("TakosanVoxel_RobeMid", (0.075, 0.095, 0.11, 1.0), roughness=0.84)
     robe_edge = make_material("TakosanVoxel_RobeEdge", (0.14, 0.17, 0.18, 1.0), roughness=0.75)
-    face = make_material("TakosanVoxel_Face", (0.78, 0.84, 0.84, 1.0), roughness=0.88)
     hand = make_material("TakosanVoxel_Hands", (0.64, 0.72, 0.73, 1.0), roughness=0.86)
-    eyes = make_material("TakosanVoxel_Eyes", (0.002, 0.004, 0.006, 1.0), roughness=0.55)
     underside = make_material("TakosanVoxel_TentacleUnderside", (0.33, 0.39, 0.40, 1.0), roughness=0.9)
+    face_surface = make_texture_material(
+        "TakosanVoxel_FaceSurface",
+        face_texture,
+        image_name="TakosanVoxel_FaceAlbedo",
+        roughness=0.72,
+    )
 
     root = add_empty("TakosanVoxel_Root", (0.0, 0.0, 0.0))
     root["character"] = "Takosan"
     root["style"] = "hooded tentacled voxel caricature"
     root["design_locks"] = "black hooded robe,tentacles,human arms,white face,round black eyes"
+    root["face_workflow"] = "replaceable front-panel albedo texture"
 
     # Six tentacles form a readable base from the fixed game camera.
     tentacle_specs = (
@@ -105,18 +111,15 @@ def build_character() -> bpy.types.Object:
     add_box("TakosanVoxel_HoodLeft", (-0.40, -0.26, 1.72), (0.18, 0.16, 0.72), robe_edge, parent=root, bevel=0.03)
     add_box("TakosanVoxel_HoodRight", (0.40, -0.26, 1.72), (0.18, 0.16, 0.72), robe_edge, parent=root, bevel=0.03)
     add_box("TakosanVoxel_HoodBrow", (0.0, -0.28, 2.03), (0.68, 0.15, 0.16), robe_edge, parent=root, bevel=0.03)
-    add_box("TakosanVoxel_Face", (0.0, -0.335, 1.74), (0.66, 0.075, 0.50), face, parent=root, bevel=0.09)
-    for side in (-1, 1):
-        add_cylinder(
-            f"TakosanVoxel_Eye_{side}",
-            (side * 0.18, -0.385, 1.78),
-            0.075,
-            0.035,
-            eyes,
-            rotation=(math.pi / 2, 0.0, 0.0),
-            vertices=12,
-            parent=root,
-        )
+    add_textured_front_panel(
+        "TakosanVoxel_FacePanel",
+        (0.0, -0.355, 1.74),
+        (0.72, 0.045, 0.60),
+        robe_edge,
+        face_surface,
+        parent=root,
+        uv_name="TakosanVoxelFaceUV",
+    )
 
     # Stepped robe glyphs echo the curled decoration in the reference image.
     for side in (-1, 1):
@@ -164,7 +167,7 @@ def main() -> None:
     for path in (args.output_glb, args.output_blend, args.preview):
         ensure_parent(path)
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    build_character()
+    build_character(args.face_texture)
     save_and_export(
         output_glb=args.output_glb,
         output_blend=args.output_blend,

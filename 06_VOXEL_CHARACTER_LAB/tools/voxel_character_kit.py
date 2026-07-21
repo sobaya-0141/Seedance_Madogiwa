@@ -74,6 +74,31 @@ def make_material(
     return mat
 
 
+def make_texture_material(
+    name: str,
+    path: str,
+    *,
+    image_name: str,
+    roughness: float = 0.62,
+) -> bpy.types.Material:
+    """Create an embedded sRGB albedo material for replaceable face art."""
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes.get("Principled BSDF")
+    bsdf.inputs["Roughness"].default_value = roughness
+    image = bpy.data.images.load(os.path.abspath(path), check_existing=True)
+    image.name = image_name
+    image.colorspace_settings.name = "sRGB"
+    image.pack()
+    texture = mat.node_tree.nodes.new("ShaderNodeTexImage")
+    texture.name = f"{image_name}_Texture"
+    texture.image = image
+    texture.interpolation = "Closest"
+    texture.extension = "EXTEND"
+    mat.node_tree.links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
+    return mat
+
+
 def add_empty(name: str, location: tuple[float, float, float], parent=None) -> bpy.types.Object:
     obj = bpy.data.objects.new(name, None)
     obj.location = location
@@ -112,6 +137,33 @@ def add_box(
     for polygon in obj.data.polygons:
         polygon.use_smooth = False
     return obj
+
+
+def add_textured_front_panel(
+    name: str,
+    location: tuple[float, float, float],
+    dimensions: tuple[float, float, float],
+    edge_mat: bpy.types.Material,
+    surface_mat: bpy.types.Material,
+    *,
+    parent=None,
+    uv_name: str = "VoxelFaceUV",
+) -> bpy.types.Object:
+    """Build a thin box whose camera-facing -Y side displays one full texture."""
+    width, _depth, height = dimensions
+    panel = add_box(name, location, dimensions, edge_mat, parent=parent)
+    panel.data.materials.append(surface_mat)
+    uv_layer = panel.data.uv_layers.active or panel.data.uv_layers.new(name=uv_name)
+    for polygon in panel.data.polygons:
+        if polygon.normal.y < -0.9:
+            polygon.material_index = 1
+            for loop_index in polygon.loop_indices:
+                vertex = panel.data.vertices[panel.data.loops[loop_index].vertex_index].co
+                uv_layer.data[loop_index].uv = (
+                    0.5 + vertex.x / width,
+                    0.5 + vertex.z / height,
+                )
+    return panel
 
 
 def add_cylinder(

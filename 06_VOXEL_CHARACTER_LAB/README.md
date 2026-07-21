@@ -28,12 +28,17 @@ npm test
 
 ```bash
 blender --background --python tools/build_takosan_voxel_model.py -- \
+  --face-texture model_source/textures/takosan_face_albedo.png \
   --output-glb public/models/takosan.glb \
   --output-blend model_source/takosan_voxel_master.blend \
   --preview model_source/takosan_voxel_preview.png
 
 blender --background --python tools/build_yametaro_voxel_model.py -- \
+  --face-texture model_source/textures/yametaro_face_albedo.png \
   --output-glb public/models/yametaro.glb \
   --output-blend model_source/yametaro_voxel_master.blend \
   --preview model_source/yametaro_voxel_preview.png
 ```
+
+顔は共通の前面UVパネルにimagegen生成アルベドを貼る方式です。目やメガネを
+立体パーツで再現せず、元画像の顔つきを保ったままテクスチャ1枚だけ交換できます。

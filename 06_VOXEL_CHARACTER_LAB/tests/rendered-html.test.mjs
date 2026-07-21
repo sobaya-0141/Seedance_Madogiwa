@@ -28,10 +28,12 @@ test("renders the character action lab", async () => {
 });
 
 test("uses Three.js and the shared voxel rig contract", async () => {
-  const [viewer, kit, catalog] = await Promise.all([
+  const [viewer, kit, catalog, takosanBuilder, yametaroBuilder] = await Promise.all([
     readFile(new URL("../app/CharacterLab.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/lib/voxel-character-kit.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/character-catalog.ts", import.meta.url), "utf8"),
+    readFile(new URL("../tools/build_takosan_voxel_model.py", import.meta.url), "utf8"),
+    readFile(new URL("../tools/build_yametaro_voxel_model.py", import.meta.url), "utf8"),
   ]);
   assert.match(viewer, /new THREE\.WebGLRenderer/);
   assert.match(viewer, /new OrbitControls/);
@@ -39,7 +41,13 @@ test("uses Three.js and the shared voxel rig contract", async () => {
   assert.match(kit, /VoxelRig_ArmPrimary/);
   assert.match(kit, /VoxelRig_Locomotion_/);
   assert.match(catalog, /TENTACLED \/ 8 PIVOTS/);
+  assert.match(takosanBuilder, /--face-texture/);
+  assert.match(takosanBuilder, /add_textured_front_panel/);
+  assert.match(yametaroBuilder, /--face-texture/);
+  assert.match(yametaroBuilder, /add_textured_front_panel/);
   await access(new URL("../public/models/sobaya.glb", import.meta.url));
   await access(new URL("../public/models/takosan.glb", import.meta.url));
   await access(new URL("../public/models/yametaro.glb", import.meta.url));
+  await access(new URL("../model_source/textures/takosan_face_albedo.png", import.meta.url));
+  await access(new URL("../model_source/textures/yametaro_face_albedo.png", import.meta.url));
 });
