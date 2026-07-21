@@ -6,7 +6,7 @@ Blenderマスターと確認用プレビューを保存します。
 | キャラクター | Blenderマスター | Web用GLB | 顔 | 服 | リグ |
 |---|---|---|---|---|---|
 | たこさん | `takosan_voxel_master.blend` | `../public/models/takosan.glb` | `textures/takosan_face_albedo_v2.png` | `textures/takosan_robe_front_albedo.png` | 両腕＋触手6本 |
-| 無職やめ太郎 | `yametaro_voxel_master.blend` | `../public/models/yametaro.glb` | `textures/yametaro_face_albedo_v2.png` | `textures/yametaro_shirt_front_albedo_v2.png` | 両腕＋両脚 |
+| 無職やめ太郎 | `yametaro_voxel_master.blend` | `../public/models/yametaro.glb` | `textures/yametaro_face_albedo_v2.png` | `textures/yametaro_shirt_front_albedo_v2.png` + `textures/yametaro_shirt_back_albedo_v1.png` | 両腕＋両脚 |
 
 どちらも第三者の3D素体を使わず、プロジェクトのキャラクター参照画像を基に
 Blender Pythonで生成したオリジナル形状です。
@@ -24,7 +24,11 @@ Blender Pythonで生成したオリジナル形状です。
 
 顔の模様は目・メガネ・頬などを別メッシュにせず、立方体頭部前面の薄い共通
 UVパネルへ1枚のアルベドとして貼っています。服も同じ方式で、やめ太郎の
-襟・ボタン・植物模様は単一の四角い胴体パネルです。テクスチャはBlenderに
+前面の襟・ボタン・植物模様と、背面へ回り込む襟・植物模様は前後2枚の浅い
+四角パネルです。胴体そのものは単一の直方体を維持しています。テクスチャはBlenderに
 パックされ、GLBにも埋め込まれます。
+
+承認済みの4方向お手本は `concepts/yametaro-turnaround-2026-07-21/`、モデルから
+再生成した4方向確認レンダーは `previews/yametaro-2026-07-21/` にあります。
 
 生成条件と参照元は `textures/IMAGEGEN_FACE_PROMPTS.md` を参照してください。

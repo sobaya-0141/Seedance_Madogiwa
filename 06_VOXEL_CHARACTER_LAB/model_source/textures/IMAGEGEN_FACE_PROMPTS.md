@@ -36,5 +36,11 @@ Active output: `yametaro_face_albedo_v2.png`
 one panel: lavender base, light pointed collar, black button, and blue botanical
 marks. No collar or button mesh is used.
 
+`yametaro_shirt_back_albedo_v1.png` was generated after the user approved the
+2026-07-21 four-view turnaround. Built-in reference-guided imagegen used the original character,
+approved turnaround, and active front shirt albedo to make a flat lavender back with a wrapped pale
+collar and five sparse periwinkle botanical sprigs. It explicitly excludes the front button,
+lighting, folds, perspective, body parts, text, and scenery.
+
 These are source albedo assets. Blender packs them into each `.blend` and embeds
 them in the exported `.glb`, so the web viewer does not load loose textures.

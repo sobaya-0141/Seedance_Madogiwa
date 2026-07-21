@@ -6,7 +6,7 @@ import {
 
 export const SOBAYA_CHARACTER: VoxelCharacterDefinition = {
   id: "sobaya",
-  assetUrl: "/models/sobaya.glb?v=voxel-kit-1",
+  assetUrl: "/models/sobaya.glb?v=rear-turnaround-1",
   modelName: "sobaya-reusable-model",
   scale: 1.32,
   // The Blender source faces -Y, which exports toward +Z in glTF.

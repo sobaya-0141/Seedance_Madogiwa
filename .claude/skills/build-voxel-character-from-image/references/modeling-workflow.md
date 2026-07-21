@@ -3,8 +3,9 @@
 ## Contents
 
 - Identity locks
+- Approved turnaround dependency
 - Geometry versus texture
-- Concept and texture generation
+- Texture generation
 - Blockout and proportions
 - Blender material and UV rules
 - Visual and technical QA
@@ -29,6 +30,13 @@ the texture prompt, then inspect the texture itself before packing it into a mod
 Rank features by recognition value. Spend geometry and texture resolution on the first three to five
 identity cues. Small decorative details cannot rescue the wrong silhouette or face.
 
+## Approved turnaround dependency
+
+Do not infer a 360-degree model directly from a front-only source. First complete the imagegen
+turnaround and user-approval gate in [turnaround-and-approval.md](turnaround-and-approval.md).
+Treat the original image as authority for visible regions and the approved turnaround as authority
+for inferred side/back regions. Record where the two differ or where imagegen invented new detail.
+
 ## Geometry versus texture
 
 | Feature | Prefer geometry when | Prefer texture when |
@@ -52,11 +60,11 @@ Use geometry for:
 - tentacles built from unrotated stepped boxes when a Minecraft-like silhouette is required;
 - a hand socket and animation pivots.
 
-## Concept and texture generation
+## Texture generation
 
-Generate concept variants only when the 3D direction is uncertain. Keep the same neutral three-
-quarter camera and full-body framing. Ask for a physically buildable arrangement of cuboids rather
-than a voxel-styled painting with impossible curves.
+Generate final albedos only after the user approves the voxel turnaround. Use the original image and
+approved turnaround together: the original controls identity-critical face art, while the turnaround
+controls the approved voxel proportions and inferred side/back design.
 
 Use this pattern for a face albedo prompt:
 
@@ -100,6 +108,11 @@ Create front texture panels as thin boxes just in front of the head/torso face. 
 polygon across the texture, keep the edge material on the other sides, set image interpolation to
 Closest, mark albedo as sRGB, and pack the image before saving/exporting.
 
+When the approved back includes a collar, motif, emblem, or other flat clothing art, create a
+separate shallow +Y back panel and a back-view albedo. Reverse the U mapping on the +Y polygon so the
+texture reads exactly as approved when viewed from behind. Keep the torso itself one cuboid; do not
+turn painted rear details into extra geometry.
+
 Low emission (`0.05–0.30`) can keep graphic whites readable, but do not let it flatten all lighting.
 Use the smallest value that preserves a required white lens or mask.
 
@@ -109,19 +122,20 @@ Review in this order:
 
 1. silhouette at 128–256 px;
 2. face locks at full preview size;
-3. side/back continuity of 3D attachments;
+3. front/left/back/right agreement with the approved turnaround, including continuous rear hair;
 4. clothing texture alignment and margins;
 5. arm/leg/appendage pivots through walk and smash extremes;
 6. held prop alignment through the primary hand socket;
 7. GLB contents and embedded textures;
 8. Three.js scale, facing direction, shadows, and cache busting.
 
-Use a neutral three-quarter preview with visible ground contact, warm key light, cool fill/rim light,
-and a camera far enough away to avoid wide-angle distortion. Compare against the source after every
+Render orthographic front, left, back, and right checks plus a neutral three-quarter preview with
+visible ground contact, warm key light, cool fill/rim light, and a camera far enough away to avoid
+wide-angle distortion. Compare each angle against the corresponding approved view after every
 meaningful silhouette or texture revision.
 
-The build is complete only when the editable master, GLB, textures, preview, builder, and validation
-logs agree. Never accept a successful export as proof of likeness.
+The build is complete only when the approved turnaround, editable master, GLB, textures, multi-view
+previews, builder, and validation logs agree. Never accept a successful export as proof of likeness.
 
 ## When to use 2D or 2.5D
 

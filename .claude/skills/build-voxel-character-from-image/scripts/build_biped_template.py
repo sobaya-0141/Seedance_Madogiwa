@@ -18,6 +18,7 @@ from voxel_character_kit import (  # noqa: E402
     add_box,
     add_empty,
     add_idle_animation,
+    add_textured_back_panel,
     add_textured_front_panel,
     build_voxel_rig,
     ensure_parent,
@@ -32,14 +33,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--character-name", required=True)
     parser.add_argument("--face-texture", required=True)
     parser.add_argument("--clothing-texture", required=True)
+    parser.add_argument("--clothing-back-texture")
     parser.add_argument("--output-glb", required=True)
     parser.add_argument("--output-blend", required=True)
     parser.add_argument("--preview", required=True)
+    parser.add_argument("--turnaround-dir", required=True)
     script_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     return parser.parse_args(script_args)
 
 
-def build_character(name: str, face_path: str, clothing_path: str) -> bpy.types.Object:
+def build_character(
+    name: str,
+    face_path: str,
+    clothing_path: str,
+    clothing_back_path: str | None,
+) -> bpy.types.Object:
     skin = make_material("Voxel_Skin", (1.0, 0.68, 0.43, 1.0), roughness=0.90)
     clothing = make_material("Voxel_Clothing", (0.35, 0.27, 0.80, 1.0), roughness=0.88)
     pants = make_material("Voxel_Pants", (0.075, 0.09, 0.13, 1.0), roughness=0.86)
@@ -54,6 +62,15 @@ def build_character(name: str, face_path: str, clothing_path: str) -> bpy.types.
         "Voxel_ClothingSurface",
         clothing_path,
         image_name="Voxel_ClothingAlbedo",
+    )
+    shirt_back = (
+        make_texture_material(
+            "Voxel_ClothingBackSurface",
+            clothing_back_path,
+            image_name="Voxel_ClothingBackAlbedo",
+        )
+        if clothing_back_path
+        else None
     )
 
     root = add_empty("VoxelCharacter_Root", (0.0, 0.0, 0.0))
@@ -78,6 +95,17 @@ def build_character(name: str, face_path: str, clothing_path: str) -> bpy.types.
         uv_name="VoxelClothingUV",
         uv_bounds=(0.025, 0.025, 0.975, 0.975),
     )
+    if shirt_back:
+        add_textured_back_panel(
+            "Voxel_ClothingBackPanel",
+            (0.0, 0.258, 1.02),
+            (0.72, 0.035, 0.52),
+            clothing,
+            shirt_back,
+            parent=root,
+            uv_name="VoxelClothingBackUV",
+            uv_bounds=(0.025, 0.025, 0.975, 0.975),
+        )
     add_box("Voxel_Neck", (0.0, 0.0, 1.35), (0.20, 0.30, 0.16), skin, parent=root)
     add_box("Voxel_PrimarySleeve", (0.50, 0.0, 1.06), (0.24, 0.42, 0.36), clothing, parent=root)
     add_box("Voxel_PrimaryHand", (0.50, -0.02, 0.78), (0.23, 0.26, 0.22), skin, parent=root)
@@ -116,13 +144,19 @@ def main() -> None:
     for path in (args.output_glb, args.output_blend, args.preview):
         ensure_parent(path)
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    build_character(args.character_name, args.face_texture, args.clothing_texture)
+    build_character(
+        args.character_name,
+        args.face_texture,
+        args.clothing_texture,
+        args.clothing_back_texture,
+    )
     save_and_export(
         output_glb=args.output_glb,
         output_blend=args.output_blend,
         preview=args.preview,
         preview_target=(0.0, 0.0, 1.28),
         camera_location=(2.75, -5.1, 2.80),
+        turnaround_dir=args.turnaround_dir,
     )
     print("VOXEL_CHARACTER_BUILD_COMPLETE", os.path.abspath(args.output_glb))
 

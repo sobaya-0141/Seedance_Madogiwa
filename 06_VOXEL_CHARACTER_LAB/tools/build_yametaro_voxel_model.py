@@ -18,6 +18,7 @@ from voxel_character_kit import (  # noqa: E402
     add_box,
     add_empty,
     add_idle_animation,
+    add_textured_back_panel,
     add_textured_front_panel,
     build_voxel_rig,
     ensure_parent,
@@ -31,14 +32,20 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--face-texture", required=True)
     parser.add_argument("--shirt-texture", required=True)
+    parser.add_argument("--shirt-back-texture", required=True)
     parser.add_argument("--output-glb", required=True)
     parser.add_argument("--output-blend", required=True)
     parser.add_argument("--preview", required=True)
+    parser.add_argument("--turnaround-dir", required=True)
     script_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     return parser.parse_args(script_args)
 
 
-def build_character(face_texture: str, shirt_texture: str) -> bpy.types.Object:
+def build_character(
+    face_texture: str,
+    shirt_texture: str,
+    shirt_back_texture: str,
+) -> bpy.types.Object:
     skin = make_material("YametaroVoxel_Skin", (1.0, 0.68, 0.43, 1.0), roughness=0.9)
     skin_shadow = make_material("YametaroVoxel_SkinShadow", (0.84, 0.47, 0.28, 1.0), roughness=0.9)
     hair = make_material("YametaroVoxel_Hair", (0.012, 0.027, 0.034, 1.0), roughness=0.7)
@@ -58,13 +65,20 @@ def build_character(face_texture: str, shirt_texture: str) -> bpy.types.Object:
         image_name="YametaroVoxel_ShirtFrontAlbedo",
         roughness=0.86,
     )
+    shirt_back_surface = make_texture_material(
+        "YametaroVoxel_ShirtBackSurface",
+        shirt_back_texture,
+        image_name="YametaroVoxel_ShirtBackAlbedo",
+        roughness=0.86,
+    )
 
     root = add_empty("YametaroVoxel_Root", (0.0, 0.0, 0.0))
     root["character"] = "Mushoku Yametaro"
     root["style"] = "selected square-head Minecraft-like voxel caricature"
     root["design_locks"] = "purple shirt,round glasses,black side-parted hair,chibi proportions"
     root["face_workflow"] = "replaceable front-panel albedo texture; pupil-free white lenses"
-    root["clothing_workflow"] = "single cuboid torso with replaceable full-shirt albedo"
+    root["clothing_workflow"] = "single cuboid torso with replaceable front/back shirt albedos"
+    root["turnaround_approval"] = "approved 2026-07-21; full rear hair, glasses arms, wrapped collar, rear botanical motifs"
 
     # Short biped body below an intentionally oversized perfect cube head.
     for side in (-1, 1):
@@ -83,6 +97,16 @@ def build_character(face_texture: str, shirt_texture: str) -> bpy.types.Object:
         uv_name="YametaroVoxelShirtUV",
         uv_bounds=(0.025, 0.025, 0.975, 0.975),
     )
+    add_textured_back_panel(
+        "YametaroVoxel_ShirtBackPanel",
+        (0.0, 0.258, 1.02),
+        (0.72, 0.035, 0.52),
+        purple,
+        shirt_back_surface,
+        parent=root,
+        uv_name="YametaroVoxelShirtBackUV",
+        uv_bounds=(0.025, 0.025, 0.975, 0.975),
+    )
     add_box("YametaroVoxel_Neck", (0.0, 0.0, 1.35), (0.20, 0.30, 0.16), skin, parent=root)
 
     # Arms are deliberately simple so the shared smash reads cleanly.
@@ -95,13 +119,34 @@ def build_character(face_texture: str, shirt_texture: str) -> bpy.types.Object:
     add_box("YametaroVoxel_HeadCube", (0.0, 0.0, 1.92), (1.12, 1.12, 1.12), skin, parent=root)
     for side in (-1, 1):
         add_box(f"YametaroVoxel_Ear_{side}", (side * 0.63, 0.0, 1.88), (0.14, 0.30, 0.24), skin_shadow, parent=root)
-        add_box(f"YametaroVoxel_SideHair_{side}", (side * 0.53, 0.04, 2.01), (0.14, 1.04, 0.62), hair, parent=root)
+        add_box(f"YametaroVoxel_SideHair_{side}", (side * 0.53, 0.04, 2.22), (0.14, 1.04, 0.40), hair, parent=root)
+        add_box(f"YametaroVoxel_SideHairRear_{side}", (side * 0.53, 0.34, 1.92), (0.14, 0.42, 0.28), hair, parent=root)
+        add_box(f"YametaroVoxel_GlassesArm_{side}", (side * 0.585, -0.30, 2.02), (0.045, 0.56, 0.055), hair, parent=root)
     add_box("YametaroVoxel_HairCap", (0.0, 0.0, 2.47), (1.16, 1.16, 0.18), hair, parent=root)
     add_box("YametaroVoxel_HairTop", (0.0, 0.0, 2.58), (0.72, 0.92, 0.12), hair, parent=root)
     add_box("YametaroVoxel_BangLeftTop", (-0.31, -0.585, 2.32), (0.54, 0.08, 0.22), hair, parent=root)
     add_box("YametaroVoxel_BangLeftLow", (-0.43, -0.585, 2.13), (0.30, 0.08, 0.28), hair, parent=root)
     add_box("YametaroVoxel_BangRightTop", (0.31, -0.585, 2.32), (0.54, 0.08, 0.22), hair, parent=root)
     add_box("YametaroVoxel_BangRightLow", (0.43, -0.585, 2.13), (0.30, 0.08, 0.28), hair, parent=root)
+    # Approved rear silhouette: one dense hair mass with a stepped, uneven
+    # lower edge. No skin-colored bald panel remains on the rear of the cube.
+    add_box("YametaroVoxel_HairRearMain", (0.0, 0.585, 2.16), (1.10, 0.08, 0.64), hair, parent=root)
+    for index, (x, z, width, height) in enumerate(
+        (
+            (-0.43, 1.81, 0.22, 0.18),
+            (-0.20, 1.77, 0.26, 0.26),
+            (0.05, 1.80, 0.26, 0.20),
+            (0.30, 1.75, 0.26, 0.30),
+            (0.49, 1.82, 0.16, 0.16),
+        )
+    ):
+        add_box(
+            f"YametaroVoxel_HairRearNape_{index}",
+            (x, 0.585, z),
+            (width, 0.08, height),
+            hair,
+            parent=root,
+        )
     add_textured_front_panel(
         "YametaroVoxel_FacePanel",
         (0.0, -0.578, 1.90),
@@ -132,7 +177,7 @@ def main() -> None:
     for path in (args.output_glb, args.output_blend, args.preview):
         ensure_parent(path)
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    build_character(args.face_texture, args.shirt_texture)
+    build_character(args.face_texture, args.shirt_texture, args.shirt_back_texture)
     save_and_export(
         output_glb=args.output_glb,
         output_blend=args.output_blend,
@@ -140,6 +185,9 @@ def main() -> None:
         preview_target=(0.0, 0.0, 1.28),
         camera_location=(2.75, -5.1, 2.80),
         preview_accent=(1.0, 0.30, 0.62),
+        turnaround_dir=args.turnaround_dir,
+        turnaround_distance=5.0,
+        turnaround_scale=3.15,
     )
     print("YAMETARO_VOXEL_BUILD_COMPLETE", os.path.abspath(args.output_glb))
 

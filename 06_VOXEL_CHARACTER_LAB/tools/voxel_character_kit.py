@@ -172,6 +172,35 @@ def add_textured_front_panel(
     return panel
 
 
+def add_textured_back_panel(
+    name: str,
+    location: tuple[float, float, float],
+    dimensions: tuple[float, float, float],
+    edge_mat: bpy.types.Material,
+    surface_mat: bpy.types.Material,
+    *,
+    parent=None,
+    uv_name: str = "VoxelBackUV",
+    uv_bounds: tuple[float, float, float, float] = (0.0, 0.0, 1.0, 1.0),
+) -> bpy.types.Object:
+    """Build a thin box whose +Y side shows a non-mirrored back-view albedo."""
+    width, _depth, height = dimensions
+    panel = add_box(name, location, dimensions, edge_mat, parent=parent)
+    panel.data.materials.append(surface_mat)
+    uv_layer = panel.data.uv_layers.active or panel.data.uv_layers.new(name=uv_name)
+    u_min, v_min, u_max, v_max = uv_bounds
+    for polygon in panel.data.polygons:
+        if polygon.normal.y > 0.9:
+            polygon.material_index = 1
+            for loop_index in polygon.loop_indices:
+                vertex = panel.data.vertices[panel.data.loops[loop_index].vertex_index].co
+                uv_layer.data[loop_index].uv = (
+                    u_min + (0.5 - vertex.x / width) * (u_max - u_min),
+                    v_min + (0.5 + vertex.z / height) * (v_max - v_min),
+                )
+    return panel
+
+
 def add_cylinder(
     name: str,
     location: tuple[float, float, float],
@@ -375,6 +404,35 @@ def setup_preview(
     bpy.ops.render.render(write_still=True)
 
 
+def render_turnaround_views(
+    output_dir: str,
+    *,
+    target: tuple[float, float, float],
+    distance: float,
+    orthographic_scale: float,
+) -> None:
+    """Render straight-on front, left, back, and right QA views."""
+    os.makedirs(os.path.abspath(output_dir), exist_ok=True)
+    camera = bpy.data.objects.get("Preview_Camera")
+    if camera is None:
+        raise RuntimeError("Preview_Camera must exist before rendering turnaround views")
+    scene = bpy.context.scene
+    camera.data.type = "ORTHO"
+    camera.data.ortho_scale = orthographic_scale
+    target_vector = Vector(target)
+    views = {
+        "front": (0.0, -distance, target[2]),
+        "left": (-distance, 0.0, target[2]),
+        "back": (0.0, distance, target[2]),
+        "right": (distance, 0.0, target[2]),
+    }
+    for view_name, location in views.items():
+        camera.location = location
+        camera.rotation_euler = (target_vector - camera.location).to_track_quat("-Z", "Y").to_euler()
+        scene.render.filepath = os.path.join(os.path.abspath(output_dir), f"{view_name}.png")
+        bpy.ops.render.render(write_still=True)
+
+
 def remove_preview_objects() -> None:
     for obj in list(bpy.context.scene.objects):
         if obj.name.startswith("Preview_"):
@@ -389,6 +447,9 @@ def save_and_export(
     preview_target: tuple[float, float, float],
     camera_location: tuple[float, float, float],
     preview_accent: tuple[float, float, float],
+    turnaround_dir: str | None = None,
+    turnaround_distance: float = 5.0,
+    turnaround_scale: float = 3.2,
 ) -> None:
     setup_preview(
         preview,
@@ -396,6 +457,13 @@ def save_and_export(
         camera_location=camera_location,
         accent=preview_accent,
     )
+    if turnaround_dir:
+        render_turnaround_views(
+            turnaround_dir,
+            target=preview_target,
+            distance=turnaround_distance,
+            orthographic_scale=turnaround_scale,
+        )
     remove_preview_objects()
     bpy.context.scene.frame_set(1)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(output_blend))

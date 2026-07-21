@@ -5,7 +5,8 @@ Run with Blender:
     --mask-texture model_source/textures/sobaya_mask_albedo_voxel.png \
     --output-glb public/models/sobaya.glb \
     --output-blend model_source/sobaya_voxel_master.blend \
-    --preview model_source/sobaya_voxel_preview.png
+    --preview model_source/sobaya_voxel_preview.png \
+    --turnaround-dir model_source/previews/sobaya-2026-07-21
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ from voxel_character_kit import (  # noqa: E402
     build_voxel_rig,
     ensure_parent,
     make_material,
+    render_turnaround_views,
 )
 
 
@@ -39,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-glb", required=True)
     parser.add_argument("--output-blend", required=True)
     parser.add_argument("--preview", required=True)
+    parser.add_argument("--turnaround-dir", required=True)
     script_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     return parser.parse_args(script_args)
 
@@ -89,7 +92,7 @@ def add_mask_panel(
 
 
 def add_hair(root: bpy.types.Object, dark: bpy.types.Material) -> None:
-    # A deliberately chunky cap with an uneven pixel-art fringe.
+    # A deliberately chunky full-head cap with an uneven pixel-art fringe.
     add_box("SobayaVoxel_HairCap", (0.0, 0.01, 2.13), (0.66, 0.55, 0.18), dark, parent=root)
     for index, x in enumerate((-0.27, -0.135, 0.0, 0.135, 0.27)):
         height = 0.13 + (index % 3) * 0.035
@@ -108,6 +111,45 @@ def add_hair(root: bpy.types.Object, dark: bpy.types.Material) -> None:
             dark,
             parent=root,
         )
+    # Approved rear design: dense stepped hair continues down the back and
+    # connects to both sides. The rear skull is never left as a bare surface.
+    for index, (z, width, height) in enumerate(
+        ((2.08, 0.66, 0.22), (1.94, 0.58, 0.18), (1.82, 0.40, 0.12))
+    ):
+        add_box(
+            f"SobayaVoxel_HairRear_{index}",
+            (0.0, 0.315, z),
+            (width, 0.08, height),
+            dark,
+            parent=root,
+        )
+    for side in (-1, 1):
+        add_box(
+            f"SobayaVoxel_HairSide_{side}",
+            (side * 0.335, 0.08, 2.00),
+            (0.08, 0.43, 0.30),
+            dark,
+            parent=root,
+        )
+
+
+def add_mask_strap(root: bpy.types.Object, dark: bpy.types.Material) -> None:
+    """Wrap the approved narrow mask strap beneath the rear hairline."""
+    for side in (-1, 1):
+        add_box(
+            f"SobayaVoxel_MaskStrapSide_{side}",
+            (side * 0.345, -0.005, 1.88),
+            (0.045, 0.60, 0.055),
+            dark,
+            parent=root,
+        )
+    add_box(
+        "SobayaVoxel_MaskStrapRear",
+        (0.0, 0.356, 1.88),
+        (0.64, 0.045, 0.055),
+        dark,
+        parent=root,
+    )
 
 
 def add_mug(
@@ -171,6 +213,7 @@ def build_character(mask_texture: str) -> bpy.types.Object:
     root["character"] = "Sobaya"
     root["style"] = "intentional blocky voxel caricature"
     root["mask_workflow"] = "single mesh with replaceable albedo texture"
+    root["turnaround_approval"] = "approved 2026-07-21; full rear hair, mask strap, plain shirt back"
 
     # Shoes and full-length pants. The trouser blocks run cleanly from the
     # waistband to the shoe tops so no sock or bare-leg band remains visible.
@@ -204,6 +247,7 @@ def build_character(mask_texture: str) -> bpy.types.Object:
     for side in (-1, 1):
         add_box(f"SobayaVoxel_Ear_{side}", (side * 0.35, -0.02, 1.87), (0.09, 0.19, 0.20), skin_light, parent=root)
     add_mask_panel(root, mask_edge, mask_surface)
+    add_mask_strap(root, hair)
     add_hair(root, hair)
     add_mug(root, amber, foam, glass, mask_edge)
 
@@ -327,6 +371,12 @@ def main() -> None:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     build_character(args.mask_texture)
     setup_preview(os.path.abspath(args.preview))
+    render_turnaround_views(
+        args.turnaround_dir,
+        target=(0.0, 0.0, 1.18),
+        distance=5.2,
+        orthographic_scale=2.75,
+    )
     remove_preview_objects()
     bpy.context.scene.frame_set(1)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(args.output_blend))

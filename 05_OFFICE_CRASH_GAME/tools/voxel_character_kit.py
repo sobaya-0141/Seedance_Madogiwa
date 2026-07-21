@@ -8,8 +8,10 @@ without an armature or skinned meshes.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 
 import bpy
+from mathutils import Vector
 
 
 RIG_SCHEMA = "voxel-character-rig/v1"
@@ -41,8 +43,6 @@ class VoxelRigDefinition:
 
 
 def ensure_parent(path: str) -> None:
-    import os
-
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
 
 
@@ -187,3 +187,32 @@ def build_voxel_rig(
         socket["voxel_socket"] = "primary_hand"
         rig["primary_hand_socket"] = socket
     return rig
+
+
+def render_turnaround_views(
+    output_dir: str,
+    *,
+    target: tuple[float, float, float],
+    distance: float,
+    orthographic_scale: float,
+) -> None:
+    """Render straight-on front, left, back, and right QA views."""
+    os.makedirs(os.path.abspath(output_dir), exist_ok=True)
+    camera = bpy.data.objects.get("Preview_Camera")
+    if camera is None:
+        raise RuntimeError("Preview_Camera must exist before rendering turnaround views")
+    scene = bpy.context.scene
+    camera.data.type = "ORTHO"
+    camera.data.ortho_scale = orthographic_scale
+    target_vector = Vector(target)
+    views = {
+        "front": (0.0, -distance, target[2]),
+        "left": (-distance, 0.0, target[2]),
+        "back": (0.0, distance, target[2]),
+        "right": (distance, 0.0, target[2]),
+    }
+    for view_name, location in views.items():
+        camera.location = location
+        camera.rotation_euler = (target_vector - camera.location).to_track_quat("-Z", "Y").to_euler()
+        scene.render.filepath = os.path.join(os.path.abspath(output_dir), f"{view_name}.png")
+        bpy.ops.render.render(write_still=True)
