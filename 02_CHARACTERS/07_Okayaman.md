@@ -7,3 +7,4 @@
 会社の謎の「レギュレーション」を司る。
 NG変更: 穏やかな笑顔、スクリーン越しのリモート出演スタイル。
 画像ファイル：Okayaman.jpg
+ボクセルモデル：`04_GAME_ASSETS/voxel/models/okayaman.glb`（スタンド＋大型スクリーンのリモート出演スタイル。スクリーンがVoxelRig_ArmPrimary。再生成は`04_GAME_ASSETS/voxel/tools/build_okayaman_voxel_model.py`）
