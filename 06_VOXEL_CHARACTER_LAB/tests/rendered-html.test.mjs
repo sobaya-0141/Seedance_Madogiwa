@@ -38,6 +38,8 @@ test("uses Three.js and the shared voxel rig contract", async () => {
   assert.match(viewer, /triggerSmash/);
   assert.match(kit, /VoxelRig_ArmPrimary/);
   assert.match(kit, /VoxelRig_Locomotion_/);
-  assert.match(catalog, /TENTACLED \/ OPTIONAL LEGS/);
+  assert.match(catalog, /TENTACLED \/ 8 PIVOTS/);
   await access(new URL("../public/models/sobaya.glb", import.meta.url));
+  await access(new URL("../public/models/takosan.glb", import.meta.url));
+  await access(new URL("../public/models/yametaro.glb", import.meta.url));
 });

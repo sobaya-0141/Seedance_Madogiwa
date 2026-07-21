@@ -11,8 +11,8 @@
 - 共通リグの回転軸表示
 - キャラクターごとの体型、リグ方式、デザイン固定事項
 
-現在はそば屋のGLBを実モデルとして登録しています。たこさんと無職やめ太郎は
-参照画像、アクション調整値、モデル配置先まで登録済みです。
+そば屋、たこさん、無職やめ太郎の3体を実モデルとして登録しています。
+たこさんは6本の触手チャンネル、他2体は二足歩行リグを使用します。
 
 ```bash
 npm run dev
@@ -23,3 +23,17 @@ npm test
 `public/models/` に置きます。共通ノードは `VoxelRig_ArmPrimary`、
 `VoxelRig_ArmSecondary`、`VoxelRig_LegLeft`、`VoxelRig_LegRight`、
 `VoxelRig_Locomotion_*` です。
+
+## モデル再生成
+
+```bash
+blender --background --python tools/build_takosan_voxel_model.py -- \
+  --output-glb public/models/takosan.glb \
+  --output-blend model_source/takosan_voxel_master.blend \
+  --preview model_source/takosan_voxel_preview.png
+
+blender --background --python tools/build_yametaro_voxel_model.py -- \
+  --output-glb public/models/yametaro.glb \
+  --output-blend model_source/yametaro_voxel_master.blend \
+  --preview model_source/yametaro_voxel_preview.png
+```

@@ -40,3 +40,6 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+*.blend1
+__pycache__/
+*.pyc
