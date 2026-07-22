@@ -1,0 +1,355 @@
+:root {
+  --pink: #ff5c8a;
+  --pink-soft: #ffd5e2;
+  --pink-deep: #d63b6b;
+  --cream: #fff6f9;
+  --ink: #4a3540;
+  --gold: #f2b134;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  color: var(--ink);
+  background: #f7c9d8;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 100%;
+  max-height: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffe3ec 0%, #ffd0e0 100%);
+}
+
+/* ---- 背景バリエーション ---- */
+.scene--morning { background: linear-gradient(180deg, #ffe9c7 0%, #ffd5e2 100%); }
+.scene--office { background: linear-gradient(180deg, #e7f0ff 0%, #ffdfe9 100%); }
+.scene--izakaya { background: linear-gradient(180deg, #ffdcc2 0%, #f7b9cf 100%); }
+.scene--night_office { background: linear-gradient(180deg, #3b3a5a 0%, #7d5d84 100%); }
+.scene--rain { background: linear-gradient(180deg, #9fb6d8 0%, #c8b6d6 100%); }
+.scene--festival { background: linear-gradient(180deg, #2c2350 0%, #7a3f7d 60%, #ff9dbf 100%); }
+.scene--confession { background: linear-gradient(180deg, #241a3d 0%, #6d3a74 55%, #ffb3cf 100%); }
+
+/* 背景の淡い光の粒 */
+.scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.6) 1.5px, transparent 2px),
+    radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1.5px);
+  background-size: 46px 46px, 30px 30px;
+  background-position: 0 0, 15px 15px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.place {
+  position: relative;
+  padding: 10px 14px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pink-deep);
+  text-shadow: 0 1px 0 #fff;
+}
+.scene--night_office .place,
+.scene--festival .place,
+.scene--confession .place {
+  color: #ffe0ec;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ---- HUD / 好感度ゲージ ---- */
+.hud {
+  position: relative;
+  padding: 4px 14px 8px;
+}
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--pink-deep);
+}
+.scene--night_office .hud-top,
+.scene--festival .hud-top,
+.scene--confession .hud-top {
+  color: #ffe0ec;
+}
+.gauge {
+  position: relative;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(214, 59, 107, 0.25);
+  overflow: visible;
+}
+.gauge-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffa6c4, var(--pink), var(--pink-deep));
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gauge-heart {
+  position: absolute;
+  top: -6px;
+  font-size: 16px;
+  transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+.gauge--max {
+  animation: pulse 0.7s ease-in-out infinite alternate;
+}
+@keyframes pulse {
+  from { box-shadow: 0 0 4px rgba(255, 92, 138, 0.5); }
+  to { box-shadow: 0 0 16px rgba(255, 92, 138, 0.95); }
+}
+
+/* ---- キャラ表示 ---- */
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  min-height: 0;
+}
+.avatar {
+  height: 100%;
+  max-height: 360px;
+  display: flex;
+  align-items: flex-end;
+  animation: floaty 3.5s ease-in-out infinite;
+}
+.sobaya-svg {
+  height: 100%;
+  width: auto;
+  filter: drop-shadow(0 10px 20px rgba(120, 40, 70, 0.3));
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.avatar.mood-fluster { animation: fluster 0.5s ease-in-out infinite; }
+@keyframes fluster {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+.avatar.mood-surprise { animation: pop 0.4s ease-out; }
+@keyframes pop {
+  0% { transform: scale(0.9); }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ---- 下部パネル ---- */
+.panel {
+  position: relative;
+  padding: 14px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.dialogue {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #fff;
+  border-radius: 18px;
+  padding: 16px 18px 12px;
+  box-shadow: 0 8px 24px rgba(180, 60, 100, 0.25);
+  cursor: pointer;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.line {
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 500;
+}
+.response .line { color: var(--pink-deep); font-weight: 600; }
+.gain {
+  margin-top: 8px;
+  font-weight: 800;
+  color: var(--pink);
+  font-size: 15px;
+}
+.tap-hint {
+  align-self: flex-end;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--pink);
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: 0.3; } }
+
+.prompt {
+  text-align: center;
+  font-weight: 800;
+  color: var(--pink-deep);
+  margin-bottom: 10px;
+  font-size: 15px;
+  text-shadow: 0 1px 0 #fff;
+}
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.choice {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  line-height: 1.5;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid var(--pink-soft);
+  border-radius: 14px;
+  padding: 13px 15px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+  box-shadow: 0 4px 12px rgba(180, 60, 100, 0.15);
+}
+.choice:active { transform: scale(0.98); }
+.choice:hover { border-color: var(--pink); box-shadow: 0 6px 16px rgba(255, 92, 138, 0.3); }
+
+/* ---- タイトル ---- */
+.title-screen .stage { flex: 0 0 auto; height: 46%; }
+.title-card {
+  position: relative;
+  flex: 1;
+  padding: 8px 22px calc(24px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.title-badge {
+  display: inline-block;
+  background: var(--pink);
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.title-card h1 {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--pink-deep);
+  text-shadow: 2px 2px 0 #fff, 4px 4px 0 rgba(255, 92, 138, 0.25);
+  line-height: 1.2;
+}
+.title-card h1 span { color: var(--pink); }
+.title-sub {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pink);
+  margin: 6px 0 12px;
+}
+.title-lead {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 0 0 20px;
+}
+.start-btn {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(180deg, #ff77a1, var(--pink-deep));
+  border: 3px solid #fff;
+  border-radius: 999px;
+  padding: 13px 44px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(214, 59, 107, 0.45);
+  transition: transform 0.12s;
+}
+.start-btn:active { transform: scale(0.96); }
+
+/* ---- エンディング ---- */
+.ending-screen .stage { flex: 0 0 auto; height: 38%; }
+.ending-card {
+  flex: 1;
+  padding: 6px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+.ending-love {
+  font-weight: 800;
+  color: var(--gold);
+  font-size: 15px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.ending-card h2 {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  margin: 6px 0 12px;
+  line-height: 1.35;
+}
+.ending--clear .ending-card h2 { color: #fff2a8; }
+.ending-lines {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.ending-lines .line {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.ending-lines .line:last-child { margin-bottom: 0; font-weight: 700; color: var(--pink-deep); }
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 26px;
+  letter-spacing: 10px;
+  animation: drop 2.5s linear infinite;
+  pointer-events: none;
+}
+@keyframes drop {
+  from { transform: translateY(-30px); opacity: 0.2; }
+  to { transform: translateY(20px); opacity: 1; }
+}
