@@ -25,6 +25,19 @@
       "image": "games/soba-escape/og.png",
       "accent": "green",
       "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "soba-romance",
+      "title": "そば屋は心のヤバイやつ",
+      "subtitle": "ドキドキ好感度ADV",
+      "description": "遅刻ダッシュの曲がり角でぶつかった、白い仮面のそば屋さん。7つの選択で好感度ゲージを満タンにして両想いを目指す、窓際族ラブコメ・ノベルゲーム。",
+      "sourceDir": "08_ROMANCE_NOVEL_GAME",
+      "buildScript": "build",
+      "distDir": "dist",
+      "outputDir": "games/soba-romance",
+      "image": "games/soba-romance/og.svg",
+      "accent": "pink",
+      "controls": "PC・スマホ対応"
     }
   ]
 }

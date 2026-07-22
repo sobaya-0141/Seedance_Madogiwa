@@ -9,6 +9,7 @@ on:
       - "04_GAME_ASSETS/voxel/models/**"
       - "05_OFFICE_CRASH_GAME/**"
       - "07_SOBA_ESCAPE_GAME/**"
+      - "08_ROMANCE_NOVEL_GAME/**"
   workflow_dispatch:
 
 permissions:
@@ -33,6 +34,7 @@ jobs:
           cache-dependency-path: |
             05_OFFICE_CRASH_GAME/package-lock.json
             07_SOBA_ESCAPE_GAME/package-lock.json
+            08_ROMANCE_NOVEL_GAME/package-lock.json
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
