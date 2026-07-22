@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>窓際族 GAME ARCADE</title>
+    <meta name="description" content="窓際族物語のブラウザゲームを選んで遊べるゲームアーケード。" />
+    <meta name="theme-color" content="#0a1222" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:title" content="窓際族 GAME ARCADE" />
+    <meta property="og:description" content="今日はどのゲームで遊ぶ？ 窓際族物語のブラウザゲーム集。" />
+    <meta property="og:image" content="./og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="./og.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <header class="hero">
+      <div class="brand-lockup" aria-label="窓際族ゲームアーケード">
+        <span class="brand-kicker">MADOGIWA-ZOKU PRESENTS</span>
+        <h1><span>GAME</span> ARCADE</h1>
+      </div>
+      <p class="hero-copy">仕事の合間に、ちょっとだけ。<br />窓際族たちのゲームを選んで遊ぼう。</p>
+      <div class="scroll-cue" aria-hidden="true"><span></span>SELECT A GAME</div>
+    </header>
+
+    <main>
+      <section class="catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-number">01</span>
+            <h2 id="catalog-title">PLAYABLE GAMES</h2>
+          </div>
+          <p><span id="game-count">–</span> TITLES AVAILABLE</p>
+        </div>
+        <div id="game-grid" class="game-grid" aria-live="polite"></div>
+        <noscript>ゲーム一覧を表示するにはJavaScriptを有効にしてください。</noscript>
+      </section>
+    </main>
+
+    <footer>
+      <span>窓際族物語</span>
+      <p>ゲームはこれからも増えていきます。</p>
+    </footer>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

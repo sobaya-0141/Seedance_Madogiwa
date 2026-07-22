@@ -1,0 +1,30 @@
+{
+  "games": [
+    {
+      "id": "office-crash",
+      "title": "そば屋クラッシュ",
+      "subtitle": "45秒スコアアタック",
+      "description": "ビール片手にオフィスを駆け抜け、備品を豪快にクラッシュ。コンボをつないでハイスコアを目指そう。",
+      "sourceDir": "05_OFFICE_CRASH_GAME",
+      "buildScript": "build:pages",
+      "distDir": "dist-pages",
+      "outputDir": "games/office-crash",
+      "image": "games/office-crash/og-voxel.png",
+      "accent": "orange",
+      "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "soba-escape",
+      "title": "そば屋の定時ダッシュ",
+      "subtitle": "バレずに脱出",
+      "description": "巡回する仲間たちの視界を読み、机やパーテーションの死角を縫って定時のオフィスから脱出しよう。",
+      "sourceDir": "07_SOBA_ESCAPE_GAME",
+      "buildScript": "build",
+      "distDir": "dist",
+      "outputDir": "games/soba-escape",
+      "image": "games/soba-escape/og.png",
+      "accent": "green",
+      "controls": "PC・スマホ対応"
+    }
+  ]
+}
