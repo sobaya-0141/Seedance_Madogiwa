@@ -1,0 +1,254 @@
+:root {
+  --green: #5effa6;
+  --green-dim: #2fae74;
+  --bg: #061009;
+  --panel: rgba(6, 20, 14, 0.82);
+  --border: rgba(94, 255, 166, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: #eafff3;
+  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+
+#scene {
+  position: absolute;
+  inset: 0;
+}
+#scene canvas {
+  display: block;
+}
+
+/* ---- Radar ---------------------------------------------------------------- */
+.radar-panel {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 232px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 8px 6px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+.radar-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--green);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.radar-title .blip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+#radar {
+  display: block;
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+}
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 8px;
+  margin-top: 6px;
+  font-size: 10.5px;
+  color: #bfe6d2;
+}
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* ---- HUD ------------------------------------------------------------------ */
+.hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: min(340px, 52vw);
+}
+.detect-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #cdeede;
+}
+.detect-bar {
+  height: 12px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.detect-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 7px;
+  background: var(--green);
+  transition: width 0.08s linear, background 0.2s linear;
+}
+.banner {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff6b6b;
+  text-shadow: 0 0 12px rgba(255, 60, 60, 0.6);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.banner.show {
+  opacity: 1;
+  animation: shake 0.4s ease-in-out infinite;
+}
+
+/* ---- Overlays ------------------------------------------------------------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 40%, rgba(6, 24, 16, 0.72), rgba(3, 10, 7, 0.94));
+  backdrop-filter: blur(3px);
+  z-index: 10;
+}
+.overlay.hidden {
+  display: none;
+}
+.overlay h1 {
+  font-size: clamp(26px, 5vw, 44px);
+  color: var(--green);
+  text-shadow: 0 0 24px rgba(94, 255, 166, 0.45);
+  letter-spacing: 0.04em;
+}
+.overlay h2 {
+  font-size: clamp(24px, 5vw, 40px);
+}
+.overlay p {
+  max-width: 560px;
+  line-height: 1.7;
+  font-size: 14.5px;
+  color: #d6f3e4;
+}
+.overlay .keys {
+  font-size: 13px;
+  color: #9fd8bb;
+}
+.btn {
+  margin-top: 4px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #04120b;
+  background: var(--green);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(94, 255, 166, 0.4);
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(94, 255, 166, 0.55);
+}
+.win h2 {
+  color: var(--green);
+  text-shadow: 0 0 24px rgba(94, 255, 166, 0.5);
+}
+.lose h2 {
+  color: #ff6b6b;
+  text-shadow: 0 0 24px rgba(255, 80, 80, 0.5);
+}
+
+/* ---- Touch joystick ------------------------------------------------------- */
+.joystick {
+  position: absolute;
+  left: 26px;
+  bottom: 26px;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(6, 20, 14, 0.5);
+  display: none;
+  z-index: 5;
+}
+.joystick .nub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: rgba(94, 255, 166, 0.7);
+  box-shadow: 0 0 16px rgba(94, 255, 166, 0.5);
+}
+.sneak-btn {
+  position: absolute;
+  right: 26px;
+  bottom: 40px;
+  padding: 16px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(6, 20, 14, 0.6);
+  color: var(--green);
+  font-weight: 700;
+  font-size: 14px;
+  display: none;
+  z-index: 5;
+}
+.sneak-btn.active {
+  background: rgba(94, 255, 166, 0.28);
+}
+body.touch .joystick,
+body.touch .sneak-btn {
+  display: block;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
