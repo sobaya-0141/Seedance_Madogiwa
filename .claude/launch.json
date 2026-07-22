@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "06_VOXEL_CHARACTER_LAB"],
       "port": 3000
+    },
+    {
+      "name": "soba-escape",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "07_SOBA_ESCAPE_GAME"],
+      "port": 5173
     }
   ]
 }
