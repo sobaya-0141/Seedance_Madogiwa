@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "voxel-character-lab",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "06_VOXEL_CHARACTER_LAB"],
+      "port": 3000
+    }
+  ]
+}

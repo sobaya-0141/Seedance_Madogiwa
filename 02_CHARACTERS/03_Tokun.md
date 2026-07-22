@@ -6,3 +6,4 @@
 店が壊れると頭を抱えて落ち込むが、立ち直りは早い。
 NG変更: アロハ、帽子、ウクレレ。
 画像ファイル：Tokun.jpg
+ボクセルモデル：`04_GAME_ASSETS/voxel/models/tokun.glb`（二足リグ、ウクレレはプライマリアーム固定。再生成は`04_GAME_ASSETS/voxel/tools/build_tokun_voxel_model.py`）

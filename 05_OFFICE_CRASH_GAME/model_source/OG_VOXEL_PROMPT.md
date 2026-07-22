@@ -1,7 +1,7 @@
 # Voxel social-card prompt
 
 Generated with the built-in imagegen tool using `public/og.png` as the edit
-target and `model_source/sobaya_voxel_preview.png` as the character reference.
+target and `../04_GAME_ASSETS/voxel/model_source/sobaya_voxel_preview.png` as the character reference.
 
 ```text
 Use case: precise-object-edit

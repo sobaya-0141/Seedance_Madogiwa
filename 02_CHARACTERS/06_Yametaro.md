@@ -9,3 +9,4 @@
 作中の手配書表記は「YAMETARO」「やめ太郎」のことがある。
 NG変更: キャラクターデザイン。
 画像ファイル：Yametaro.jpg
+ボクセルモデル：`04_GAME_ASSETS/voxel/models/yametaro.glb`（二足リグ。再生成は`04_GAME_ASSETS/voxel/tools/build_yametaro_voxel_model.py`）

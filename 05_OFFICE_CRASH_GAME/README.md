@@ -29,18 +29,19 @@ Three.js、React、vinextで構成されています。
 
 ## そば屋3Dモデル
 
-- Web用: `public/models/sobaya.glb`
-- 改変用Blenderマスター: `model_source/sobaya_voxel_master.blend`
+- Web用: `public/models/sobaya.glb`（共用アセット置き場 `../04_GAME_ASSETS/voxel/models/sobaya.glb` への相対symlink）
+- 改変用Blenderマスター: `../04_GAME_ASSETS/voxel/model_source/sobaya_voxel_master.blend`
 - ボクセル版: オリジナル形状（第三者素体なし）
 
 仮面・髪・服・ビールジョッキを大きなブロックで構成した、他ゲームへ
 流用しやすいボクセル版です。移動中は左右の脚と腕が交互に動き、
 スマッシュ時は肩を軸にビールジョッキを
 振りかぶって振り下ろします。破壊判定と効果音は振り下ろしの着弾に同期します。
-再生成手順と構成は `model_source/README.md` を参照してください。
+再生成手順と構成は `../04_GAME_ASSETS/voxel/README.md` を参照してください。
 
 ## 共通ボクセルキャラクターキット
 
 Blenderの形状生成、GLBの回転軸、Three.jsの歩行・スマッシュを共通部品へ
-分離しています。二足キャラと触手キャラの追加手順は
-`model_source/VOXEL_CHARACTER_KIT.md`を参照してください。
+分離しています。モデルとビルドスクリプトは全ゲーム共用の
+`../04_GAME_ASSETS/voxel/` に集約されています。二足キャラと触手キャラの
+追加手順は `../04_GAME_ASSETS/voxel/VOXEL_CHARACTER_KIT.md` を参照してください。

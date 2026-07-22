@@ -6,3 +6,4 @@
 木槌を持ち、居眠りしている社員を「BONK!」と叩いて起こす。
 NG変更: 青い体、点目、自由に動く鼻、デザイン全般。
 画像ファイル：Yumemin.jpg
+ボクセルモデル：`04_GAME_ASSETS/voxel/models/yumemin.glb`（木槌アーム＋鼻のLocomotionリグ、脚なし。再生成は`04_GAME_ASSETS/voxel/tools/build_yumemin_voxel_model.py`）

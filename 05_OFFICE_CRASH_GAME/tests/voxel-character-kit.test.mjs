@@ -19,7 +19,7 @@ test("keeps character-specific setup outside the Office Crash game", async () =>
 test("shares a stable optional-channel rig contract between Blender and Three.js", async () => {
   const [runtime, blender] = await Promise.all([
     read("../app/characters/voxel-character-kit.ts"),
-    read("../tools/voxel_character_kit.py"),
+    read("../../04_GAME_ASSETS/voxel/tools/voxel_character_kit.py"),
   ]);
 
   for (const node of [
