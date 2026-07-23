@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2a4a"/>
+      <stop offset="1" stop-color="#3a1f4d"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff8a3d"/>
+      <stop offset="1" stop-color="#ffd24a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="150" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="42" fill="#9fb4e0" text-anchor="middle" letter-spacing="6">窓際族物語</text>
+  <text x="600" y="300" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="104" font-weight="800" fill="url(#accent)" text-anchor="middle">窓際族バトル</text>
+  <text x="600" y="390" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="46" fill="#ffffff" text-anchor="middle">〜 立ち飲み処の決闘 〜</text>
+  <text x="600" y="500" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="34" fill="#cdd8f2" text-anchor="middle">オンライン1対1・ターン制コマンドバトル</text>
+  <g fill="none" stroke="url(#accent)" stroke-width="4">
+    <path d="M360 545 L840 545"/>
+  </g>
+</svg>

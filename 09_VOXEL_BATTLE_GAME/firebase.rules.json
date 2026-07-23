@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": true,
+        ".write": true,
+        ".validate": "$code.length <= 8"
+      }
+    }
+  }
+}
