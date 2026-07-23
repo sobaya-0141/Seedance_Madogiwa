@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "08_ROMANCE_NOVEL_GAME"],
       "port": 5180
+    },
+    {
+      "name": "madogiwa-battle",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "09_VOXEL_BATTLE_GAME"],
+      "port": 5185
     }
   ]
 }

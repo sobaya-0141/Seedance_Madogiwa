@@ -38,6 +38,19 @@
       "image": "games/soba-romance/og.svg",
       "accent": "pink",
       "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "madogiwa-battle",
+      "title": "窓際族バトル",
+      "subtitle": "オンライン1対1コマンドバトル",
+      "description": "部屋コードを交換して、離れた相手とターン制コマンドバトル。8人の窓際族から1体を選び、固有スキルを駆使して立ち飲み処の決闘を制そう。",
+      "sourceDir": "09_VOXEL_BATTLE_GAME",
+      "buildScript": "build",
+      "distDir": "dist",
+      "outputDir": "games/madogiwa-battle",
+      "image": "games/madogiwa-battle/og.svg",
+      "accent": "orange",
+      "controls": "PC・スマホ対応"
     }
   ]
 }
