@@ -52,7 +52,7 @@ The same room, framing, and lighting. Yotan now stands fully inside beside the i
 
 ### Motion
 
-Yotan takes two relaxed steps inside and the entrance door swings shut. An unseen Sobaya speaks from behind the closed side door. Yotan pauses and slowly turns toward the voice, listening silently with his mouth CLOSED. Do not reveal Sobaya in this clip.
+0.00–1.50s: Yotan crosses the threshold into the room while the HALLWAY ENTRANCE DOOR is open. 1.50–2.20s: he turns and closes that entrance door in one continuous forward action. At 2.20s the entrance door is fully closed and remains closed. Only after the door is fully closed, at 2.40s, the unseen Sobaya speaks from behind the still-closed RIGHT-SIDE DOOR using the attached audio. Yotan pauses and slowly turns toward the voice, listening silently with his mouth CLOSED. Do not reveal Sobaya in this clip. Neither door moves while Sobaya speaks.
 
 ### CapCut inputs (Clip 1)
 
@@ -61,13 +61,15 @@ Yotan takes two relaxed steps inside and the entrance door swings shut. An unsee
 - Reference images:
   - @Image1 = `Sobaya_sheet.png` → Sobaya — the hulking 180cm/100kg muscular gray-skinned man whose face is always covered by a white mask with red markings, wearing a white T-shirt and holding a large beer mug. Identity/design reference only, NOT composition.
   - @Image2 = `Yotan_sheet.png` → Yotan — the slim 170cm 40-year-old rocker with shoulder-length blond hair, round sunglasses and a black leather biker jacket, holding an electric guitar. Identity/design reference only, NOT composition.
-- Audio: `clip1_line1_sobaya.wav` (@Audio1 — off-screen Sobaya) — attach to Seedance and use AS-IS.
+- Audio: `clip1_line1_sobaya.wav` (@Audio1 — off-screen Sobaya) — attach as the required dialogue-audio input, start it at 2.40s, and preserve its exact 4.48s waveform AS-IS.
 - Duration: 7s / Aspect: 16:9
 - Motion prompt:
 
 ```text
 Required attached reference files: @Image1 = Sobaya_sheet.png — Sobaya's character model sheet, identity/design reference only, NOT a composition reference; @Image2 = Yotan_sheet.png — Yotan's character model sheet, identity/design reference only, NOT a composition reference. These reference attachments are REQUIRED inputs and must remain attached for this generation.
-Create a cheerful Japanese office-interview comedy shot moving exactly from Frame A to Frame B. Keep the clean interview room, framing, lighting, identities and props consistent. Yotan (@Image2, Yotan — the slim 170cm 40-year-old rocker with shoulder-length blond hair, round sunglasses and a black leather biker jacket, holding an electric guitar) takes two relaxed steps through the half-open entrance. His required electric guitar stays securely slung across his body and one hand stays on its neck. The entrance door visibly swings closed behind him. The room's side door stays CLOSED. Sobaya (@Image1, Sobaya — the hulking 180cm/100kg muscular gray-skinned man whose face is always covered by a white mask with red markings, wearing a white T-shirt and holding a large beer mug) remains completely OFF-SCREEN for the entire clip. ONLY off-screen Sobaya speaks “何その金髪と革ジャン。弊社はドレスコード厳しいよ？” using @Audio1 AS-IS. Because Sobaya is off-screen, no visible mouth lip-syncs to @Audio1. Yotan does NOT speak — his mouth stays CLOSED; he pauses, turns toward the unseen voice, and reacts with confused disbelief. Sobaya's off-screen mug stays upright and HALF-FULL. No drinking, pouring, or liquid change. Use the attached audio AS-IS; do NOT generate any voice — no synthesized speech, narration, or doubled dialogue. The reference sheets' labels must NOT appear. No subtitles, text, logos, watermarks, extra people, extra dialogue, bullying, humiliation, harassment, sadness, injury, or dark mood.
+Create a cheerful Japanese office-interview comedy shot moving exactly from Frame A to Frame B. Keep the clean interview room, framing, lighting, identities and props consistent. Follow this irreversible chronological action order exactly. 0.00–1.50s: Yotan (@Image2, Yotan — the slim 170cm 40-year-old rocker with shoulder-length blond hair, round sunglasses and a black leather biker jacket, holding an electric guitar) crosses the threshold from the hallway into the room; the HALLWAY ENTRANCE DOOR is open only while he crosses it. Do NOT begin with Yotan already inside behind a closed door. 1.50–2.20s: Yotan turns and closes the HALLWAY ENTRANCE DOOR in one smooth continuous forward action. The entrance door moves OPEN → CLOSED exactly once. At 2.20s it is fully closed and must remain fully CLOSED and motionless for the rest of this clip. It must NEVER reopen. The separate RIGHT-SIDE DOOR stays fully CLOSED and motionless for the entire clip. No reverse motion, boomerang motion, repeated entrance, repeated door movement, or door reopening.
+
+Required attached dialogue audio: @Audio1 = clip1_line1_sobaya.wav. This exact attached WAV is the ONLY permitted dialogue source. There is NO dialogue before 2.40s. At exactly 2.40s, only after the hallway entrance door is fully closed, play @Audio1 exactly once at its original 4.48-second duration: “何その金髪と革ジャン。弊社はドレスコード厳しいよ？” Preserve the attached waveform and voice AS-IS with no voice conversion, re-synthesis, imitation, replacement, paraphrase, pitch change, speed change, time-stretch, or doubled dialogue. Do NOT generate or substitute Sobaya's voice. Sobaya (@Image1, Sobaya — the hulking 180cm/100kg muscular gray-skinned man whose face is always covered by a white mask with red markings, wearing a white T-shirt and holding a large beer mug) remains completely OFF-SCREEN for the entire clip and speaks from behind the closed RIGHT-SIDE DOOR. Neither door moves while @Audio1 plays. Because Sobaya is off-screen, no visible mouth lip-syncs to @Audio1. Yotan does NOT speak — his mouth stays CLOSED; after hearing the voice he turns toward the closed right-side door and reacts with confused disbelief. His required electric guitar stays securely slung across his body and one hand stays on its neck. Sobaya's off-screen mug stays upright and HALF-FULL. No drinking, pouring, or liquid change. No other voice, synthesized speech, narration, sound-alike voice, or dialogue. The reference sheets' labels must NOT appear. No subtitles, text, logos, watermarks, extra people, bullying, humiliation, harassment, sadness, injury, or dark mood.
 ```
 
 ## Clip 2 — The reveal and retort
@@ -93,7 +95,7 @@ The same framing and room. The side door is open. Sobaya — the hulking 180cm/1
 
 ### Motion
 
-After a half-beat, the side door opens and Sobaya steps in with absurd authority while keeping his mug upright. Yotan reacts, points at Sobaya, and delivers the retort with sharp Kansai-comedy timing. Sobaya remains silent.
+The HALLWAY ENTRANCE DOOR behind Yotan remains fully closed and motionless. After a half-beat, ONLY the separate RIGHT-SIDE DOOR opens and Sobaya steps in with absurd authority while keeping his mug upright. Yotan reacts, points at Sobaya, and delivers the retort with sharp Kansai-comedy timing. Sobaya remains silent.
 
 ### CapCut inputs (Clip 2)
 
@@ -109,7 +111,7 @@ After a half-beat, the side door opens and Sobaya steps in with absurd authority
 
 ```text
 Required attached reference files: @Image1 = Sobaya_sheet.png — Sobaya's character model sheet, identity/design reference only, NOT a composition reference; @Image2 = Yotan_sheet.png — Yotan's character model sheet, identity/design reference only, NOT a composition reference; @Image3 = height_lineup.png — relative height/scale reference only, NOT a composition reference. These reference attachments are REQUIRED inputs and must remain attached for this generation.
-Continue seamlessly from Frame A to Frame B in the identical clean interview room. After a short comedic half-beat, the closed side door visibly opens and Sobaya (@Image1, Sobaya — the hulking 180cm/100kg muscular gray-skinned man whose face is always covered by a white mask with red markings, wearing a white T-shirt and holding a large beer mug) steps proudly into view. Preserve his required full white mask with red markings, white short-sleeve T-shirt, muscular gray body, and required oversized clear beer mug. The mug is upright and HALF-FULL when revealed and remains HALF-FULL; Sobaya does NOT drink or pour. Yotan (@Image2, Yotan — the slim 170cm 40-year-old rocker with shoulder-length blond hair, round sunglasses and a black leather biker jacket, holding an electric guitar) holds a stunned beat, then points at Sobaya with his free hand while his other hand keeps holding his required guitar's neck. ONLY Yotan speaks “いや誰が言うとんねん,” lip-syncing naturally to @Audio1 with sharp Kansai-comedy timing. Sobaya does NOT speak; his mask remains fixed and he stands confidently. @Image3 controls relative scale only. Both are friendly and amused. Use @Audio1 AS-IS; do NOT generate any voice — no synthesized speech, narration, or doubled dialogue. The reference sheets' labels must NOT appear. No subtitles, text, logos, watermarks, extra people, extra dialogue, missing mask, missing guitar, missing mug, drinking, pouring, bullying, humiliation, harassment, sadness, injury, or dark mood.
+Continue seamlessly from Frame A to Frame B in the identical clean interview room. The HALLWAY ENTRANCE DOOR behind Yotan starts fully CLOSED and remains fully CLOSED and motionless for the entire clip. It must NEVER reopen. After a short comedic half-beat, ONLY the separate RIGHT-SIDE DOOR visibly opens once and Sobaya (@Image1, Sobaya — the hulking 180cm/100kg muscular gray-skinned man whose face is always covered by a white mask with red markings, wearing a white T-shirt and holding a large beer mug) steps proudly into view. Do not confuse, merge, or swap the two doors. Preserve Sobaya's required full white mask with red markings, white short-sleeve T-shirt, muscular gray body, and required oversized clear beer mug. The mug is upright and HALF-FULL when revealed and remains HALF-FULL; Sobaya does NOT drink or pour. Yotan (@Image2, Yotan — the slim 170cm 40-year-old rocker with shoulder-length blond hair, round sunglasses and a black leather biker jacket, holding an electric guitar) holds a stunned beat, then points at Sobaya with his free hand while his other hand keeps holding his required guitar's neck. ONLY Yotan speaks “いや誰が言うとんねん,” lip-syncing naturally to @Audio1 with sharp Kansai-comedy timing. Sobaya does NOT speak; his mask remains fixed and he stands confidently. @Image3 controls relative scale only. Both are friendly and amused. Use @Audio1 AS-IS; do NOT generate any voice — no synthesized speech, narration, or doubled dialogue. The reference sheets' labels must NOT appear. No subtitles, text, logos, watermarks, extra people, extra dialogue, missing mask, missing guitar, missing mug, drinking, pouring, bullying, humiliation, harassment, sadness, injury, or dark mood.
 ```
 
 ## Keyframe generation prompts
@@ -137,6 +139,7 @@ Required input images: Image 1 = clip1_end.png — previous frame and compositio
 ### Step 1 — Pilot clip first (batch generation is FORBIDDEN until the pilot passes)
 Generate ONLY Clip 1, then verify ALL of the following before touching any other clip:
 - [ ] The dialogue audio in the output is the attached wav AS-IS (no synthesized voice, no doubled voices)
+- [ ] Clip 1 follows the one-way order: Yotan enters → hallway entrance door closes exactly once → after it is fully closed, @Audio1 starts at 2.40s; the entrance door never reopens and the right-side door never moves
 - [ ] The CORRECT character lip-syncs to each line (the speaker named in the prompt moves their mouth; every non-speaker's mouth stays closed)
 - [ ] Motion, poses and prop states match the Motion prompt and the Prop state ledger
 - [ ] The clip duration equals the Duration specified in the CapCut inputs table (NOT the ~8s default)
@@ -156,6 +159,10 @@ attached at generation time. When assembling the final video on the CapCut timel
    final dialogue track, aligned to each character's lip movements.
 3. Play back the full timeline before export and confirm every line sounds exactly like
    the local VOICEVOX / Irodori-TTS takes (the source wavs are the single source of truth).
+
+For Clip 1, place the original `clip1_line1_sobaya.wav` at exactly 2.40s on the final
+timeline. If Seedance replaces, imitates, alters, or omits the attached voice, the generated
+audio fails review: mute it and use this original WAV. Do not accept a sound-alike voice.
 
 ## Credits
 
