@@ -18,7 +18,7 @@
 ## スキル（制作ワークフロー）
 制作物ごとのワークフローはスキルに分離している。該当する作業ではスキルを呼び出して従うこと。実体は `.claude/skills/` にあり、Codex CLI向けに `.agents/skills/` からsymlinkで共有している。
 
-- **Seedance動画制作** (`/seedance`): ユーザーからストーリー（あらすじ）を渡されたら、台本＋Seedanceプロンプト＋Codex参考画像（キーフレーム）を作成する。詳細: [.claude/skills/seedance/SKILL.md](.claude/skills/seedance/SKILL.md)
+- **Seedance動画制作** (`/seedance`): ユーザーからストーリー（あらすじ）を渡されたら、台本＋Seedanceプロンプト＋参考画像（キーフレーム。draw-things-cliでローカル生成）を作成する。詳細: [.claude/skills/seedance/SKILL.md](.claude/skills/seedance/SKILL.md)
 - **ボクセルモデル制作** (`build-voxel-character-from-image`): キャラクターの参照画像から、Blender／Three.jsで使えるリグ付きボクセルGLBを作成・修正する。成果物は `04_GAME_ASSETS/voxel/` に配置。詳細: [.claude/skills/build-voxel-character-from-image/SKILL.md](.claude/skills/build-voxel-character-from-image/SKILL.md)
 - **2Dゲーム制作** (`/2d-game`): 2Dゲームの新規作成と、Seedanceで制作した完成動画（添付mp4）をオープニング/イベントのカットシーンとしてゲームに組み込む作業に使用する。完成動画の正典置き場は [04_GAME_ASSETS/videos/](04_GAME_ASSETS/videos/)。詳細: [.claude/skills/2d-game/SKILL.md](.claude/skills/2d-game/SKILL.md)
 
