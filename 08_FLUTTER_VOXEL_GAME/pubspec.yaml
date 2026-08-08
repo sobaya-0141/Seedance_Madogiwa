@@ -1,0 +1,25 @@
+name: madogiwa_voxel_mobile
+description: Mobile voxel game prototype built with Flutter, Flame, and Flame 3D.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.38.0
+  flame_3d: ^0.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    # Relative symlink to the canonical generated GLBs. Never copy or edit them
+    # in this Flutter project; regenerate them in 04_GAME_ASSETS/voxel instead.
+    - assets/models/

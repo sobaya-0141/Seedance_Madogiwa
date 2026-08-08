@@ -1,0 +1,27 @@
+name: madogiwa_grid
+description: "A premium 3x5 territory card game featuring the Madogiwa characters."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.38.0
+  marionette_flutter: ^0.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    # Character images remain canonical in 02_CHARACTERS. These entries are
+    # relative symlinks so the game never forks the IP assets.
+    - assets/characters/
+  shaders:
+    - assets/shaders/hologram.frag

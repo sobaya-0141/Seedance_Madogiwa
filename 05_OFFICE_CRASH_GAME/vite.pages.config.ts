@@ -3,7 +3,9 @@ import { defineConfig } from "vite";
 import path from "node:path";
 
 export default defineConfig({
-  root: path.resolve(__dirname, "pages"),
+  // Keep this entry outside Next/Vinext's reserved `pages/` directory so the
+  // static GitHub Pages bundle is never mistaken for a server-rendered route.
+  root: path.resolve(__dirname, "github-pages"),
   publicDir: path.resolve(__dirname, "public"),
   base: "./",
   plugins: [react()],

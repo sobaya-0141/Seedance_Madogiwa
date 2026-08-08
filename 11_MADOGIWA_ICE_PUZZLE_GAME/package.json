@@ -1,0 +1,25 @@
+{
+  "name": "madogiwa-ice-regulation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:sites": "node scripts/clean-sites-build.mjs && tsc --noEmit && vite build --config vite.sites.config.ts && node scripts/prepare-sites-build.mjs",
+    "test": "tsc -p tsconfig.test.json && node --test .test-dist/tests/*.test.js && npm run build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@types/three": "^0.185.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.5"
+  }
+}

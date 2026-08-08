@@ -1,0 +1,1 @@
+ALTER TABLE `demolition_saves` ADD `completed_goals_json` text DEFAULT '[]' NOT NULL;

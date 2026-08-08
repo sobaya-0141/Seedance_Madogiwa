@@ -64,6 +64,58 @@
       "image": "games/gyun-gyun-quest/og.svg",
       "accent": "blue",
       "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "madogiwa-ice-regulation",
+      "title": "窓際族０",
+      "subtitle": "止まれない氷上パズル",
+      "description": "やめたろうのバグで氷漬けになったオフィスを一直線に滑り、重要資料とビールを全部回収して赤提灯の出口を目指そう。",
+      "sourceDir": "11_MADOGIWA_ICE_PUZZLE_GAME",
+      "buildScript": "build",
+      "distDir": "dist",
+      "outputDir": "games/madogiwa-ice-regulation",
+      "image": "games/madogiwa-ice-regulation/og.svg",
+      "accent": "blue",
+      "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "sobaya-beer-run",
+      "title": "そば屋のビールダッシュ",
+      "subtitle": "ジョッキtoジョッキで本日開店！",
+      "description": "左右移動で3レーンのビールを回収。6杯そろえてフィーバーを起こし、45秒後の実写おかやまん判定でSランクを目指そう。",
+      "sourceDir": "12_SOBA_BEER_RUN_GAME",
+      "buildScript": "build",
+      "distDir": "dist",
+      "outputDir": "games/sobaya-beer-run",
+      "image": "games/sobaya-beer-run/og.svg",
+      "accent": "orange",
+      "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "sobaya-company-breaker",
+      "title": "そば屋の会社ブレイカー",
+      "subtitle": "3D物理で更地！",
+      "description": "大型ビールジョッキを投擲。独立した3D剛体で組まれた柱や壁を砕き、10投以内に無人のモックオフィスを連鎖崩壊させよう。",
+      "sourceDir": "13_COMPANY_BREAKER_GAME",
+      "buildScript": "build",
+      "distDir": "dist",
+      "outputDir": "games/sobaya-company-breaker",
+      "image": "games/sobaya-company-breaker/og.png",
+      "accent": "orange",
+      "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "madogiwa-grid",
+      "title": "MADOGIWA GRID",
+      "subtitle": "3×5タクティカルカードバトル",
+      "description": "窓際族8人のカードで陣地を広げ、3列の多数決を奪い合う。固有能力と配置を読み、AIとの短期決戦を制そう。",
+      "sourceDir": "14_MADOGIWA_CARD_GAME",
+      "buildScript": "build",
+      "distDir": "build/web",
+      "outputDir": "games/madogiwa-grid",
+      "image": "games/madogiwa-grid/og.svg",
+      "accent": "blue",
+      "controls": "PC・スマホ対応"
     }
   ]
 }

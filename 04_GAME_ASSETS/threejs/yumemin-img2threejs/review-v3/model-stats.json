@@ -1,0 +1,27 @@
+{
+  "bounds": [
+    2.871,
+    2.352,
+    2.56
+  ],
+  "drawCalls": 20,
+  "nodes": [
+    "root",
+    "hover-body",
+    "body-shell",
+    "rear-wrap",
+    "tail-nub",
+    "ear-system",
+    "eye-system",
+    "trunk-pivot",
+    "mallet-assembly",
+    "mallet-arm",
+    "mallet-handle",
+    "mallet-head"
+  ],
+  "sockets": [
+    "trunk-tip",
+    "mallet-impact"
+  ],
+  "triangles": 24808
+}

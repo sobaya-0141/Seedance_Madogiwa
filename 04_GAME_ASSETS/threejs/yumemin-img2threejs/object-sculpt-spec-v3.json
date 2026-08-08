@@ -1,0 +1,1559 @@
+{
+  "targetName": "Yumemin 3D Turnaround v3",
+  "targetId": "yumemin-3d-turnaround-v3",
+  "schemaVersion": "2.1",
+  "terminologyProfile": {
+    "domain": "real-time procedural Three.js asset",
+    "geometryTerms": [
+      "silhouette",
+      "topology",
+      "primitive",
+      "bevel",
+      "chamfer",
+      "taper",
+      "bend",
+      "boolean cut",
+      "edge loop",
+      "surface normal",
+      "displacement"
+    ],
+    "materialTerms": [
+      "albedo",
+      "baseColor",
+      "roughness",
+      "metalness",
+      "normal map",
+      "bump map",
+      "ambient occlusion",
+      "cavity dirt",
+      "edge wear",
+      "clearcoat"
+    ],
+    "lightingTerms": [
+      "key light",
+      "fill light",
+      "rim light",
+      "HDRI/environment reflection",
+      "contact shadow"
+    ],
+    "descriptionRule": "Use measurable 3D graphics terms. Avoid vague words unless they are paired with concrete geometry/material/shader parameters."
+  },
+  "sourceImage": "/Users/kotahayashi/Workspace/Seedance_Madogiwa-voxel-game/02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+  "referenceCamera": {
+    "solved": false,
+    "fovDegrees": 40.0,
+    "aspect": 1.0,
+    "orientation": {
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0
+    },
+    "positionHint": [
+      0.0,
+      0.0,
+      3.0
+    ],
+    "note": "For likeness work, solve the reference camera (forge/stage1_intake/solve_camera_pose.py) so the review render aligns with the photo and the reference can be projected. Confirm by overlay review."
+  },
+  "suitability": "conditional",
+  "scores": {
+    "object_isolation": 0,
+    "silhouette_readability": 0,
+    "depth_inference": 0,
+    "primitive_decomposition": 0,
+    "material_procedurality": 0,
+    "occlusion_risk": 0,
+    "interaction_fit": 0
+  },
+  "preSpecAssessment": {
+    "objectClass": {
+      "primaryType": "spherical flying tapir mascot",
+      "primaryDomain": "object",
+      "formLanguage": [
+        "organic",
+        "sculptural",
+        "softly rounded",
+        "bilaterally balanced"
+      ],
+      "structureKind": [
+        "single spherical body",
+        "conforming rear cloth shell",
+        "rooted appendages"
+      ],
+      "motionPotential": [
+        "hover bob",
+        "subtle centerline proboscis sway"
+      ],
+      "materialFamilies": [
+        "matte blue vinyl",
+        "soft white woven cloth",
+        "matte black eyes"
+      ],
+      "notes": "The six-view turnaround resolves the hidden sides. +Z is the face, -Z is the wrapped rear, and all view-dependent 2D outline marks are excluded from the 3D design."
+    },
+    "complexity": {
+      "tier": "moderate",
+      "scores": {
+        "silhouetteComplexity": 2,
+        "componentCount": 2,
+        "hierarchyDepth": 2,
+        "repetitionDensity": 1,
+        "materialLayerCount": 2,
+        "localDetailDensity": 1,
+        "occlusionRisk": 1,
+        "actionReadinessNeed": 2
+      },
+      "estimatedCounts": {
+        "macroComponents": 2,
+        "mesoComponents": 5,
+        "microFeatureGroups": 3,
+        "materialLayers": 4,
+        "repetitionSystems": 2
+      },
+      "reasoning": [
+        "The dominant body is a true sphere, but the rear cloth, centerline proboscis, paired ears, paired eyes, tail opening, and optional runtime pivots require a moderate component hierarchy.",
+        "The turnaround supplies front, profile, three-quarter, and rear evidence, so the model can be judged from all directions instead of inheriting the original icon's view-dependent asymmetry."
+      ]
+    },
+    "specDepthDecision": {
+      "requiredDepth": "moderate",
+      "minimumComponentLevels": [
+        "macro",
+        "meso"
+      ],
+      "needsRepetitionSystems": false,
+      "needsMaterialLocalOverrides": true,
+      "needsMultipleReviewViews": true,
+      "needsActionReadyHierarchy": true,
+      "rationale": "Moderate depth is sufficient because the silhouette is simple but the blue vinyl, cloth shell, attachments, and all-angle identity cues must remain independently adjustable."
+    },
+    "unknownsToResolveBeforeImplementation": [],
+    "detailInventory": {
+      "scanMethod": "component-zones",
+      "targetMinDetails": 6,
+      "note": "Enumerate every identity-defining small detail before authoring the spec. Each detail must map to a component.localFeatures entry or material.localOverrides entry, never prose only. Use forge/stage1_intake/build_detail_inventory.py to scan zones.",
+      "details": [
+        {
+          "id": "perfect-sphere-silhouette",
+          "kind": "contour",
+          "description": "The blue body remains circular in front, side, and rear views.",
+          "scale": "macro",
+          "affects": "geometry",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "perfect-sphere"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.98,
+          "realization": "unreported"
+        },
+        {
+          "id": "centerline-tapir-proboscis",
+          "kind": "contour",
+          "description": "A short tapered tapir-like proboscis grows from the facial centerline and curves gently downward.",
+          "scale": "meso",
+          "affects": "geometry",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "downward-taper"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.98,
+          "realization": "unreported"
+        },
+        {
+          "id": "paired-dot-eyes",
+          "kind": "contour",
+          "description": "Two shallow black pupil-free eye beads sit symmetrically above the proboscis.",
+          "scale": "micro",
+          "affects": "geometry and material",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "paired-eye-beads"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.99,
+          "realization": "unreported"
+        },
+        {
+          "id": "paired-blue-ears",
+          "kind": "bevel",
+          "description": "Two small blue wedge ears rise from the upper body with darker recessed inner faces.",
+          "scale": "meso",
+          "affects": "geometry and material",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "paired-wedge-ears"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.97,
+          "realization": "unreported"
+        },
+        {
+          "id": "conforming-rear-wrap",
+          "kind": "contour",
+          "description": "White cloth hugs the rear hemisphere as an o-kurumi wrap rather than a painted patch or rigid cap.",
+          "scale": "macro",
+          "affects": "geometry and material",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "conforming-cloth-shell"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.98,
+          "realization": "unreported"
+        },
+        {
+          "id": "raised-wrap-edge",
+          "kind": "ridge",
+          "description": "The front boundary of the white wrap is a thin raised fabric edge with no dark graphic line.",
+          "scale": "micro",
+          "affects": "geometry and material",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "raised-fabric-edge"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.93,
+          "realization": "unreported"
+        },
+        {
+          "id": "tail-opening-and-nub",
+          "kind": "hole",
+          "description": "A small centered blue tail nub emerges through a fabric-ringed opening low on the rear.",
+          "scale": "micro",
+          "affects": "geometry",
+          "mapsTo": {
+            "type": "component.localFeatures",
+            "ref": "fabric-opening"
+          },
+          "evidenceRef": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png",
+          "confidence": 0.95,
+          "realization": "unreported"
+        }
+      ]
+    },
+    "anatomy": {
+      "applies": false,
+      "styleHeads": 0.0,
+      "proportions": {
+        "headUnit": 0.0,
+        "torso": 0.0,
+        "legs": 0.0,
+        "shoulderWidth": 0.0,
+        "hipWidth": 0.0
+      },
+      "pose": {
+        "type": "unassessed",
+        "jointAngles": {}
+      },
+      "faceLandmarks": {
+        "eyeLine": 0.0,
+        "eyeSpacing": 0.0,
+        "noseBase": 0.0,
+        "mouthLine": 0.0,
+        "hairline": 0.0
+      },
+      "features": [],
+      "confidence": 0.0,
+      "note": "Only meaningful when objectClass.primaryDomain is character or hybrid. Set applies=true and fill from forge/stage1_intake/extract_landmarks.py. See grimoire/character/reconstruction.md and grimoire/character/likeness_maximization.md."
+    },
+    "sourceImage": "02_CHARACTERS/Yumemin_3D_turnaround_v3.png"
+  },
+  "qualityContract": {
+    "qualityBar": "moderate",
+    "definitionOfDone": [
+      "Front, left, right, three-quarter, and rear renders all read as the same perfectly spherical Yumemin.",
+      "The tapir proboscis is centered on the face and curves forward and down without inheriting the original icon's rightward bend.",
+      "The white region is a separate conforming fabric wrap with a raised white edge and centered tail opening, never a painted rear patch.",
+      "No inverted hull, black seam, or other graphic outline geometry is present.",
+      "All visible appendages are rooted without gaps and the neutral model contains no visible mallet, limbs, or legs."
+    ],
+    "minimumSpecDepth": {
+      "macroComponents": 2,
+      "mesoComponents": 3,
+      "microFeatureGroups": 2,
+      "materialLayers": 2,
+      "repetitionSystems": 0,
+      "reviewViewpoints": 5
+    },
+    "featureGroups": [
+      {
+        "id": "overall-silhouette",
+        "name": "Overall silhouette and proportions",
+        "required": true,
+        "qualityCriteria": [
+          "Bounding shape, dominant curves, negative spaces, and scale relationships are explicitly described."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model reads as a generic placeholder instead of the reference object",
+          "major proportions are guessed without evidence"
+        ]
+      },
+      {
+        "id": "primary-structure",
+        "name": "Primary structure and hierarchy",
+        "required": true,
+        "qualityCriteria": [
+          "Major parts, joints, seams, contact points, and parent-child relationships are named before code generation."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "large visible parts are merged into one mesh",
+          "component hierarchy is too shallow for the observed complexity"
+        ]
+      },
+      {
+        "id": "attachment-joint-correctness",
+        "name": "Attachment and joint correctness",
+        "required": true,
+        "qualityCriteria": [
+          "Every visible child appendage, branch, limb, handle, connector, tube, cable, horn, wing, leg, or hinged part has an attachment contract with parent socket, localStart/localEnd, contact type, embed/overlap, and gap tolerance."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "child part root floats away from the parent",
+          "branch/limb/tube is centered in space instead of pivoting from its root",
+          "parent-child transform mixes world and local coordinates"
+        ]
+      },
+      {
+        "id": "surface-material-response",
+        "name": "Surface material response",
+        "required": true,
+        "qualityCriteria": [
+          "Albedo zones, roughness, normal/bump/displacement intent, cavity dirt, edge wear, and local overrides are specified where visible.",
+          "Important materials define independent albedo, roughness, height/normal, and AO responses instead of reusing one texture for unrelated PBR channels.",
+          "Surface response is decomposed into macro, meso, and micro frequency bands with scale and amplitude tied to object scale."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "surface looks like flat plastic",
+          "local material variation is missing or not tied to image evidence"
+        ]
+      },
+      {
+        "id": "reference-lookdev",
+        "name": "Reference color, material, and lighting response",
+        "required": true,
+        "qualityCriteria": [
+          "Material-pass names the reference-derived albedo palette, roughness variation, tactile normal/bump/displacement response, and local masks.",
+          "When a source image is available, run reference PBR extraction and require confidence >= 0.7 before treating maps as implementation-ready.",
+          "Lighting-pass names key/fill/rim or environment light, exposure, tone mapping, background, and contact shadow behavior.",
+          "Neutral, grazing-angle, and reference-matched renders prove that surface relief survives relighting and is not painted into albedo."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model has acceptable shape but reads as flat shaded or plastic",
+          "colors are a generic average instead of reference-observed local color zones",
+          "lighting is evenly ambient and cannot reproduce the source value range"
+        ]
+      }
+    ],
+    "visualDeltaChecks": [
+      "sphere silhouette remains circular from front, side, and rear",
+      "proboscis root stays on the centerline in front view",
+      "wrap coverage and raised edge agree across profile and rear views",
+      "tail opening and tail nub remain centered on the rear",
+      "blue vinyl, white cloth, dark inner ears, and black eyes remain materially distinct",
+      "no 2D outline or dark rear seam appears from any review angle"
+    ],
+    "antiShallowSpecRules": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ],
+    "mustNotDo": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md).",
+      "Adjacent components must overlap by at least 0.02 world units at shared seams (source: grimoire/build/geometry_patterns.md).",
+      "Raised or recessed relief and fasteners must be geometry, instanced micro-parts, or displacement; a map alone is an approximation (source: grimoire/build/geometry_patterns.md)."
+    ]
+  },
+  "qualityTargets": {
+    "targetFidelity": 0.7,
+    "mustMatch": [
+      "macro silhouette and proportions",
+      "primary material albedo/roughness response",
+      "reference-derived PBR material response at or above 0.7 confidence when source pixels are usable",
+      "most recognizable local features"
+    ],
+    "niceToHave": [
+      "micro scratches, stains, chips, and dirt masks",
+      "secondary lighting match"
+    ],
+    "fpsTarget": 60,
+    "reviewViewpoints": [
+      "front",
+      "three-quarter",
+      "side",
+      "thickness-axis",
+      "long-axis"
+    ]
+  },
+  "selfCorrectLoop": {
+    "enabled": true,
+    "visualAcceptance": {
+      "reviewer": "ai-vision",
+      "threshold": 0.7,
+      "comparisonArtifactRequired": true,
+      "layerScoresRequired": true,
+      "codePixelDiffIsAcceptanceAuthority": false,
+      "scoringRule": "AI vision must inspect a side-by-side reference/render sheet and score the current pass from 0 to 1. Pixel-diff code may assist diagnostics but cannot approve a pass.",
+      "requiredLayerScores": [
+        "silhouetteProportion",
+        "componentStructure",
+        "formDetail",
+        "materialSurface",
+        "lightingCamera"
+      ],
+      "featureReviewPolicy": {
+        "enabled": true,
+        "reviewUnit": "semantic-subsystem",
+        "maxCriticalFeaturesPerPass": 5,
+        "maxImportantFeaturesPerPass": 3,
+        "criticalDefaultThreshold": 0.8,
+        "importantAverageThreshold": 0.65,
+        "adaptiveEscalation": true,
+        "singleImagePairOnly": true,
+        "selectionRule": "Choose only the most visually salient, identity-defining, user-prioritized, or high-risk semantic systems. Group repeated parts instead of reviewing every mesh. AI vision scores every selected feature from the same full reference/render pair."
+      }
+    },
+    "reviewAfterPasses": [
+      "blockout",
+      "structural-pass",
+      "form-refinement",
+      "material-pass",
+      "surface-pass",
+      "lighting-pass",
+      "interaction-pass",
+      "optimization-pass"
+    ],
+    "allowedActions": [
+      "continue",
+      "refine-spec",
+      "refine-code",
+      "request-input",
+      "stop"
+    ],
+    "specRefineTriggers": [
+      "missing component",
+      "wrong primitive family",
+      "wrong proportions",
+      "material layer under-specified",
+      "local feature not traceable to viewEvidence",
+      "reference ambiguity discovered during implementation"
+    ],
+    "codeRefineTriggers": [
+      "spec is adequate but generated geometry/material does not match",
+      "browser render differs from reference",
+      "performance budget exceeded",
+      "lighting hides geometry or material response"
+    ],
+    "stopCriteria": [
+      "target fidelity reached or user accepts current approximation",
+      "remaining gaps require new reference images or manual art"
+    ],
+    "screenshotPolicy": {
+      "requiredForPasses": [
+        "blockout",
+        "structural-pass",
+        "form-refinement",
+        "material-pass",
+        "surface-pass",
+        "lighting-pass",
+        "interaction-pass"
+      ],
+      "preferredCapture": "in-app-browser-screenshot",
+      "fallbackCapture": "user-supplied-screenshot-path",
+      "minimumEvidence": "Each visual pass needs a reference image, rendered screenshot, side-by-side comparison sheet, AI vision score, layer scores, and critique before choosing continue.",
+      "reviewPairRule": "Compare the same camera/viewpoint whenever possible; do not judge a front reference against a random render angle.",
+      "acceptanceAuthority": "AI vision review of the comparison sheet. Code-generated pixel similarity is not sufficient evidence."
+    }
+  },
+  "featureReviewTargets": [
+    {
+      "id": "overall-silhouette",
+      "name": "Overall silhouette and proportion system",
+      "tier": "critical",
+      "passIds": [
+        "blockout"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "root"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "primary-structure",
+      "name": "Primary identity-defining structure",
+      "tier": "critical",
+      "passIds": [
+        "structural-pass",
+        "form-refinement"
+      ],
+      "minimumScore": 0.8,
+      "mustPass": true,
+      "componentRefs": [
+        "root"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "reference-material-system",
+      "name": "Primary reference material and surface response",
+      "tier": "critical",
+      "passIds": [
+        "material-pass",
+        "surface-pass"
+      ],
+      "minimumScore": 0.75,
+      "mustPass": true,
+      "componentRefs": [
+        "root"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    },
+    {
+      "id": "centerline-proboscis-wrap-system",
+      "name": "Centered tapir proboscis and outline-free rear wrap",
+      "tier": "critical",
+      "passIds": [
+        "structural-pass",
+        "form-refinement",
+        "material-pass"
+      ],
+      "minimumScore": 0.82,
+      "mustPass": true,
+      "componentRefs": [
+        "trunk-pivot",
+        "rear-wrap",
+        "tail-nub"
+      ],
+      "evidenceRefs": [
+        "full-object"
+      ]
+    }
+  ],
+  "sculptPipeline": {
+    "passGateMode": "locked-sequential",
+    "passOrder": [
+      "blockout",
+      "structural-pass",
+      "form-refinement",
+      "material-pass",
+      "surface-pass",
+      "lighting-pass",
+      "interaction-pass",
+      "optimization-pass"
+    ],
+    "currentPass": "blockout",
+    "completedPasses": [],
+    "lastCompletedPass": "",
+    "blockedReason": "blockout requires a browser screenshot and self-correction review before structural-pass unlocks",
+    "nextRequiredEvidence": [
+      "blockout browser render screenshot from your agent's browser/screenshot tool",
+      "side-by-side reference/render comparison sheet",
+      "AI vision score >= 0.7 with layer scores and mismatch critique",
+      "critical semantic feature scores from the same image pair meeting their individual thresholds",
+      "reviewHistory entry for blockout with action=continue"
+    ]
+  },
+  "lookDevTargets": {
+    "qualityPriority": "real-time-stylized",
+    "materialPass": {
+      "albedoPaletteRequired": true,
+      "roughnessVariationRequired": true,
+      "normalOrBumpRequired": true,
+      "localOverridesRequired": true,
+      "minimumTextureResolution": 1024,
+      "preferredTextureResolution": 2048,
+      "independentMapChannels": [
+        "albedo",
+        "roughness",
+        "height",
+        "normal",
+        "ambient-occlusion"
+      ],
+      "requiredSurfaceFrequencyBands": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "geometryReliefRequiredWhenSilhouetteAffected": true,
+      "referencePbrExtraction": {
+        "requiredWhenSourceImagePresent": true,
+        "targetThreshold": 0.7,
+        "stopOnLowConfidence": true,
+        "script": "forge/stage1_intake/extract_pbr_evidence.py",
+        "acceptedLimitation": "single-image extraction is reference-derived inference, not exact photogrammetry"
+      },
+      "mustAvoid": [
+        "single flat albedo per material",
+        "uniform roughness",
+        "albedo texture reused as roughness/height/normal/AO",
+        "single-frequency random noise",
+        "plastic-looking smooth bark, stone, cloth, foliage, or aged material",
+        "local color/detail described only in prose without material masks",
+        "claiming exact PBR recovery when confidence is below the target threshold"
+      ]
+    },
+    "lightingPass": {
+      "requiredTerms": [
+        "key light",
+        "fill light",
+        "rim or environment light",
+        "exposure",
+        "tone mapping",
+        "background",
+        "contact shadow"
+      ],
+      "mustAvoid": [
+        "ambient-only lighting",
+        "flat value range",
+        "missing contact shadow",
+        "reference lighting copied without separating material readability"
+      ]
+    },
+    "screenshotReview": [
+      "Compare albedo palette and local color zones.",
+      "Compare roughness/normal/bump response under light.",
+      "Compare cavity dirt, edge wear, stains, moss, scratches, or other local masks.",
+      "Compare key/fill/rim structure, exposure, tone mapping, background, and contact shadows.",
+      "Capture a neutral-light render to verify material readability without reference lighting.",
+      "Capture a grazing-light close-up to expose flat normals, uniform roughness, tiling, and plastic highlights.",
+      "Capture a reference-matched render from the same camera framing as the source."
+    ]
+  },
+  "actionReadiness": {
+    "contract": "Every macro/meso component should be generated as a stable named Object3D pivot node with a mesh child, action metadata, optional sockets, collider proxy, and destruction metadata.",
+    "defaultRigType": "action-ready-static-rig",
+    "rootMotionNode": "root",
+    "requiredComponentFields": [
+      "id",
+      "parent",
+      "transform",
+      "attachment for child appendages, connectors, limbs, tubes, handles, legs, horns, wings, branches, or cables",
+      "actionProfile.animationRole",
+      "actionProfile.pivot",
+      "actionProfile.collider",
+      "actionProfile.destruction"
+    ],
+    "transformChannels": [
+      "translate",
+      "rotate",
+      "scale",
+      "bend",
+      "twist",
+      "detach",
+      "visibility",
+      "material-state"
+    ],
+    "authoringRules": [
+      "Do not collapse independently movable parts into one mesh.",
+      "Put transforms on component pivot groups, not only on raw meshes.",
+      "For attached child parts, put the pivot at the semantic root/socket and build visible geometry from localStart to localEnd.",
+      "Represent hinge, socket, detachable, and breakable intent even when no animation is implemented yet.",
+      "Use simplified collider proxies for runtime physics instead of visual mesh colliders by default."
+    ],
+    "destructionPolicy": {
+      "defaultBreakable": false,
+      "fractureGroupNaming": "Use stable semantic names such as body-shell, left-hinge, glass-panel, branch-segment.",
+      "debrisStrategy": "Prefer detachable component groups and a small number of procedural fragments over random mesh explosion."
+    }
+  },
+  "assumptions": [],
+  "coordinateFrame": {
+    "front": "camera-facing side in the reference image",
+    "up": "image up direction",
+    "scaleReference": "unit scale; adjust after first browser render"
+  },
+  "silhouette": {
+    "boundingShape": "",
+    "aspectRatios": [],
+    "symmetry": "",
+    "dominantCurves": [],
+    "negativeSpaces": [],
+    "landmarks": []
+  },
+  "viewEvidence": [
+    {
+      "id": "full-object",
+      "view": "primary",
+      "imageRegion": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 1.0,
+        "height": 1.0,
+        "units": "normalized"
+      },
+      "observations": [],
+      "confidence": 0.5
+    }
+  ],
+  "componentTree": [
+    {
+      "id": "root",
+      "name": "Yumemin 3D Turnaround v3",
+      "level": "macro",
+      "role": "body",
+      "importance": 1.0,
+      "confidence": 0.98,
+      "primitive": "sphere",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "The root is a non-rendering assembly pivot for the spherical body and independently adjustable appendage systems.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(82, 185, 232, 1.0)",
+        "secondaryAlbedo": "rgba(255, 255, 255, 1.0)",
+        "materialClass": "plastic",
+        "materialClassConfidence": 0.86
+      },
+      "geometryDescriptor": {
+        "topologyIntent": "non-rendering assembly pivot represented by the body sphere",
+        "edgeTreatment": {
+          "type": "none",
+          "bevelRadius": 0.0,
+          "segments": 1
+        },
+        "deformationStack": [],
+        "uvStrategy": "generated procedural coordinates",
+        "normalStrategy": "vertex normals from generated geometry"
+      },
+      "parent": null,
+      "attachment": null,
+      "dimensions": {
+        "width": 2.0,
+        "height": 2.0,
+        "depth": 2.0,
+        "units": "world",
+        "confidence": 0.98
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "actionProfile": {
+        "animationRole": "root",
+        "pivot": {
+          "mode": "center",
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "confidence": 0.5
+        },
+        "transformChannels": {
+          "translate": true,
+          "rotate": true,
+          "scale": true,
+          "bend": false,
+          "twist": false,
+          "detach": false,
+          "visibility": true,
+          "materialState": true
+        },
+        "sockets": [],
+        "collider": {
+          "type": "sphere",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "isTrigger": false,
+          "notes": "The root proxy follows the one-unit-radius spherical body."
+        },
+        "constraints": [],
+        "destruction": {
+          "breakable": false,
+          "fractureGroup": "root",
+          "seamRefs": [],
+          "detachableFragments": [],
+          "breakImpulse": 0.0,
+          "debrisMaterial": "base"
+        }
+      },
+      "material": "base",
+      "materialLayers": [
+        "base"
+      ],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": [
+        "assembly-center"
+      ],
+      "surfaceDetail": {
+        "macroRoughness": 0.0,
+        "microRoughness": 0.0,
+        "bumpAmplitude": 0.0,
+        "normalPattern": "",
+        "displacementPattern": "",
+        "occlusionPattern": "",
+        "edgeWearPattern": "",
+        "notes": ""
+      },
+      "evidenceRefs": [
+        "full-object"
+      ],
+      "details": [],
+      "fidelityTier": "form-refinement"
+    },
+    {
+      "id": "body-shell",
+      "name": "Perfect spherical blue body",
+      "level": "macro",
+      "role": "body",
+      "importance": 1.0,
+      "confidence": 0.99,
+      "primitive": "sphere",
+      "topologyClass": "continuous-sculpt",
+      "topologyRationale": "Every orthographic view shows the same circular body silhouette with no elongation or flattened side.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(82, 185, 232, 1.0)",
+        "secondaryAlbedo": "rgba(67, 164, 210, 1.0)",
+        "materialClass": "plastic",
+        "materialClassConfidence": 0.92
+      },
+      "parent": "root",
+      "attachment": null,
+      "dimensions": {
+        "width": 2.0,
+        "height": 2.0,
+        "depth": 2.0,
+        "units": "world",
+        "confidence": 0.99
+      },
+      "transform": {
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": "base",
+      "materialLayers": ["base"],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": ["perfect-sphere"],
+      "evidenceRefs": ["full-object"],
+      "fidelityTier": "form-refinement"
+    },
+    {
+      "id": "rear-wrap",
+      "name": "Conforming white o-kurumi wrap",
+      "level": "meso",
+      "role": "body covering",
+      "importance": 0.95,
+      "confidence": 0.98,
+      "primitive": "sphere",
+      "topologyClass": "conforming-shell",
+      "topologyRationale": "Side and rear views show a thin white cloth shell hugging the rear hemisphere with a shallow raised front edge.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(250, 250, 248, 1.0)",
+        "secondaryAlbedo": "rgba(226, 229, 229, 1.0)",
+        "materialClass": "fabric",
+        "materialClassConfidence": 0.95
+      },
+      "parent": "body-shell",
+      "attachment": null,
+      "dimensions": {
+        "width": 2.05,
+        "height": 2.05,
+        "depth": 0.78,
+        "units": "world",
+        "confidence": 0.96
+      },
+      "transform": {
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": "white-wrap-material",
+      "materialLayers": ["white-wrap-material"],
+      "deformations": [],
+      "joints": [],
+      "seams": ["raised-wrap-front-edge"],
+      "localFeatures": ["conforming-cloth-shell", "raised-fabric-edge"],
+      "evidenceRefs": ["full-object"],
+      "fidelityTier": "material-pass"
+    },
+    {
+      "id": "trunk-pivot",
+      "name": "Centered tapir proboscis",
+      "level": "meso",
+      "role": "appendage",
+      "importance": 1.0,
+      "confidence": 0.99,
+      "primitive": "tube",
+      "topologyClass": "continuous-sculpt",
+      "topologyRationale": "Front and profile views show a round, tapered, forward-projecting proboscis with a continuous downward curve.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(82, 185, 232, 1.0)",
+        "secondaryAlbedo": "rgba(67, 164, 210, 1.0)",
+        "materialClass": "plastic",
+        "materialClassConfidence": 0.92
+      },
+      "parent": "body-shell",
+      "attachment": {
+        "parentId": "body-shell",
+        "parentSocket": "face-center",
+        "localStart": [0, -0.08, 0.88],
+        "localEnd": [0, -0.33, 1.36],
+        "contactType": "embedded",
+        "embedDepth": 0.08,
+        "overlap": 0.08,
+        "gapTolerance": 0.01,
+        "evidenceRefs": ["full-object"]
+      },
+      "dimensions": {
+        "radius": 0.19,
+        "length": 0.55,
+        "units": "world",
+        "confidence": 0.97
+      },
+      "transform": {
+        "position": [0, -0.08, 0.88],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": "base",
+      "materialLayers": ["base"],
+      "deformations": ["gentle downward Catmull-Rom taper"],
+      "joints": ["centerline root pivot"],
+      "seams": [],
+      "localFeatures": ["downward-taper"],
+      "evidenceRefs": ["full-object"],
+      "fidelityTier": "form-refinement"
+    },
+    {
+      "id": "eye-system",
+      "name": "Paired shallow black eye beads",
+      "level": "meso",
+      "role": "facial detail",
+      "importance": 0.9,
+      "confidence": 0.99,
+      "primitive": "sphere",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "Both eyes are small, physical, pupil-free beads seated shallowly into the front surface rather than drawn circles.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(13, 10, 14, 1.0)",
+        "secondaryAlbedo": "rgba(45, 43, 48, 1.0)",
+        "materialClass": "plastic",
+        "materialClassConfidence": 0.9
+      },
+      "parent": "body-shell",
+      "attachment": null,
+      "dimensions": {
+        "width": 0.68,
+        "height": 0.17,
+        "depth": 0.05,
+        "units": "world",
+        "confidence": 0.98
+      },
+      "transform": {
+        "position": [0, 0.18, 0.95],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": "black-eye-material",
+      "materialLayers": ["black-eye-material"],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": ["paired-eye-beads"],
+      "evidenceRefs": ["full-object"],
+      "fidelityTier": "form-refinement"
+    },
+    {
+      "id": "ear-system",
+      "name": "Paired blue wedge ears",
+      "level": "meso",
+      "role": "facial detail",
+      "importance": 0.82,
+      "confidence": 0.97,
+      "primitive": "extrude",
+      "topologyClass": "assembled-solid",
+      "topologyRationale": "The turnaround resolves each ear as a shallow solid wedge with a recessed darker inner face.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(82, 185, 232, 1.0)",
+        "secondaryAlbedo": "rgba(50, 153, 203, 1.0)",
+        "materialClass": "plastic",
+        "materialClassConfidence": 0.91
+      },
+      "parent": "body-shell",
+      "attachment": null,
+      "dimensions": {
+        "width": 1.25,
+        "height": 0.45,
+        "depth": 0.2,
+        "units": "world",
+        "confidence": 0.95
+      },
+      "transform": {
+        "position": [0, 0.82, -0.075],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": "base",
+      "materialLayers": ["base", "inner-ear-material"],
+      "deformations": [],
+      "joints": [],
+      "seams": [],
+      "localFeatures": ["paired-wedge-ears"],
+      "evidenceRefs": ["full-object"],
+      "fidelityTier": "form-refinement"
+    },
+    {
+      "id": "tail-nub",
+      "name": "Centered rear tail nub and fabric opening",
+      "level": "meso",
+      "role": "tail",
+      "importance": 0.72,
+      "confidence": 0.95,
+      "primitive": "sphere",
+      "topologyClass": "continuous-sculpt",
+      "topologyRationale": "Rear views show a small rounded blue nub emerging through a circular fabric opening on the rear centerline.",
+      "colorMaterialRecipe": {
+        "dominantAlbedo": "rgba(82, 185, 232, 1.0)",
+        "secondaryAlbedo": "rgba(250, 250, 248, 1.0)",
+        "materialClass": "plastic",
+        "materialClassConfidence": 0.9
+      },
+      "parent": "body-shell",
+      "attachment": {
+        "parentId": "body-shell",
+        "parentSocket": "rear-tail-center",
+        "localStart": [0, -0.43, -0.96],
+        "localEnd": [0, -0.43, -1.08],
+        "contactType": "embedded-through-cloth",
+        "embedDepth": 0.04,
+        "overlap": 0.04,
+        "gapTolerance": 0.01,
+        "evidenceRefs": ["full-object"]
+      },
+      "dimensions": {
+        "width": 0.26,
+        "height": 0.3,
+        "depth": 0.24,
+        "units": "world",
+        "confidence": 0.94
+      },
+      "transform": {
+        "position": [0, -0.43, -0.96],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": "base",
+      "materialLayers": ["base", "white-wrap-material"],
+      "deformations": [],
+      "joints": [],
+      "seams": ["tail-opening-rim"],
+      "localFeatures": ["fabric-opening"],
+      "evidenceRefs": ["full-object"],
+      "fidelityTier": "form-refinement"
+    }
+  ],
+  "materials": [
+    {
+      "id": "base",
+      "name": "Yumemin blue matte vinyl",
+      "type": "standard",
+      "shaderModel": "MeshStandardMaterial / PBR approximation",
+      "baseColor": "#52B9E8",
+      "color": "#52B9E8",
+      "albedo": {
+        "dominant": "#52B9E8",
+        "secondary": [
+          "#43A4D2",
+          "#72C8EE"
+        ],
+        "samplingNotes": "Sampled from the blue vinyl body across the six-view turnaround."
+      },
+      "colorVariation": {
+        "palette": [
+          "#52B9E8",
+          "#43A4D2",
+          "#72C8EE"
+        ],
+        "pattern": "soft lighting-scale variation",
+        "amplitude": 0.04,
+        "heightCorrelation": 0.1
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "uv",
+        "repeat": [
+          2.0,
+          2.0
+        ],
+        "anisotropy": 8,
+        "texelDensityIntent": "Preserve stable world/object-scale detail; do not stretch micro detail with component scale."
+      },
+      "surfaceFrequencyBands": [
+        {
+          "id": "macro",
+          "frequency": 2.0,
+          "amplitude": 0.42,
+          "role": "broad color and height breakup"
+        },
+        {
+          "id": "meso",
+          "frequency": 12.0,
+          "amplitude": 0.22,
+          "role": "ridges, pores, grain, dents, or equivalent visible relief"
+        },
+        {
+          "id": "micro",
+          "frequency": 56.0,
+          "amplitude": 0.08,
+          "role": "highlight breakup visible under grazing light"
+        }
+      ],
+      "roughness": {
+        "base": 0.72,
+        "variation": 0.05,
+        "map": "independent-procedural-field",
+        "localResponse": "higher roughness in cavities, lower roughness on worn edges"
+      },
+      "metalness": {
+        "base": 0.0,
+        "variation": 0.0
+      },
+      "normal": {
+        "pattern": "derived-from-independent-height-field",
+        "strength": 0.35,
+        "scale": 24.0,
+        "space": "tangent"
+      },
+      "bump": {
+        "pattern": "none",
+        "amplitude": 0.0,
+        "scale": 1.0
+      },
+      "displacement": {
+        "pattern": "none",
+        "amplitude": 0.0,
+        "scale": 1.0,
+        "silhouetteAffects": false
+      },
+      "ambientOcclusion": {
+        "cavityStrength": 0.25,
+        "contactShadowBias": 0.35,
+        "notes": "Darken creases, seams, intersections, and recessed local features."
+      },
+      "wear": {
+        "edgeWear": 0.0,
+        "scratches": [],
+        "chips": []
+      },
+      "dirt": {
+        "amount": 0.0,
+        "cavityBias": 0.0,
+        "color": "#2F2A22"
+      },
+      "localOverrides": [
+        {
+          "id": "soft-vinyl-highlight",
+          "region": "upper front hemisphere",
+          "roughness": 0.68,
+          "evidenceRefs": ["full-object"]
+        }
+      ],
+      "shaderNotes": [
+        "Prefer MeshPhysicalMaterial when clearcoat, sheen, transmission, or thin-surface response is observed; otherwise use MeshStandardMaterial-compatible PBR channels.",
+        "Generate albedo, roughness, height/normal, and AO independently; never alias albedo into roughness.",
+        "Use normal/bump/displacement only when they map to observed surface relief.",
+        "Use displacement geometry when the observed relief changes the close-up silhouette; texture-only relief is insufficient there."
+      ],
+      "notes": "Soft matte vinyl response; no black outline or ink seam is part of this material."
+    },
+    {
+      "id": "white-wrap-material",
+      "name": "Soft white o-kurumi fabric",
+      "type": "physical",
+      "shaderModel": "MeshPhysicalMaterial",
+      "baseColor": "#FAFAF8",
+      "color": "#FAFAF8",
+      "albedo": {
+        "dominant": "#FAFAF8",
+        "secondary": ["#E2E5E5"],
+        "samplingNotes": "White rear wrap separated from the white background by geometry and cloth shading."
+      },
+      "colorVariation": {
+        "palette": ["#FAFAF8", "#E2E5E5"],
+        "pattern": "subtle woven variation",
+        "amplitude": 0.03,
+        "heightCorrelation": 0.4
+      },
+      "textureResolution": 1024,
+      "textureProjection": {
+        "mode": "procedural object-space",
+        "texelDensityIntent": "fine even weave across the conforming rear shell"
+      },
+      "surfaceFrequencyBands": [
+        {"id": "macro", "frequency": 2.0, "amplitude": 0.02, "role": "broad fold shading"},
+        {"id": "meso", "frequency": 14.0, "amplitude": 0.015, "role": "subtle fabric undulation"},
+        {"id": "micro", "frequency": 72.0, "amplitude": 0.007, "role": "woven highlight breakup"}
+      ],
+      "roughness": {
+        "base": 0.94,
+        "variation": 0.025,
+        "map": "independent-procedural-fabric-field"
+      },
+      "metalness": {"base": 0.0, "variation": 0.0},
+      "normal": {"pattern": "independent-woven-height-field", "strength": 0.12, "scale": 72.0},
+      "ambientOcclusion": {
+        "cavityStrength": 0.12,
+        "contactShadowBias": 0.2,
+        "notes": "Limited to the raised front edge and tail opening."
+      },
+      "localOverrides": [
+        {
+          "id": "raised-wrap-edge-response",
+          "region": "front edge and tail opening",
+          "roughness": 0.9,
+          "evidenceRefs": ["full-object"]
+        }
+      ],
+      "notes": "A separate conforming cloth shell, not white paint on the body."
+    },
+    {
+      "id": "black-eye-material",
+      "name": "Matte black eye beads",
+      "type": "standard",
+      "baseColor": "#0D0A0E",
+      "color": "#0D0A0E",
+      "roughness": {"base": 0.52, "variation": 0.02},
+      "metalness": {"base": 0.0, "variation": 0.0},
+      "localOverrides": [],
+      "notes": "Small physical beads with restrained soft highlights."
+    },
+    {
+      "id": "inner-ear-material",
+      "name": "Recessed blue inner ears",
+      "type": "standard",
+      "baseColor": "#3299CB",
+      "color": "#3299CB",
+      "roughness": {"base": 0.78, "variation": 0.03},
+      "metalness": {"base": 0.0, "variation": 0.0},
+      "localOverrides": [],
+      "notes": "Darker blue comes from a separate recessed face, not a black drawn line."
+    }
+  ],
+  "repetitionSystems": [],
+  "buildPasses": [
+    {
+      "id": "blockout",
+      "goal": "Match macro silhouette and proportions.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Silhouette reads correctly without materials.",
+        "Quality contract has named all required macro feature groups before code generation.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "structural-pass",
+      "goal": "Build the component hierarchy implied by the pre-spec complexity assessment.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Macro, meso, and repeated structures meet qualityContract.minimumSpecDepth.",
+        "Parent-child relations, joints, seams, sockets, and contact points are explicit.",
+        "Every attached child appendage/connector has parentSocket, localStart/localEnd, contactType, embedDepth or overlap, and gapTolerance.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "form-refinement",
+      "goal": "Refine shape, deformation, bevels, tapers, curves, asymmetry, and visible local geometry.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Important visible forms are represented in component geometryDescriptor, deformations, localFeatures, or repetitionSystems.",
+        "Endpoint-based child parts are rooted at their attachment sockets and do not visibly float away from parents.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "material-pass",
+      "goal": "Match material color, roughness, bump, and local variation.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Reference-derived albedo palette records dominant, secondary, and accent colors per visible material.",
+        "Each important material defines roughness variation and at least one normal/bump/displacement response.",
+        "Local material overrides, dirt/wear/stains/moss/chips/scratches or equivalent masks are tied to evidenceRefs.",
+        "Thin, transparent, reflective, wet, or fibrous materials document alpha/transmission/clearcoat/metalness/fiber response when relevant.",
+        "Generated preview uses procedural albedo/roughness/bump texture or vertex color variation instead of one flat color.",
+        "Generated preview uses independent PBR maps at 1024px or higher for the quality-first tier.",
+        "If source pixels are available, referencePbr extraction passed at confidence >= 0.7 or the pass is stopped/requesting better references.",
+        "Macro, meso, and micro surface frequency bands are visible at the intended review distance without obvious tiling.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "surface-pass",
+      "goal": "Add procedural surface locality such as normal/bump/displacement, AO, dirt, stains, chips, grain, moss, scratches, and wear.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Every required material feature group has local overrides or surfaceDetail tied to evidenceRefs.",
+        "A grazing-angle close-up proves that normal/height detail breaks highlights naturally and does not read as smooth plastic.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "lighting-pass",
+      "goal": "Make material and form readable under neutral turntable lighting plus optional reference lighting.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "lightingFromPhoto identifies key light direction/color/intensity, fill light, rim or environment light, and ambient color.",
+        "Exposure, tone mapping, background color/gradient, shadow softness, and contact shadow behavior are specified.",
+        "Lighting does not hide geometry/material gaps and screenshots can be compared fairly to the reference.",
+        "Neutral, grazing, and reference-matched lighting checks distinguish material errors from lighting errors.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "interaction-pass",
+      "goal": "Make the model ready for future animation, transformation, physics, or destruction.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Macro and movable meso components have stable pivot nodes.",
+        "Sockets, collider proxies, and destruction metadata are present for future runtime actions.",
+        "AI vision comparison score meets selfCorrectLoop.visualAcceptance.threshold."
+      ]
+    },
+    {
+      "id": "optimization-pass",
+      "goal": "Protect runtime performance after visual fidelity is accepted.",
+      "componentRefs": [
+        "root"
+      ],
+      "acceptance": [
+        "Triangle count, draw calls, instancing, LOD strategy, and FPS target are documented or verified.",
+        "Repeated detail is instanced or simplified where possible without breaking silhouette/material believability."
+      ]
+    }
+  ],
+  "visualEvidence": [],
+  "reviewHistory": [],
+  "lodPlan": [
+    {
+      "tier": "near",
+      "distance": 0,
+      "strategy": "full component tree and material layers"
+    },
+    {
+      "tier": "far",
+      "distance": 30,
+      "strategy": "merge static components and reduce local feature geometry"
+    }
+  ],
+  "performanceBudget": {
+    "qualityPriority": "reference-fidelity",
+    "targetTriangles": 250000,
+    "maxDrawCalls": 160,
+    "textureSize": 2048,
+    "fpsTarget": 30,
+    "optimizationPolicy": "Reach accepted visual fidelity first, then optimize without removing reference-critical geometry or surface layers."
+  },
+  "lightingFromPhoto": [
+    "key light: large soft neutral directional source from upper front-left at moderate intensity",
+    "fill light: broad cool-white hemisphere fill preserving the blue body shadow side",
+    "rim or environment light: soft rear-right rim separating the white cloth edge from the background",
+    "ACES filmic tone mapping at exposure 1.08 with pale neutral background and soft ground contact shadow"
+  ],
+  "proceduralStrategy": [
+    "Block out macro silhouette first.",
+    "Add component hierarchy and joints.",
+    "Create stable pivot groups, sockets, collider proxies, and destruction metadata before visual polish.",
+    "Refine forms with bevels, tapers, bends, and procedural noise.",
+    "Run reference PBR extraction for important source-image materials and stop when confidence is below the target threshold.",
+    "Add material variation before adding expensive micro-geometry."
+  ],
+  "animationAnchors": [
+    "root pivot node supports whole-object translation, rotation, scale, and visibility changes",
+    "component pivot groups support later local transforms without rebuilding geometry"
+  ],
+  "destructionAnchors": [
+    "actionProfile.destruction.fractureGroup marks detachable or breakable component sets",
+    "component seams and sockets define plausible break points instead of random explosions"
+  ],
+  "risks": [],
+  "localSpecSearch": {
+    "collection": "core_3d",
+    "query": "Yumemin 3D Turnaround v3 spherical mascot conforming cloth shell centered proboscis soft vinyl body woven fabric wrap roughness",
+    "index": {
+      "status": "hit",
+      "reason": "current",
+      "fingerprint": "6857e5ab528b42ac12f4f411f862610a0bffce8e47aee3610a7603c318072fe8"
+    },
+    "matches": [
+      {
+        "record_id": "core.pbr-roughness",
+        "file_path": "grimoire/glossary/3d_vocabulary.md",
+        "heading": "Material And PBR",
+        "key_path": null,
+        "score": 4.20187819032,
+        "snippets": [
+          "Roughness is microfacet scatter: high roughness reads matte and low roughness reads glossy. Recognition cues: low roughness reads as a sharp, mirror-like, tight specular highlight; high roughness reads as a blurry, wide, dim highlight and matte ..."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/glossary/3d_vocabulary.md",
+            "heading": "Material And PBR",
+            "key_path": null
+          },
+          {
+            "path": "grimoire/intake/image_analysis.md",
+            "heading": "Layer 5 — Materials & surface (PBR)",
+            "key_path": null
+          },
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.material_pbr[1]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/glossary/3d_vocabulary.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          },
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation — merged recognition cues + Three.js target instead of duplicating this entity."
+          }
+        ]
+      },
+      {
+        "record_id": "core.shader-mapping-cylindergeometry-barrels-round-components",
+        "file_path": "docs/raw/img2threejs-skill-dataset.json",
+        "heading": null,
+        "key_path": "categories.rendering_shader_mapping[4]",
+        "score": 3.752966399396,
+        "snippets": [
+          "... có tiết diện tròn dạng nòng. Recognition cues: Long uniform-cross-section round part (barrel, suppressor, muzzle brake body, cleaning rod, magazine tube) Dấu hiệu nhận diện: Bộ phận tròn có tiết diện đều dài (nòng súng, ống giảm thanh, ..."
+        ],
+        "source_refs": [
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.rendering_shader_mapping[4]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation"
+          }
+        ]
+      },
+      {
+        "record_id": "core.shader-mapping-tubegeometry-straps-cables-belts",
+        "file_path": "docs/raw/img2threejs-skill-dataset.json",
+        "heading": null,
+        "key_path": "categories.rendering_shader_mapping[10]",
+        "score": 3.57319859881,
+        "snippets": [
+          "Maps to flexible components following a 3D curve. Ánh xạ tới các bộ phận mềm dẻo chạy theo một đường cong 3D. Recognition cues: Flexible, curve-following linear component — sling strap, pressure-switch cable, ammo belt draping into a receiver ..."
+        ],
+        "source_refs": [
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.rendering_shader_mapping[10]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation"
+          }
+        ]
+      }
+    ]
+  }
+}

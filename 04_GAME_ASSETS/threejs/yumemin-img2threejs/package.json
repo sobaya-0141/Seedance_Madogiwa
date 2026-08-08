@@ -1,0 +1,19 @@
+{
+  "name": "yumemin-img2threejs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.config.mjs",
+    "build": "vite build --config vite.config.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "three": "0.185.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.185.0",
+    "typescript": "5.9.3",
+    "vite": "8.1.5"
+  }
+}

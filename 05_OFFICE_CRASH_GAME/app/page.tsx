@@ -1,5 +1,5 @@
-import OfficeCrashGame from "./OfficeCrashGame";
+import OfficeCrashRPG from "./OfficeCrashRPG";
 
 export default function Home() {
-  return <OfficeCrashGame />;
+  return <OfficeCrashRPG />;
 }

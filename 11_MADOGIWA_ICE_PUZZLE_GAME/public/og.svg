@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#071525"/>
+      <stop offset="0.55" stop-color="#133b60"/>
+      <stop offset="1" stop-color="#2bb9d8"/>
+    </linearGradient>
+    <linearGradient id="ice" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#d9f9ff"/>
+      <stop offset="1" stop-color="#58c5e7"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="970" cy="60" r="310" fill="#49e5ff" opacity=".12"/>
+  <g transform="translate(665 90) skewY(-8)">
+    <rect width="430" height="430" rx="36" fill="#0b2037" opacity=".7"/>
+    <g fill="url(#ice)" stroke="#e6fbff" stroke-width="4">
+      <rect x="28" y="28" width="86" height="86" rx="12"/>
+      <rect x="124" y="28" width="86" height="86" rx="12"/>
+      <rect x="220" y="28" width="86" height="86" rx="12"/>
+      <rect x="316" y="28" width="86" height="86" rx="12"/>
+      <rect x="28" y="124" width="86" height="86" rx="12"/>
+      <rect x="124" y="124" width="86" height="86" rx="12"/>
+      <rect x="220" y="124" width="86" height="86" rx="12"/>
+      <rect x="316" y="124" width="86" height="86" rx="12"/>
+      <rect x="28" y="220" width="86" height="86" rx="12"/>
+      <rect x="124" y="220" width="86" height="86" rx="12"/>
+      <rect x="220" y="220" width="86" height="86" rx="12"/>
+      <rect x="316" y="220" width="86" height="86" rx="12"/>
+      <rect x="28" y="316" width="86" height="86" rx="12"/>
+      <rect x="124" y="316" width="86" height="86" rx="12"/>
+      <rect x="220" y="316" width="86" height="86" rx="12"/>
+      <rect x="316" y="316" width="86" height="86" rx="12"/>
+    </g>
+    <g transform="translate(139 205)">
+      <rect x="0" y="0" width="76" height="92" rx="12" fill="#b486f4"/>
+      <rect x="-8" y="-34" width="92" height="64" rx="24" fill="#141622"/>
+      <circle cx="24" cy="24" r="12" fill="#eef8ff" stroke="#171925" stroke-width="8"/>
+      <circle cx="55" cy="24" r="12" fill="#eef8ff" stroke="#171925" stroke-width="8"/>
+      <path d="M36 24h7" stroke="#171925" stroke-width="7"/>
+    </g>
+    <g transform="translate(324 50)" filter="url(#glow)">
+      <rect width="56" height="72" rx="18" fill="#ff5147"/>
+      <path d="M8 14h40M8 30h40M8 46h40" stroke="#ffcf73" stroke-width="5"/>
+    </g>
+  </g>
+  <g fill="#fff">
+    <text x="78" y="112" font-family="system-ui, sans-serif" font-size="28" font-weight="800" letter-spacing="7" fill="#8deaff">MADOGIWA ZERO</text>
+    <text x="72" y="300" font-family="system-ui, sans-serif" font-size="98" font-weight="900">窓際族０</text>
+    <text x="78" y="402" font-family="system-ui, sans-serif" font-size="30" font-weight="700">一度滑ると、障害物まで止まれない。</text>
+    <text x="78" y="476" font-family="system-ui, sans-serif" font-size="25" fill="#d2eaf4">重要資料とビールを全部回収して脱出せよ！</text>
+  </g>
+  <g transform="translate(78 520)">
+    <rect width="348" height="58" rx="29" fill="#f0a84b"/>
+    <text x="174" y="38" text-anchor="middle" font-family="system-ui, sans-serif" font-size="25" font-weight="900" fill="#161c28">FIXED 4-DIRECTION 2.5D</text>
+  </g>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#06101c"/>
+      <stop offset=".55" stop-color="#142a43"/>
+      <stop offset="1" stop-color="#07101b"/>
+    </linearGradient>
+    <linearGradient id="foil" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffe49b"/>
+      <stop offset=".3" stop-color="#63e8ff"/>
+      <stop offset=".62" stop-color="#d477ff"/>
+      <stop offset="1" stop-color="#ffd16c"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity=".14" stroke="#58dff5">
+    <path d="M0 105h1200M0 210h1200M0 315h1200M0 420h1200M0 525h1200"/>
+    <path d="M120 0v630M240 0v630M360 0v630M480 0v630M600 0v630M720 0v630M840 0v630M960 0v630M1080 0v630"/>
+  </g>
+  <ellipse cx="885" cy="320" rx="270" ry="230" fill="#47e1fa" opacity=".13" filter="url(#glow)"/>
+  <g transform="translate(740 92) rotate(-8 140 210)">
+    <rect width="280" height="430" rx="28" fill="url(#foil)"/>
+    <rect x="9" y="9" width="262" height="412" rx="22" fill="#0b1624"/>
+    <circle cx="60" cy="65" r="36" fill="#ffe59d"/>
+    <text x="60" y="78" text-anchor="middle" fill="#07101d" font-size="42" font-weight="900">4</text>
+    <rect x="24" y="110" width="232" height="205" rx="16" fill="#19344f"/>
+    <circle cx="140" cy="205" r="72" fill="#edf4f6"/>
+    <circle cx="116" cy="190" r="10" fill="#162236"/>
+    <circle cx="164" cy="190" r="10" fill="#162236"/>
+    <path d="M105 245q35 26 70 0" fill="none" stroke="#162236" stroke-width="8"/>
+    <text x="28" y="365" fill="#f7fbff" font-size="34" font-weight="900">そば屋</text>
+    <text x="28" y="398" fill="#ffe59d" font-size="20" font-weight="700">快適です！</text>
+  </g>
+  <text x="92" y="160" fill="#ffe29a" font-size="28" font-weight="900" letter-spacing="12">MADOGIWA</text>
+  <text x="84" y="270" fill="#f7fbff" font-size="108" font-weight="900" letter-spacing="12">GRID</text>
+  <text x="94" y="330" fill="#b8cad8" font-size="27" font-weight="700">窓際を制する、3 × 5 タクティカルカードバトル</text>
+  <g transform="translate(94 390)">
+    <rect width="410" height="86" rx="24" fill="#57def5"/>
+    <text x="205" y="55" text-anchor="middle" fill="#07101d" font-size="27" font-weight="900">FLUTTER × FLAME</text>
+  </g>
+</svg>

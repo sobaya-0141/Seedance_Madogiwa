@@ -9,6 +9,11 @@ const repoRoot = path.resolve(__dirname, "..");
 
 export default defineConfig({
   base: "./",
+  build: {
+    // Sites exposes the Cloudflare ASSETS binding from dist/client.
+    // Keep the Worker bundle separately in dist/server.
+    outDir: "dist/client",
+  },
   server: {
     fs: {
       allow: [repoRoot],

@@ -13,6 +13,10 @@ on:
       - "08_ROMANCE_NOVEL_GAME/**"
       - "09_VOXEL_BATTLE_GAME/**"
       - "10_GYUN_GYUN_QUEST_GAME/**"
+      - "11_MADOGIWA_ICE_PUZZLE_GAME/**"
+      - "12_SOBA_BEER_RUN_GAME/**"
+      - "13_COMPANY_BREAKER_GAME/**"
+      - "14_MADOGIWA_CARD_GAME/**"
   workflow_dispatch:
 
 permissions:
@@ -40,6 +44,17 @@ jobs:
             08_ROMANCE_NOVEL_GAME/package-lock.json
             09_VOXEL_BATTLE_GAME/package-lock.json
             10_GYUN_GYUN_QUEST_GAME/package-lock.json
+            11_MADOGIWA_ICE_PUZZLE_GAME/package-lock.json
+            12_SOBA_BEER_RUN_GAME/package-lock.json
+            13_COMPANY_BREAKER_GAME/package-lock.json
+            14_MADOGIWA_CARD_GAME/package-lock.json
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.0"
+          channel: stable
+          cache: true
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

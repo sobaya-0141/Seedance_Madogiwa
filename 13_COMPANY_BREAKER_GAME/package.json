@@ -1,0 +1,26 @@
+{
+  "name": "sobaya-company-breaker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:sites": "node scripts/clean-sites-build.mjs && tsc --noEmit && vite build --config vite.sites.config.ts && node scripts/prepare-sites-build.mjs",
+    "test": "tsc -p tsconfig.test.json && node --test .test-dist/tests/*.test.js && npm run build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.5"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.19.3",
+    "@types/three": "^0.185.1",
+    "three": "^0.185.1"
+  }
+}

@@ -1,4 +1,4 @@
-import type { Box } from "./level";
+import type { Box } from "./level.js";
 
 /**
  * Push a circle of `radius` at (x,z) out of an axis-aligned box.
