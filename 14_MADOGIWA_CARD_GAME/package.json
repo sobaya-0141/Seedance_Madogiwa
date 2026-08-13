@@ -1,0 +1,12 @@
+{
+  "name": "madogiwa-grid",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "flutter run -d web-server --web-hostname=127.0.0.1 --web-port=5210",
+    "build": "node scripts/build-web.mjs",
+    "test": "flutter test",
+    "analyze": "dart analyze .",
+    "simulate": "dart run bin/simulate.dart 1000"
+  }
+}

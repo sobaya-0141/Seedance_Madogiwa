@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 
-const title = "そば屋のオフィスクラッシュ";
+const title = "そば屋のオフィスクラッシュ ～無限フロア大整理～";
 const description =
-  "窓際族のそば屋を操作し、強化ゲートを攻略してオフィスの備品を壊す45秒スコアアタックゲーム。";
+  "大型ビールジョッキで物理備品を吹き飛ばし、衝突連鎖で暴走オフィスを片付ける3Dアクションハクスラ。8フロア、戦利品ビルド、ボス、永続記録に対応。";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -21,13 +21,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       type: "website",
       locale: "ja_JP",
-      images: [{ url: "/og-voxel.png", width: 1731, height: 909, alt: title }],
+      images: [{ url: "/og-physics.png", width: 1536, height: 1024, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/og-voxel.png"],
+      images: ["/og-physics.png"],
     },
   };
 }

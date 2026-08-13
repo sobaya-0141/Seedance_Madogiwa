@@ -1,0 +1,1 @@
+ALTER TABLE `players` ADD `username` text DEFAULT '匿名窓際社員' NOT NULL;

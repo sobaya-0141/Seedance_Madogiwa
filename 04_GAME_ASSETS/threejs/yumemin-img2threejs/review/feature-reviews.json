@@ -1,0 +1,27 @@
+[
+  {
+    "id": "body-silhouette",
+    "score": 0.82,
+    "notes": "Round, legless flying silhouette is immediately readable; the procedural body is slightly fuller along the lower arc than the JPEG icon."
+  },
+  {
+    "id": "trunk-system",
+    "score": 0.82,
+    "notes": "The lower-left tapered trunk, embedded root, dark outline, and runtime pivot are present; its 3D tube creates a little more interior contour than the flat icon."
+  },
+  {
+    "id": "face-and-ears",
+    "score": 0.88,
+    "notes": "Both pupil-free dot eyes and the two small triangular ears match the identity locks and remain readable in perspective."
+  },
+  {
+    "id": "rear-cap-system",
+    "score": 0.84,
+    "notes": "The white rear cap wraps the volume and uses a source-shaped curved boundary; the small blue rear nub is present."
+  },
+  {
+    "id": "bonk-runtime",
+    "score": 0.78,
+    "notes": "The character-file wooden mallet is a detachable named hierarchy with a swing pivot; it is inferred because the supplied icon does not depict it."
+  }
+]

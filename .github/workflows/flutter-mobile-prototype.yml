@@ -1,0 +1,38 @@
+name: Flutter Mobile Prototype
+
+on:
+  pull_request:
+    paths:
+      - .mise.toml
+      - .github/workflows/flutter-mobile-prototype.yml
+      - 04_GAME_ASSETS/voxel/models/**
+      - 08_FLUTTER_VOXEL_GAME/**
+  push:
+    branches: [main]
+    paths:
+      - .mise.toml
+      - .github/workflows/flutter-mobile-prototype.yml
+      - 04_GAME_ASSETS/voxel/models/**
+      - 08_FLUTTER_VOXEL_GAME/**
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 08_FLUTTER_VOXEL_GAME
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Read Flutter version from .mise.toml
+        id: mise
+        working-directory: .
+        run: echo "flutter_version=$(grep 'flutter' .mise.toml | sed 's/.*= *\"//' | sed 's/\"//')" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          flutter-version: ${{ steps.mise.outputs.flutter_version }}
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: dart analyze .
+      - run: flutter test
+      - run: flutter build apk --debug

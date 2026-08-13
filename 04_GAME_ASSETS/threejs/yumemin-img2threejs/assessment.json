@@ -1,0 +1,464 @@
+{
+  "targetName": "Yumemin",
+  "sourceImage": "/Users/kotahayashi/Workspace/Seedance_Madogiwa-voxel-game/02_CHARACTERS/Yumemin.jpg",
+  "preSpecAssessment": {
+    "objectClass": {
+      "primaryType": "stylized flying tapir-like mascot",
+      "primaryDomain": "object",
+      "formLanguage": [
+        "organic",
+        "character-like",
+        "cartoon",
+        "continuous rounded volumes"
+      ],
+      "structureKind": [
+        "single continuous body",
+        "articulated appendages",
+        "attached prop assembly"
+      ],
+      "motionPotential": [
+        "whole-character hover",
+        "bendable trunk",
+        "hinged mallet arm",
+        "detachable prop"
+      ],
+      "materialFamilies": [
+        "matte painted-plastic-like mascot surface",
+        "dark graphic face marks",
+        "wood"
+      ],
+      "notes": "Observed as a flat 400x400 mascot icon. Route as a custom object-like procedural creature because img2threejs v1.4.1's character template is humanoid-only; using it would invent a torso, neck, clothing, arms, and legs. The model remains a stylized character interpretation, not an exact hidden-side reconstruction. Character settings supply the wooden mallet and confirm the character flies with no legs."
+    },
+    "complexity": {
+      "tier": "moderate",
+      "scores": {
+        "silhouetteComplexity": 1,
+        "componentCount": 2,
+        "hierarchyDepth": 2,
+        "repetitionDensity": 0,
+        "materialLayerCount": 2,
+        "localDetailDensity": 1,
+        "occlusionRisk": 2,
+        "actionReadinessNeed": 3
+      },
+      "estimatedCounts": {
+        "macroComponents": 3,
+        "mesoComponents": 6,
+        "microFeatureGroups": 6,
+        "materialLayers": 4,
+        "repetitionSystems": 2
+      },
+      "reasoning": [
+        "The source silhouette is simple, but the runtime hierarchy needs independent pivots for hover, trunk sway, and the BONK mallet swing.",
+        "Two paired feature systems (ears and eyes), a rear color cap, a curved trunk, and a compound wooden mallet make the implementation moderate rather than simple.",
+        "The single flat view hides depth, rear-cap wrap, appendage roots, and mallet placement, so inferred regions must retain explicit confidence notes."
+      ]
+    },
+    "specDepthDecision": {
+      "requiredDepth": "moderate",
+      "minimumComponentLevels": [
+        "macro",
+        "meso"
+      ],
+      "needsRepetitionSystems": true,
+      "needsMaterialLocalOverrides": true,
+      "needsMultipleReviewViews": true,
+      "needsActionReadyHierarchy": true,
+      "rationale": "Moderate depth is required to keep the rounded body, face systems, appendage pivots, and mallet assembly separately addressable without turning a simple mascot into an overbuilt mesh."
+    },
+    "unknownsToResolveBeforeImplementation": [],
+    "acceptedInferences": [
+      {
+        "id": "body-depth",
+        "status": "accepted-inference",
+        "description": "The icon does not reveal body depth; use a shallow ellipsoid whose depth is about 58% of its visible width.",
+        "confidence": 0.68
+      },
+      {
+        "id": "rear-cap-wrap",
+        "status": "accepted-inference",
+        "description": "The white rear region is interpreted as a continuous rear ellipsoid cap that wraps around the hidden back.",
+        "confidence": 0.72
+      },
+      {
+        "id": "trunk-depth-path",
+        "status": "accepted-inference",
+        "description": "The trunk is interpreted as a tapered tube leaving the lower-left face and curving downward and slightly forward.",
+        "confidence": 0.78
+      },
+      {
+        "id": "mallet-arm-placement",
+        "status": "accepted-inference",
+        "description": "The character file, not the icon, supplies the mallet. Mount a short right-side arm pivot with a detachable wooden mallet.",
+        "confidence": 0.58
+      }
+    ],
+    "detailInventory": {
+      "scanMethod": "grid-3x3",
+      "targetMinDetails": 7,
+      "note": "Enumerate every identity-defining small detail before authoring the spec. Each detail must map to a component.localFeatures entry or material.localOverrides entry, never prose only. Use forge/stage1_intake/build_detail_inventory.py to scan zones.",
+      "details": [
+        {
+          "id": "blue-body-field",
+          "kind": "contour",
+          "description": "Dominant vivid sky-blue rounded body with a near-black silhouette rim.",
+          "region": {"x": 0.14, "y": 0.22, "width": 0.72, "height": 0.58, "units": "normalized"},
+          "scale": "macro",
+          "affects": "silhouette and albedo",
+          "mapsTo": {"type": "component.localFeatures", "ref": "outline-shell"},
+          "evidenceRef": "source:full-object",
+          "confidence": 0.98
+        },
+        {
+          "id": "white-rear-cap",
+          "kind": "seam",
+          "description": "White rear color zone separated from the blue body by a dark curved boundary.",
+          "region": {"x": 0.48, "y": 0.60, "width": 0.36, "height": 0.21, "units": "normalized"},
+          "scale": "meso",
+          "affects": "albedo zone and rear silhouette",
+          "mapsTo": {"type": "component.localFeatures", "ref": "blue-white-boundary"},
+          "evidenceRef": "source:zone-r1c2+zone-r2c2",
+          "confidence": 0.94
+        },
+        {
+          "id": "rear-tail-nub",
+          "kind": "contour",
+          "description": "Small blue rounded tail nub protrudes from the lower-right rear silhouette.",
+          "region": {"x": 0.75, "y": 0.66, "width": 0.12, "height": 0.17, "units": "normalized"},
+          "scale": "meso",
+          "affects": "rear silhouette",
+          "mapsTo": {"type": "component.localFeatures", "ref": "rounded-rear-nub"},
+          "evidenceRef": "source:zone-r2c2",
+          "confidence": 0.9
+        },
+        {
+          "id": "dot-eye-pair",
+          "kind": "decal",
+          "description": "Two solid near-black circular eyes with no pupils, irises, or highlights.",
+          "region": {"x": 0.34, "y": 0.39, "width": 0.34, "height": 0.13, "units": "normalized"},
+          "scale": "meso",
+          "affects": "face identity",
+          "mapsTo": {"type": "component.localFeatures", "ref": "pupil-free-dot-pair"},
+          "evidenceRef": "source:zone-r1c1+zone-r1c2",
+          "confidence": 0.99
+        },
+        {
+          "id": "ear-pair",
+          "kind": "contour",
+          "description": "Two small triangular ears break the top silhouette and contain blue inner faces.",
+          "region": {"x": 0.23, "y": 0.19, "width": 0.54, "height": 0.18, "units": "normalized"},
+          "scale": "meso",
+          "affects": "top silhouette",
+          "mapsTo": {"type": "component.localFeatures", "ref": "triangular-pair"},
+          "evidenceRef": "source:zone-r0c0+zone-r0c2",
+          "confidence": 0.96
+        },
+        {
+          "id": "flexible-trunk",
+          "kind": "contour",
+          "description": "A blue tapered trunk emerges from the lower-left face, curves downward, and has a dark outline.",
+          "region": {"x": 0.19, "y": 0.57, "width": 0.25, "height": 0.24, "units": "normalized"},
+          "scale": "meso",
+          "affects": "silhouette, animation, attachment",
+          "mapsTo": {"type": "component.localFeatures", "ref": "tapered-curved-sweep"},
+          "evidenceRef": "source:zone-r1c0+zone-r2c0",
+          "confidence": 0.97
+        },
+        {
+          "id": "black-outline",
+          "kind": "contour",
+          "description": "A thick near-black outline surrounds the body, ears, trunk, and rear boundary.",
+          "region": {"x": 0.12, "y": 0.18, "width": 0.75, "height": 0.64, "units": "normalized"},
+          "scale": "micro-to-meso",
+          "affects": "graphic readability",
+          "mapsTo": {"type": "material.localOverrides", "ref": "inverted-hull"},
+          "evidenceRef": "source:full-object",
+          "confidence": 0.99
+        }
+      ]
+    },
+    "anatomy": {
+      "applies": false,
+      "styleHeads": 1.0,
+      "proportions": {
+        "headUnit": 1.0,
+        "torso": 0.0,
+        "legs": 0.0,
+        "shoulderWidth": 0.0,
+        "hipWidth": 0.0
+      },
+      "pose": {
+        "type": "neutral hover, legless",
+        "jointAngles": {
+          "trunkRoot": -20,
+          "malletArm": -18
+        }
+      },
+      "faceLandmarks": {
+        "eyeLine": 0.41,
+        "eyeSpacing": 0.37,
+        "noseBase": 0.66,
+        "mouthLine": 0.82,
+        "hairline": 0.08
+      },
+      "features": [
+        "single body/head mass",
+        "two pupil-free dot eyes",
+        "no mouth",
+        "two top ears",
+        "left-side flexible trunk",
+        "no legs"
+      ],
+      "confidence": 0.8,
+      "note": "The humanoid head-unit system is not semantically applicable to this mascot. Values encode one body/head unit and the visible face layout only; implementation uses a custom legless creature hierarchy."
+    },
+    "sourceImage": "/Users/kotahayashi/Workspace/Seedance_Madogiwa-voxel-game/02_CHARACTERS/Yumemin.jpg"
+  },
+  "qualityContract": {
+    "qualityBar": "moderate",
+    "definitionOfDone": [
+      "The front three-quarter render reads immediately as Yumemin at thumbnail size: vivid blue rounded body, pupil-free dot eyes, two small ears, flexible left-side trunk, white rear cap, and no legs.",
+      "The model remains volumetric in side and rear orbit views, with the rear cap wrapping continuously and no flat-card collapse.",
+      "Named pivots expose hover, trunk sway, and mallet swing; the mallet can be detached without affecting the body.",
+      "All visible meshes are named, clickable, and covered by the runtime parts manifest."
+    ],
+    "minimumSpecDepth": {
+      "macroComponents": 2,
+      "mesoComponents": 3,
+      "microFeatureGroups": 2,
+      "materialLayers": 2,
+      "repetitionSystems": 2,
+      "reviewViewpoints": 4
+    },
+    "featureGroups": [
+      {
+        "id": "yumemin-body-silhouette",
+        "name": "Rounded flying body silhouette",
+        "required": true,
+        "qualityCriteria": [
+          "The body is a horizontally wide, continuous rounded volume with no torso or legs.",
+          "The body-to-ear ratio and flattened lower-left trunk notch match the supplied icon."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "body becomes a sphere, cube, or humanoid torso",
+          "feet or legs are invented",
+          "three-quarter orbit reveals a flat card"
+        ]
+      },
+      {
+        "id": "yumemin-face-system",
+        "name": "Pupil-free dot eyes and ear pair",
+        "required": true,
+        "qualityCriteria": [
+          "Two solid near-black dot eyes sit on the visible front plane with no pupils, irises, or catchlights.",
+          "Two small triangular ears remain separated and legible against the body outline."
+        ],
+        "evidenceRefs": [
+          "zone-r0c0",
+          "zone-r0c2",
+          "zone-r1c1",
+          "zone-r1c2"
+        ],
+        "failureModes": [
+          "eyes become glossy spheres with highlights",
+          "ear tips are rounded away or oversized",
+          "mouth or brows are invented"
+        ]
+      },
+      {
+        "id": "yumemin-trunk-rig",
+        "name": "Flexible trunk geometry and root pivot",
+        "required": true,
+        "qualityCriteria": [
+          "A tapered curved tube exits the lower-left face with visible overlap at the root.",
+          "The trunk pivots from its facial socket and supports a subtle looping sway."
+        ],
+        "evidenceRefs": [
+          "zone-r1c0",
+          "zone-r2c0",
+          "02_CHARACTERS/08_Yumemin.md"
+        ],
+        "failureModes": [
+          "trunk floats or intersects without an intentional root blend",
+          "trunk reads as a rigid cone or limb",
+          "animation rotates around its center instead of the face socket"
+        ]
+      },
+      {
+        "id": "yumemin-rear-cap",
+        "name": "White rear cap and blue-white boundary",
+        "required": true,
+        "qualityCriteria": [
+          "The white rear region is a real volumetric cap, not a front decal.",
+          "The cap wraps across side and back views with a clean curved blue-white boundary."
+        ],
+        "evidenceRefs": [
+          "zone-r1c2",
+          "zone-r2c2",
+          "02_CHARACTERS/08_Yumemin.md"
+        ],
+        "failureModes": [
+          "rear becomes entirely white or entirely blue",
+          "white patch floats above the body",
+          "side or back shows a blank unmodeled surface"
+        ]
+      },
+      {
+        "id": "yumemin-bonk-runtime",
+        "name": "Wooden mallet and action-ready hierarchy",
+        "required": true,
+        "qualityCriteria": [
+          "A short right-side arm/hand pivot holds a wooden mallet with separate handle and head meshes.",
+          "The mallet swing socket, impact socket, collider proxies, and detachable destruction group are exposed in sculptRuntime.",
+          "Every mesh is named and participates in the shared part-picking/explode manifest."
+        ],
+        "evidenceRefs": [
+          "02_CHARACTERS/08_Yumemin.md"
+        ],
+        "failureModes": [
+          "mallet is fused to the body",
+          "handle or head floats at a joint",
+          "swing rotates around the wrong point",
+          "runtime hierarchy is an inert decorative group"
+        ]
+      }
+    ],
+    "visualDeltaChecks": [
+      "body width/height ratio and continuous rounded silhouette",
+      "eye spacing and pupil-free dot treatment",
+      "ear size, separation, and top contour",
+      "trunk root, curve, taper, and silhouette notch",
+      "white rear cap coverage in front, side, and back",
+      "no-leg flying silhouette",
+      "matte blue, white, black, and wood palette under neutral lighting"
+    ],
+    "antiShallowSpecRules": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md)."
+    ]
+  },
+  "authoringInstruction": "Fill observed object class, complexity reasoning, featureGroups, visualDeltaChecks, and unknowns before generating or implementing ObjectSculptSpec.",
+  "localSpecSearch": {
+    "collection": "core_3d",
+    "query": "Yumemin stylized flying mascot continuous rounded body flexible trunk animation pivot matte cartoon plastic black outline silhouette",
+    "index": {
+      "status": "rebuilt",
+      "reason": "missing",
+      "fingerprint": "6857e5ab528b42ac12f4f411f862610a0bffce8e47aee3610a7603c318072fe8"
+    },
+    "matches": [
+      {
+        "record_id": "core.socket-pivot",
+        "file_path": "grimoire/glossary/3d_vocabulary.md",
+        "heading": "Animation, Physics, And Destruction",
+        "key_path": null,
+        "score": 6.208524523517,
+        "snippets": [
+          "A pivot is a local rotation origin; a socket is an attachment point for a child part. In a runtime hierarchy, a socket Object3D is a child of the relevant pivot."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/glossary/3d_vocabulary.md",
+            "heading": "Animation, Physics, And Destruction",
+            "key_path": null
+          },
+          {
+            "path": "grimoire/readiness/action_rigging.md",
+            "heading": "Hierarchy Pattern",
+            "key_path": null
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/readiness/action_rigging.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          }
+        ]
+      },
+      {
+        "record_id": "core.pbr-roughness",
+        "file_path": "grimoire/glossary/3d_vocabulary.md",
+        "heading": "Material And PBR",
+        "key_path": null,
+        "score": 5.84800548653,
+        "snippets": [
+          "Roughness is microfacet scatter: high roughness reads matte and low roughness reads glossy. Recognition cues: low roughness reads as a sharp, mirror-like, tight specular highlight; high roughness reads as a blurry, wide, dim highlight and matte ..."
+        ],
+        "source_refs": [
+          {
+            "path": "grimoire/glossary/3d_vocabulary.md",
+            "heading": "Material And PBR",
+            "key_path": null
+          },
+          {
+            "path": "grimoire/intake/image_analysis.md",
+            "heading": "Layer 5 — Materials & surface (PBR)",
+            "key_path": null
+          },
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.material_pbr[1]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "grimoire/glossary/3d_vocabulary.md"
+          },
+          {
+            "kind": "notebooklm-research",
+            "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+            "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+          },
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation — merged recognition cues + Three.js target instead of duplicating this entity."
+          }
+        ]
+      },
+      {
+        "record_id": "core.shader-mapping-capsulegeometry-rounded-edge-components",
+        "file_path": "docs/raw/img2threejs-skill-dataset.json",
+        "heading": null,
+        "key_path": "categories.rendering_shader_mapping[6]",
+        "score": 5.386043518442,
+        "snippets": [
+          "Maps to components with hemispherical rounded ends. Ánh xạ tới các bộ phận có đầu bo tròn dạng bán cầu. Recognition cues: Rod-like part with distinctly rounded (not flat-cut) ends, e.g. a knife spine or a safety lever Dấu hiệu nhận diện: Bộ phận ..."
+        ],
+        "source_refs": [
+          {
+            "path": "docs/raw/img2threejs-skill-dataset.json",
+            "heading": null,
+            "key_path": "categories.rendering_shader_mapping[6]"
+          }
+        ],
+        "evidence_refs": [
+          {
+            "kind": "source",
+            "ref": "docs/raw/img2threejs-skill-dataset.json",
+            "note": "img2threejs NotebookLM research distillation"
+          }
+        ]
+      }
+    ]
+  }
+}

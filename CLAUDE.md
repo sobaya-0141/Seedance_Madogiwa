@@ -24,3 +24,11 @@
 
 ## 全制作物に共通の禁止事項
 `WORLD_BIBLE.md`の禁止事項（ブラック企業描写、いじめ、パワハラ、鬱展開、グロ描写）を厳守する。各キャラのNG変更（仮面/触手/ウクレレ等のデザイン要素）はどの媒体でも変更しない。
+
+## FlutterゲームのUI検証
+
+`14_MADOGIWA_CARD_GAME/`は`ccpocket`と同じくDart MCPでデバッグアプリを起動し、
+Marionette MCPでUI操作・スクリーンショット・カスタムハーネス検証を行う。
+プロジェクト設定は`.mcp.json`と`.codex/config.toml`、専用拡張は
+`14_MADOGIWA_CARD_GAME/lib/automation/`を参照する。Flameキャンバス内の状態確認には
+`madogiwa.inspectGame`、決定論的シナリオへの遷移には`madogiwa.openScenario`を使う。

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "overall-silhouette",
+    "score": 0.9,
+    "visible": true,
+    "notes": "The body remains circular from front, side, and rear, with no flat-card collapse."
+  },
+  {
+    "id": "primary-structure",
+    "score": 0.87,
+    "visible": true,
+    "notes": "Body, wrap, trunk, eyes, ears, and tail remain distinct named systems with rooted geometry."
+  },
+  {
+    "id": "reference-material-system",
+    "score": 0.8,
+    "visible": true,
+    "notes": "Blue matte vinyl, white woven wrap, darker inner ears, and black eye beads remain separable under neutral light."
+  },
+  {
+    "id": "centerline-proboscis-wrap-system",
+    "score": 0.9,
+    "visible": true,
+    "notes": "The proboscis is centered and rounded; the rear cloth is white from both profiles and back, with no dark drawn seam."
+  }
+]

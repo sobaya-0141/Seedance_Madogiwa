@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": ".test-dist",
+    "rootDir": ".",
+    "types": ["node"],
+    "isolatedModules": false
+  },
+  "include": ["src/rules.ts", "src/types.ts", "tests/**/*.ts"]
+}

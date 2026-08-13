@@ -1,0 +1,184 @@
+{
+  "destructionGroups": {
+    "mallet": [
+      "mallet-assembly__pivot"
+    ],
+    "yumemin-body": [
+      "body-shell__pivot",
+      "rear-wrap__pivot",
+      "tail-nub__pivot",
+      "ear-system__pivot",
+      "eye-system__pivot",
+      "trunk-pivot"
+    ]
+  },
+  "integralMeshes": 20,
+  "model": "yumemin-img2threejs",
+  "parts": [
+    {
+      "kind": "part",
+      "module": "root",
+      "name": "root",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "hover-body",
+      "name": "hover-body",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "body-shell",
+      "name": "body-shell",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "rear-wrap",
+      "name": "rear-wrap",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "tail-nub",
+      "name": "tail-nub",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "ear-system",
+      "name": "ear-system",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "eye-system",
+      "name": "eye-system",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "trunk-pivot",
+      "name": "trunk-pivot",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "mallet-assembly",
+      "name": "mallet-assembly",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "mallet-arm",
+      "name": "mallet-arm",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "mallet-handle",
+      "name": "mallet-handle",
+      "triangles": 0
+    },
+    {
+      "kind": "part",
+      "module": "mallet-head",
+      "name": "mallet-head",
+      "triangles": 0
+    },
+    {
+      "kind": "detail",
+      "module": "rear-wrap",
+      "name": "rear-wrap-edge",
+      "parentPartId": "rear-wrap",
+      "triangles": 1920
+    },
+    {
+      "kind": "detail",
+      "module": "rear-wrap",
+      "name": "tail-opening-rim",
+      "parentPartId": "rear-wrap",
+      "triangles": 800
+    },
+    {
+      "kind": "detail",
+      "module": "left-ear",
+      "name": "left-ear",
+      "triangles": 572
+    },
+    {
+      "kind": "detail",
+      "module": "left-ear",
+      "name": "left-inner-ear",
+      "parentPartId": "left-ear",
+      "triangles": 34
+    },
+    {
+      "kind": "detail",
+      "module": "right-ear",
+      "name": "right-ear",
+      "triangles": 572
+    },
+    {
+      "kind": "detail",
+      "module": "right-ear",
+      "name": "right-inner-ear",
+      "parentPartId": "right-ear",
+      "triangles": 34
+    },
+    {
+      "kind": "detail",
+      "module": "left-eye",
+      "name": "left-eye",
+      "triangles": 1216
+    },
+    {
+      "kind": "detail",
+      "module": "right-eye",
+      "name": "right-eye",
+      "triangles": 1216
+    },
+    {
+      "kind": "detail",
+      "module": "trunk-pivot",
+      "name": "trunk-root",
+      "parentPartId": "trunk-pivot",
+      "triangles": 1656
+    },
+    {
+      "kind": "detail",
+      "module": "trunk",
+      "name": "trunk",
+      "triangles": 2560
+    },
+    {
+      "kind": "detail",
+      "module": "trunk-pivot",
+      "name": "trunk-tip-form",
+      "parentPartId": "trunk-pivot",
+      "triangles": 1064
+    },
+    {
+      "kind": "detail",
+      "module": "mallet-hand",
+      "name": "mallet-hand",
+      "triangles": 720
+    },
+    {
+      "kind": "detail",
+      "module": "mallet-head",
+      "name": "mallet-cap-front",
+      "parentPartId": "mallet-head",
+      "triangles": 128
+    },
+    {
+      "kind": "detail",
+      "module": "mallet-head",
+      "name": "mallet-cap-back",
+      "parentPartId": "mallet-head",
+      "triangles": 128
+    }
+  ],
+  "unnamedMeshes": 0
+}
