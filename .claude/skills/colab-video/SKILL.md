@@ -153,7 +153,12 @@ zipは通常20〜200MB程度。受け渡しはノートブックのセル4で「
 seedance形式のラン（クリップ・CapCut inputs・`@ImageN`/`@Audio1`タグ）をH3チャプターへ変換する手順。実例: `03_SCRIPTS/41_okayaman_watching_cm/H3_COLAB.md`。
 
 1. **クリップ→チャプター対応**: 1クリップ＝1チャプター。境界共有（クリップNのFrame B＝クリップN+1のFrame A）はそのまま引き継ぐ。尺は17k+5グリッド（24fps）へ丸め、対応表を`H3_COLAB.md`に記録する。
-2. **モード判定**: セリフなし＝I2V（Frame A/Bを`--first`/`--last`に）。セリフあり＝R2V（Frame A/Bを`<Picture 1>`/`<Picture 2>`に、シート・スケール参照を残りスロットへ。画像9・音声3・合計12の上限に注意）。
+2. **モード判定は「音声の発話者が画面内にいるか」で決める**（「セリフがあるか」ではない）:
+   - **画面内のキャラが喋る → R2V**（Frame A/Bを`<Picture 1>`/`<Picture 2>`に、シート・スケール参照を残りスロットへ。画像9・音声3・合計12の上限に注意）。
+   - **セリフなし → I2V**（Frame A/Bを`--first`/`--last`に）。
+   - **画面外ナレーションだけ → I2V（音声を渡さない）＋ナレーションはffmpegで後載せ。** local-video SKILL.mdの既定方針と同じ。**R2Vにナレーション音声を添付すると、H3は画面内のキャラにそれを口パクさせる**（2026-08-17実測・`43_no_way_debug_cm`のch1/ch3/ch5で3本とも再現）。「off-screen Narratorが喋る」「キャラの口は全フレーム閉じたまま」「リップシンクを当てるな」とプロンプトに明示しても防げない。**音声を渡さないことが唯一の確実な対策。**
+     - I2V側のプロンプトにはセリフ本文を一切書かず、「NOBODY SPEAKS IN THIS SHOT」「口は全フレームで完全に閉じたまま（小さな"o"口も禁止）」「音声に人声を生成するな」を明示する。実例: `03_SCRIPTS/43_no_way_debug_cm/ch1_prompt.txt`。
+     - 後載せは`assemble.sh`で行う（環境音を0.5〜0.6倍にダックしてナレーションを`adelay`+`amix`で重ねる）。実例: 同ランの`assemble.sh`。
 3. **プロンプト変換**（逐語ベース。要約禁止はseedanceと同じ）:
    - **I2VはH3に参照画像を渡せない**ため、`Required attached reference files: @ImageN...`の宣言部を削除し、本文中の`(@ImageN, ...)`は同定句だけ残す。冒頭付近に "The video starts EXACTLY on the attached first frame and ends EXACTLY on the attached last frame." を足す。
    - R2Vは`@ImageN`→`<Picture N>`（接続順に振り直し）、`@Audio1`→`<Audio 1>`、話者に`(S1)`、セリフは`<d>[Japanese] 原文</d>`で逐語埋め込み。
@@ -162,4 +167,5 @@ seedance形式のラン（クリップ・CapCut inputs・`@ImageN`/`@Audio1`タ�
 4. **音声パディング**: H3は1ファイル2.0秒以上。短いwavは`apad`で末尾パディングした**別名ファイル**（`*_h3pad.wav`）を作り、元ファイルは変更しない（seedance側の正典を保つ）。
 5. **workflow生成**: `build_h3_workflow.py`（local-videoスキル同梱・codec対応版）をラン直下にコピーして`chN_workflow.json`を生成。`h3_run.py`も同梱してからzipする。
 6. **atmosphere参照（ポスター等）はH3入力にしない**（雰囲気はキーフレームに焼き込み済み。文字漏れリスクも避けられる）。
-7. パイロットは**セリフのあるチャプター**。チェックリストはseedanceランの`script.md`の生成プロトコルを使い、音声の項だけ「添付wavそのものが鳴っているか」に読み替える。
+7. パイロットは**セリフのあるチャプター**。チェックリストはseedanceランの`script.md`の生成プロトコルを使い、音声の項だけ「添付wavそのものが鳴っているか」に読み替える。**画面外ナレーションのチャプターがあるランでは、そのうち1本もパイロットに含める**（口パク混入は上記2のとおりR2Vでは必ず起きるので、I2V化できているかを実物で確認する）。
+8. **回収後の検証で口の動きを必ず見る**。`ffmpeg -i chN.mp4 -vf "crop=<顔>,select='not(mod(n\,12))',tile=6x2"`で0.5秒刻みのフィルムストリップを作ると、発話区間外の口パクが一目で分かる。音声が添付wav駆動かどうかは、出力音声と元wavの50ms RMSエンベロープを正規化相互相関にかけると数値で確認できる（実例: `43_no_way_debug_cm/validation/h3_frames/`）。
