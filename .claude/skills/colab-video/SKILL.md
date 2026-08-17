@@ -5,7 +5,7 @@ description: 窓際族物語の動画生成工程（/local-videoのステップ7
 
 # Colab動画制作ワークフロー（MiniMax H3 / LTX-2.5 on Google Colab）
 
-**実行主体はClaude CodeまたはCursor。Codexはこのスキルを使わない**（`/local-video`と同じ扱い。`.cursor/skills/`にのみsymlinkし、`.agents/skills/`には張らない）。
+**実行主体はClaude Code・Cursor・Codexのいずれでもよい**（`/local-video`と同じ扱い。`.agents/skills/`と`.cursor/skills/`の両方にsymlinkしてある）。
 
 ## 位置づけ（local-videoの派生）
 

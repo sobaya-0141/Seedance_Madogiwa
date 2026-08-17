@@ -5,7 +5,7 @@ description: 窓際族物語の動画をクラウドを使わずフルローカ�
 
 # ローカル動画制作ワークフロー（MiniMax H3）
 
-**実行主体はClaude CodeまたはCursor。Codexはこのスキルを使わない**（Codexの担当は既存の`/seedance`のみ。そのため本スキルは`.agents/skills/`にsymlinkせず、Cursor向けの`.cursor/skills/`にのみsymlinkしてある）。
+**実行主体はClaude Code・Cursor・Codexのいずれでもよい**（Codex CLI向けの`.agents/skills/`とCursor向けの`.cursor/skills/`の両方にsymlinkしてある）。
 
 ユーザーから「**ローカルで動画作成して**」と指示されたら、`/seedance`（CapCut/クラウド生成）ではなくこのスキルを使う。台本・音声・キーフレームの考え方は`/seedance`と同じ構造で、動画生成だけをクラウドのSeedance（CapCut）から**ローカルのMiniMax H3（ComfyUI）**に置き換えたものである。
 
@@ -286,7 +286,7 @@ ffmpeg -y -i ch3_line1_fukuchan.wav -af "apad=whole_dur=2.0" ch3_line1_fukuchan_
 
 ## 5. キーフレーム一括生成（draw-things-cli）
 
-**実行エージェント自身が**本スキル同梱の`dt_generate.sh`（生成）と`stitch_refs.py`（複数参照の連結）でローカル生成する。画像生成を外部エージェント（Codex等）に委譲しない。1チャプターにつき`chN_start.png`＋`chN_end.png`の2枚。使用モデルの正典は**Qwen Image Edit 2511（6-bit）`qwen_image_edit_2511_q6p.ckpt`**で、1つのランの途中でモデルを変えない。
+**実行エージェント自身が**本スキル同梱の`dt_generate.sh`（生成）と`stitch_refs.py`（複数参照の連結）でローカル生成する。画像生成を他の外部エージェントに委譲しない。1チャプターにつき`chN_start.png`＋`chN_end.png`の2枚。使用モデルの正典は**Qwen Image Edit 2511（6-bit）`qwen_image_edit_2511_q6p.ckpt`**で、1つのランの途中でモデルを変えない。
 
 ### 所要時間と実行方法
 
