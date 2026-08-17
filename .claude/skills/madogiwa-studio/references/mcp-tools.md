@@ -44,6 +44,15 @@ The skill's `agents/openai.yaml` also declares this Remote MCP dependency for cl
 - `create_input_upload({ generationId, filename, label, kind, referenceLabel?, groupLabel?, notes?, contentType?, displayOrder? })`: create an input row and return `{ assetId, uploadUrl, expiresAt }`. Kind is `image`, `audio`, `document`, or `other`.
 - `set_video_status({ videoId, status })`: set `upload_pending`, `ready`, `published`, or `archived`.
 - `set_video_featured({ videoId, featured })`: enable or disable official-site pick-up priority for an existing video.
+- `list_gallery_items({ includeArchived? })`: return gallery items in display order. Drafts are included; archived items are optional.
+- `create_gallery_item({ slug, title, kind, displayOrder?, status? })`: create a gallery item. New items must receive an image before they can be published.
+- `update_gallery_item({ galleryItemId, slug?, title?, kind?, displayOrder?, status? })`: update gallery metadata or set `draft`, `published`, or `archived`.
+- `create_gallery_image_upload({ galleryItemId, filename, contentType })`: issue a one-time URL for a JPEG, PNG, or WebP gallery image up to 10MB.
+- `reorder_gallery_items({ itemIds })`: replace gallery display order with the given UUID order.
+- `list_articles({ includeArchived? })`: return articles in display order. Drafts are included; archived items are optional.
+- `create_article({ slug, label, source, title, copy?, url, action, displayOrder?, status? })`: create an article link.
+- `update_article({ articleId, slug?, label?, source?, title?, copy?, url?, action?, displayOrder?, status? })`: update or archive an article.
+- `reorder_articles({ itemIds })`: replace article display order with the given UUID order.
 
 IDs accepted by mutation tools are UUIDs returned by earlier tools. `studio_id` is user-facing and is not a mutation ID.
 
@@ -85,3 +94,5 @@ Typical MIME types:
 - PDF: `application/pdf`
 
 After both PUTs, verify with `get_episode`: status must be `ready`, and `size_bytes` and `poster_r2_key` must be nonnull. Public media URLs are `/media/<videoId>`, `/posters/<videoId>`, and `/inputs/<assetId>`.
+
+Uploaded gallery images are served from `/gallery-images/<galleryItemId>`; use the `image_url` returned by list and mutation tools.

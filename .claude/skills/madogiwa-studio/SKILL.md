@@ -1,6 +1,6 @@
 ---
 name: madogiwa-studio
-description: Madogiwa StudioのRemote Web MCPを使い、窓際族物語のエピソード、生成バージョン、使用モデル、登場メンバー、Seedanceプロンプト、入力画像・参照音声・資料、生成動画を登録・確認する。ユーザーがMadogiwa Studioへの登録、動画アップロード、プロンプト同期、入力素材管理、Studio ID確認、MCP接続や同僚環境への導入を頼んだときに使用する。
+description: Madogiwa StudioのRemote Web MCPを使い、窓際族物語のギャラリー、記事、エピソード、生成バージョン、使用モデル、登場メンバー、Seedanceプロンプト、入力画像・参照音声・資料、生成動画を登録・確認する。ユーザーがMadogiwa Studioへの登録、公式サイトコンテンツ編集、動画アップロード、プロンプト同期、入力素材管理、Studio ID確認、MCP接続や同僚環境への導入を頼んだときに使用する。
 ---
 
 # Madogiwa Studio
@@ -34,6 +34,16 @@ Madogiwa Studioを制作物の共有台帳として扱い、Remote MCPでメタ�
 6. 生成動画から0.5秒付近のJPEGサムネイルを作る。`create_video_upload`でチケットを発行し、`posterUploadUrl`へJPEG、`uploadUrl`へ動画をPUTする。公式サイトで優先したい採用動画は`featured: true`を指定する。
 7. `get_episode`を再実行し、各ファイルが`ready`、動画の`poster_r2_key`とサイズが非null、プロンプトとモデルが意図どおりか確認する。
 8. 必要なら公開詳細ページ`https://madogiwa-studio.madogiwa-studio.workers.dev/episodes/<slug>`で表示・再生を確認する。
+
+## ギャラリー・記事ワークフロー
+
+- 書き込み前に`list_gallery_items`または`list_articles`でslugと表示順を確認する。
+- 新しいギャラリー項目は`draft`で作成し、`create_gallery_image_upload`の一回限りURLへJPEG、PNG、WebPのいずれかをPUTしてから`published`へ変更する。
+- ギャラリー画像は10MB以下にし、URL発行とPUTを同じ作業内で連続して行う。アップロードURLは表示・保存しない。
+- 記事は外部URL、掲載元、リンク文言まで確認してから公開する。
+- 並べ替えは一覧で全対象IDを確認してから`reorder_gallery_items`または`reorder_articles`を使う。
+- 物理削除は行わず、取り下げは`draft`または`archived`へ変更する。
+- 更新後は一覧を再取得し、公開サイトの表示順、画像URL、公開状態を確認する。
 
 ## アップロード規則
 
