@@ -59,8 +59,8 @@ description: 窓際族物語のストーリー（あらすじ）からSeedance�
 
 各クリップは**開始状態（first frame）と終了状態（last frame）を明確に区別して書く**。台本の各クリップに、次の2つを必ず記述する:
 
-- **First frame**: そのクリップ冒頭の静止画で写っている内容（構図・キャラの位置・表情）。
-- **Last frame**: そのクリップ終端の静止画。ここまでにどう動いた結果になるか。
+- **First frame**: そのクリップ冒頭の静止画で写っている内容（構図・キャラの位置・表情）。構図＝ショットサイズ・アングルはCamera plan（後述）の該当行に従う。
+- **Last frame**: そのクリップ終端の静止画。ここまでにどう動いた結果になるか。カメラムーブのあるクリップは**ムーブ終了時の構図**で書く（push-inなら開始より寄った構図）。
 - **Prop states**: そのクリップで状態が変わる小道具（グラス・瓶・食器・箱など）ごとに、First frame時点とLast frame時点の状態（中身の量、開栓/未開栓、手に持つ/置いてある、蓋の有無 等）を1行ずつ明記する。
 
 さらに**つなぎ目を消すため、クリップNの Last frame と クリップN+1の First frame は同一の絵にする**（後述のとおり同じ画像ファイルを共有する）。小道具の状態も同様に引き継ぐ（クリップNのLast frameの状態 ＝ クリップN+1のFirst frameの状態。クリップをまたいで勝手に満杯に戻る/空になる等を起こさない）。
@@ -110,6 +110,31 @@ Seedanceの1クリップは4〜15秒。**動きが複雑・カメラワークが
 - **全キーフレーム生成プロンプトと全Motion promptに、その場面の時間帯・光の句を毎回明記する**（例: "bright midday daylight"、"warm golden sunset light"）。場所名だけを書いてはいけない。特に典型絵が夜の場所（居酒屋・バー・繁華街等）を昼に出す場合は、望む時間帯を大文字で強調し否定形も添える: "the street outside the izakaya in BRIGHT MIDDAY DAYLIGHT — it is DAYTIME, NOT night; no night sky, no darkness, the red lantern is unlit"。
 - **キーフレームの目視確認に時間帯・照明を含める**: 生成した各フレームで空・窓外・照明がScene ledgerの該当セルと一致しているか、隣り合うフレーム間で昼夜・光の色が急変していないかを確認し、ズレていたら再生成する。キーフレームが夜で生成されるとSeedanceはその夜を忠実に補間してしまう。
 - **論理チェック**: 台本を書き終えたらScene ledgerを左から右へ通しで読み、(1) 時間帯の変化がないか（あるなら画面内で時間経過を見せるクリップ・描写が対応しているか）、(2) 場所の変化がすべて画面内の移動・転換として描かれているか、を確認する。
+
+### カメラワーク設計ルール（Camera plan・全クリップのショットリスト・重要）
+
+カメラを設計しないと動画は退屈になる: 全クリップを "locked-off static camera" にすると監視カメラ的な定点映像の連続になり、かといって無指定はモデルが勝手にカメラを動かしてブレる。カメラワークは**2層で設計**する: (a) **クリップ内のカメラムーブ**（push-in等。キーフレーム両端に焼き込む）、(b) **クリップ間のショット切り替え＝カット**（つなぎ目のフレーム共有をやめ、同じ瞬間を別アングルから描いた新しい開始フレームを作る）。
+
+- **`script.md`の冒頭（Scene ledgerの近く）に`## Camera plan`セクションを表で書く（必須）。** 行＝クリップ。この表がカメラ情報の唯一の正であり、各クリップのFirst/Last frame記述・キーフレーム生成プロンプト・Motion promptのカメラ文はすべて該当行と一致させる。
+
+```
+## Camera plan (shot list across ALL clips)
+
+| Clip | Shot size & angle | Camera move (type + amplitude + speed) | Join from previous clip |
+|------|-------------------|----------------------------------------|-------------------------|
+| 1 | WIDE establishing shot, eye level | slow push-in, small amplitude | — (first clip) |
+| 2 | MEDIUM two-shot, eye level | locked-off static camera | SHARED FRAME (continuous) |
+| 3 | CLOSE-UP on Fukuchan, slight low angle | locked-off static camera | CUT (new angle, same moment) |
+| 4 | WIDE shot, high angle | slow pull-back, medium amplitude | CUT (new angle, same moment) |
+```
+
+- **単調防止の原則**: 同じショットサイズ・同じアングル・静止カメラの組を**3クリップ以上連続させない**（寄り引きの交替、リアクションのCLOSE-UP、オチのpush-in等を入れて設計し直す）。逆に全クリップにムーブを入れるのも観づらい — 静と動を交互に置く。目安: シーンの導入はWIDE establishing、会話は寄り（MEDIUM〜CLOSE-UP）の切り返し、感情の高まり・オチはpush-in、状況の種明かし・引きのギャグはpull-back。
+- **クリップ内ムーブはキーフレーム両端に焼き込む**: push-in / pull-back / pan / tilt / tracking等のムーブは、**開始フレーム＝ムーブ開始時の構図、終了フレーム＝ムーブ終了時の構図**として2枚のキーフレーム自体を違う構図で描く（生成手順はステップ3）。キーフレームが同一構図のままMotion promptだけでカメラを動かす指示をしても、両端の絵に引き戻されて中途半端な揺れにしかならない。逆に、両端の構図が違うのにMotion promptが "locked-off static camera" だと補間が破綻する — 表・キーフレーム・プロンプトの三者を必ず一致させる。
+- **クリップ内ムーブの振幅上限（補間安全性）**: Frame A/B補間はカメラ位置が離れすぎるとモーフィング崩壊する。1クリップ内のムーブはsmall〜medium振幅に留める。目安: **被写体の画面内サイズ変化は約2倍まで**、pan/trackingは開始フレームの主被写体が終了フレームにも残る範囲、orbit/arcは背景の入れ替わりが起きない小角度まで。これを超える視点変更（正面→背後、寄り→俯瞰全景等）はクリップ内でやらず、**クリップ境界のCUTにする**。
+- **セリフのあるクリップのカメラは控えめにする**: "locked-off static camera" または "slow push-in, small amplitude" まで。速いパン・大振幅ムーブは口元の描画を不安定にしリップシンクを壊す。ダイナミックなムーブはセリフなしクリップに置く（1クリップ1話者の分割と相性が良い: セリフクリップは寄りで静かに、間のリアクション・移動クリップで動かす）。
+- **CUT（ショット切り替え）の作法**: CUTは**時間経過ゼロの視点切り替え**であり、Prop state ledger・Scene ledger・Fixture layoutの状態はCUT前後で**同一列を共有し続ける**（カットを状態変化の口実にしない — 「演出を口実にした状態ジャンプ禁止」と同じ原則）。CUT境界ではつなぎ目のフレーム共有をやめ、新しい構図の開始フレームを**前クリップの終了フレームを種に**生成する（ステップ3参照）。
+- **Motion promptとの対応**: 各クリップのMotion promptのカメラ文はCamera planの該当行を「種類＋振幅＋速度」の標準記法でそのまま反映する。静止させるクリップも "locked-off static camera" と明示する（無指定はモデルが勝手に動かす）。
+- `validate_run_bundle.py`が`## Camera plan`セクションの存在と、各Motion prompt内のカメラ記述を機械検証する。
 
 ### 機構小物の配置整合性ルール（ドアノブ・蝶番・スイッチ等・重要）
 
@@ -309,10 +334,11 @@ Seedance用プロンプトを作成したら、`codex` CLIの画像生成ツー�
 
 キーフレーム同士が食い違うとSeedanceの補間がモーフィング崩壊を起こすため、**必ず前の絵を種にして次の絵を作る**（ゼロから独立生成しない）。
 
-1. **クリップ1の開始フレーム**を、登場キャラ全員の参照画像を`-i`で渡して生成する。
-2. **クリップ1の終了フレーム**は、たった今作った**クリップ1の開始フレームを`-i`に加えて**「同じ絵のまま、状態だけ終了状態に変える」形で img2img 生成する（キャラ参照画像も引き続き渡す）。
-3. **クリップ2の開始フレーム = クリップ1の終了フレーム**。原則ここは**新規生成せず同じ画像ファイルをコピー/参照して共有する**（つなぎ目消し）。カメラや場所が切り替わって共有できない場合のみ、クリップ1終了フレームを種に新規生成する。
+1. **クリップ1の開始フレーム**を、登場キャラ全員の参照画像を`-i`で渡して生成する（構図はCamera planの該当行のショットサイズ・アングルで指定する）。
+2. **クリップ1の終了フレーム**は、たった今作った**クリップ1の開始フレームを`-i`に加えて**img2img生成する（キャラ参照画像も引き続き渡す）。カメラが静止のクリップは「同じ絵のまま、状態だけ終了状態に変える」。**カメラムーブのあるクリップは、構図もムーブ終了位置へ変える**（例: push-inなら「同じシーンを一歩寄ったMEDIUM shotで」）— 変えるのは Camera plan が指示する構図差＋動きが変える部分だけで、それ以外（キャラ・画風・光・場所・小道具の状態）は維持する。
+3. **クリップ2の開始フレーム = クリップ1の終了フレーム**（Camera planのJoin列が`SHARED FRAME`のとき）。ここは**新規生成せず同じ画像ファイルをコピー/参照して共有する**（つなぎ目消し）。Join列が`CUT`のクリップは共有せず、**前クリップの終了フレームを種に**「THE SAME scene at THE SAME moment, rendered from a NEW camera position: <新しいショットサイズ・アングル>」で新規生成する（時間経過ゼロ: 小道具の状態・時間帯・キャラの位置関係は種画像と完全に同一に保つ）。
 4. 以降のクリップも 開始→終了 の順で、前フレームを種にチェーンしていく。
+5. **ズーム系（push-in / pull-back）の寄り側フレームはクロップで作るのが最も安定**: 広い方の構図のフレームから、被写体中心に同アスペクト比でクロップして元解像度へ拡大する（ImageMagick/ffmpeg等。クロップ倍率は解像感が保てる約2倍まで）。2枚が画素レベルで同一シーンになるため補間が崩れない。**push-in**は開始（広）→終了（寄り）なので、終了フレームを開始フレームのクロップで作れる（生成不要・最優先で使う）。**pull-back**は終了側が広くなるため、開始フレームがまだ自由なとき（クリップ1、またはJoin列が`CUT`のクリップ）に限り「広い終了フレームを先に生成→開始フレームをクロップで切り出す」が使える。開始フレームが前クリップとの共有で固定済みのpull-backは、広い終了フレームを開始フレーム種のimg2img（引きの構図へ変える編集）で生成する — 種画像に無い周辺を描き足す編集は崩れやすいので、崩れる場合はpull-backをCUT境界に移すか設計を見直す。
 
 ### キャラクター参照画像（同一性の固定）
 
@@ -334,7 +360,7 @@ codex exec -s workspace-write --enable image_generation \
 codex exec -s workspace-write --enable image_generation \
   -i 03_SCRIPTS/<NN>_<slug>/clip1_start.png \
   -i 03_SCRIPTS/<NN>_<slug>/Sobaya_sheet.png -i 03_SCRIPTS/<NN>_<slug>/Tokun_sheet.png -i 03_SCRIPTS/<NN>_<slug>/Yotan_sheet.png -i 03_SCRIPTS/<NN>_<slug>/Fukuchan_sheet.png -i 03_SCRIPTS/<NN>_<slug>/Yametaro_sheet.png \
-  "Use your image generation tool to create the LAST-FRAME still of the same shot. Image 1 is this clip's start frame — keep the same characters, art style, framing, lighting and location, change ONLY what the motion changes. Images 2..6 are character sheets (front/side/back turnarounds) — identity/design references only, keep every face/design and NG-change element consistent. Prompt: <English scene description of the clip's END state>. <the run's Style block line, verbatim from ## Style block>. Single still frame, no text overlay. Save as 03_SCRIPTS/<NN>_<slug>/clip1_end.png."
+  "Use your image generation tool to create the LAST-FRAME still of the same shot. Image 1 is this clip's start frame — keep the same characters, art style, lighting and location. <if the Camera plan row is static: 'Keep the framing identical; change ONLY what the motion changes.' / if the camera moves: 'Reframe to the camera's END position per the Camera plan — e.g. the same scene from slightly closer, MEDIUM shot on Sobaya — and change ONLY that framing plus what the motion changes.'> Images 2..6 are character sheets (front/side/back turnarounds) — identity/design references only, keep every face/design and NG-change element consistent. Prompt: <English scene description of the clip's END state>. <the run's Style block line, verbatim from ## Style block>. Single still frame, no text overlay. Save as 03_SCRIPTS/<NN>_<slug>/clip1_end.png."
 ```
 
 ### ポイント
@@ -344,7 +370,7 @@ codex exec -s workspace-write --enable image_generation \
 - 終了フレーム生成では**開始フレームを必ず`-i`の先頭に入れ**、「framing/lighting/locationは維持、動きが変える部分だけ変更」と指示する。これが崩壊防止の肝。
 - クリップ間で同じ絵を共有できるときは**再生成せずファイルを使い回す**（生成ゆらぎを持ち込まない）。
 - **セリフのあるクリップのキーフレームには話者を視覚的に示す**: 話者は口を開けて話している最中の状態（ジェスチャー含む）で描き、非話者は口を閉じた状態で描く（例: "Fukuchan is mid-speech with his mouth open; Yametaro's mouth is closed, listening"）。キーフレーム自体が「誰が話しているか」の最も強いシグナルになり、リップシンクの取り違えを防ぐ。生成後の目視確認でも話者の口の開閉をチェックする。
-- 画像生成プロンプトには台本のProp states（グラスの中身の量、瓶の持ち方等）・Fixture layout（蝶番側・ノブ側・開き方向）・**Scene ledgerの時間帯・光の句**（例: "bright midday daylight"）・**画風固定文（`## Style block`の1行・逐語）**・**画面内の人数指定**をそのまま含める。**生成後は各画像をReadで開き、小道具の状態がProp state ledgerの該当セルと一致しているか、建具の蝶番・ノブがFixture layoutどおりの側にあるか、時間帯・照明がScene ledgerの該当セルと一致しているか、人物数が台本と一致し同一キャラが重複していないか、画風がクリップ1の開始フレームと揃っているか目視確認する**（例: 開始フレームのグラスが空であるべきなのに満杯で描かれていないか、瓶に口をつけていないか、閉まったドアのノブが蝶番側に付いたり消えたりしていないか、昼の場面なのに夜景・夜空で描かれていないか、アニメ調で始まったチェーンが実写調に変わっていないか）。ズレていたら再生成する。キーフレームが間違っているとSeedanceは間違った状態間を忠実に補間してしまう。
+- 画像生成プロンプトには台本のProp states（グラスの中身の量、瓶の持ち方等）・Fixture layout（蝶番側・ノブ側・開き方向）・**Scene ledgerの時間帯・光の句**（例: "bright midday daylight"）・**Camera planのショットサイズ・アングル句**（例: "WIDE establishing shot, eye level"）・**画風固定文（`## Style block`の1行・逐語）**・**画面内の人数指定**をそのまま含める。**生成後は各画像をReadで開き、小道具の状態がProp state ledgerの該当セルと一致しているか、建具の蝶番・ノブがFixture layoutどおりの側にあるか、時間帯・照明がScene ledgerの該当セルと一致しているか、構図（ショットサイズ・アングル）がCamera planの該当行と一致し、ムーブのあるクリップは開始/終了フレームの構図差がムーブどおりか（push-inなのに同一構図になっていないか、逆に振幅が大きすぎて別シーンに見えないか）、人物数が台本と一致し同一キャラが重複していないか、画風がクリップ1の開始フレームと揃っているか目視確認する**（例: 開始フレームのグラスが空であるべきなのに満杯で描かれていないか、瓶に口をつけていないか、閉まったドアのノブが蝶番側に付いたり消えたりしていないか、昼の場面なのに夜景・夜空で描かれていないか、アニメ調で始まったチェーンが実写調に変わっていないか）。ズレていたら再生成する。キーフレームが間違っているとSeedanceは間違った状態間を忠実に補間してしまう。
 - 全キーフレーム生成後、**台帳（Prop state ledger・Scene ledger）の1行ごとに全フレームを時系列で見比べる最終チェック**を行う: 隣り合うフレーム間で小道具の状態が変わっている箇所すべてに、そのクリップのMotion prompt内の対応する動作があるか、時間帯・場所が変わっている箇所すべてに画面内の移動・時間経過の描写が対応しているかを確認する。動作なしに状態が飛んでいる境界が1つでもあれば、該当フレームを再生成するか台本を直してから次の工程に進む。
 - 保存先は必ず `03_SCRIPTS/<NN>_<slug>/` 配下。
 - ユーザーからストーリーを渡された際は、台本・Seedanceプロンプト作成に続けて、このルール（クリップごとに開始＋終了の2枚、前フレームを種にチェーン、キャラ参照を必ず添付、つなぎ目は共有）に沿ってキーフレームも生成する。
@@ -365,7 +391,7 @@ codex exec -s workspace-write --enable image_generation \
   - @Image3 = Yotan_sheet.png → Yotan (the slim 170cm blond rocker)
   - @Image4 = Fukuchan_sheet.png → Fukuchan (the slim stylish 170cm man in a black long coat)
   - @Image5 = Yametaro_sheet.png → Yametaro (the chibi cartoon man with round glasses)
-- Motion prompt: <the clip's Seedance prompt — describe the motion BETWEEN the two frames as explicit state transitions (e.g. "pours beer into the EMPTY glass until it is full; no one drinks from the bottle"); camera written as type + amplitude + speed (or "locked-off static camera"); dialogue kept in original language; end with the sound design lines "Soundscape: <ambient/action sounds>" and "Music: no background music">
+- Motion prompt: <the clip's Seedance prompt — describe the motion BETWEEN the two frames as explicit state transitions (e.g. "pours beer into the EMPTY glass until it is full; no one drinks from the bottle"); camera written as type + amplitude + speed (or "locked-off static camera"), matching this clip's Camera plan row; dialogue kept in original language; end with the sound design lines "Soundscape: <ambient/action sounds>" and "Music: no background music">
 - Duration: 5s / Aspect: 16:9
 ```
 
@@ -376,7 +402,7 @@ codex exec -s workspace-write --enable image_generation \
 - **全クリップのMotion promptに、音響指定（`Soundscape:`と`Music:`）を必ず入れる**（ステップ1「音響設計ルール」参照）。既定は "Music: no background music"。`validate_run_bundle.py`が両方の記載を機械検証する。
 - **全クリップのMotion promptに、画風固定文（`## Style block`の1行）を一字一句同じ文で入れる**（ステップ1「画風固定ルール」参照）。`validate_run_bundle.py`が逐語一致を機械検証する。
 - **全クリップのMotion promptに、画面内の総人数と「各キャラは1人だけ」を入れる**（ステップ1「キャラクター人数の固定」参照）。登場・退場・受け渡しのあるクリップは複製禁止の否定形まで入れる。
-- **カメラワークは「種類＋振幅＋速度」の標準記法で書く**（公式H3プロンプトガイド由来）: 例 "the camera pushes in with small amplitude at slow speed"、"slow lateral tracking shot, small amplitude"。"dynamic camera"のような曖昧語だけの指定はしない。カメラを動かさないクリップは "locked-off static camera" と明示する（無指定だとモデルが勝手にカメラを動かす）。
+- **カメラワークは「種類＋振幅＋速度」の標準記法で書き、`## Camera plan`の該当行と一致させる**（記法は公式H3プロンプトガイド由来）: 例 "the camera pushes in with small amplitude at slow speed"、"slow lateral tracking shot, small amplitude"。使える種類の語彙: push in / pull back / pan left・right / tilt up・down / lateral tracking / orbit (arc) / crane up・down / subtle handheld sway。"dynamic camera"のような曖昧語だけの指定はしない。カメラを動かさないクリップは "locked-off static camera" と明示する（無指定だとモデルが勝手にカメラを動かす）。**全クリップをlocked-off staticにしない**（ステップ1「カメラワーク設計ルール」の単調防止原則）。カメラ文はキーフレーム両端の構図差と必ず一致させる（両端が同一構図なのにpush-inを書かない、構図が違うのにstaticを書かない）。`validate_run_bundle.py`が各Motion prompt内のカメラ記述を機械検証する。
 - **Durationは必ず明示設定する。** CapCut側のデフォルト尺（約8秒）のまま生成しない。対応表のDuration値を毎クリップ設定し、生成後に実尺が一致しているか確認する（全クリップが同じ約8秒になっていたらデフォルト尺のまま生成された兆候）。セリフのあるクリップのDurationは**「サンプル音声の合計長＋約1秒」**を目安にする（ステップ1「リップシンク精度ルール」参照。Seedanceが生成した実発話がこの目安とずれても動画を正とする）。
 - 参照画像は**必要な枚数だけ渡してよい**（CapCut/Seedanceは多数の参照画像を受け付ける）。登場キャラ全員分＋必要なら小道具・環境の参照を足して同一性を固める。プロンプト側で「これらは identity/design reference であって構図ではない」と役割を明記する。
 - **Reference images表に書いた全ファイルはラン専用ディレクトリ直下に実在しなければならない。** 表だけ書いて実ファイルを同梱しない状態は禁止する。
@@ -424,6 +450,7 @@ Generate ONLY Clip 1, then verify ALL of the following before touching any other
 - [ ] The CORRECT character speaks each line (the speaker named in the prompt moves their mouth; every non-speaker's mouth stays closed)
 - [ ] Mouth motion starts and ends WITH the generated speech: no lip-flap before the line starts or after it ends
 - [ ] Motion, poses and prop states match the Motion prompt and the Prop state ledger
+- [ ] Camera work matches the clip's Camera plan row: a static clip stays locked-off (no drift, no spontaneous camera motion), a moving clip actually performs the specified move at the specified amplitude and speed, and the final framing lands on the end keyframe
 - [ ] Location, time of day and lighting match the Scene ledger in EVERY frame — no unexplained day-to-night (or night-to-day) jump anywhere in the clip, including during location transitions
 - [ ] NO on-screen text appears that the script did not explicitly call for — no spontaneous subtitles, captions, or Japanese lettering anywhere in the clip
 - [ ] Ambient sound and music match the prompt's Soundscape/Music lines — no unrequested background music, no out-of-place ambience
@@ -473,6 +500,7 @@ python3 .claude/skills/seedance/validate_run_bundle.py 03_SCRIPTS/<NN>_<slug>
 - 各Motion promptに`Required attached reference files:`があり、対応表の全`@ImageN = filename`がファイル名ごと再宣言されている
 - 各クリップのFrame A、Frame B、Audioが存在する
 - `## Scene ledger`セクションが存在し、各Motion promptに時間帯・光の語（daylight/daytime/midday/evening/night等）が含まれている
+- `## Camera plan`セクションが存在し、各Motion promptにカメラ記述（"camera"への言及）が含まれている
 - 各Motion promptに音響指定（`Soundscape:`と`Music:`）が含まれている
 - `## Style block`セクションが存在し、各Motion promptに画風固定文（Style blockの1行）が一字一句そのまま含まれている
 

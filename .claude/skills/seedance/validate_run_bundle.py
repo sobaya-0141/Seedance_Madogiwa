@@ -37,6 +37,13 @@ def main() -> None:
             "(location & time-of-day ledger across all clips; prevents unexplained day/night jumps)"
         )
 
+    if re.search(r"^##.*\bCamera plan\b", text, re.MULTILINE | re.IGNORECASE) is None:
+        errors.append(
+            "script.md lacks a '## Camera plan' section "
+            "(shot list across all clips: shot size & angle, camera move as type + amplitude + speed, "
+            "and join type per clip; prevents a whole run of identical locked-off shots)"
+        )
+
     style_block = ""
     style_header = re.search(r"^##.*\bStyle block\b.*$", text, re.MULTILINE | re.IGNORECASE)
     if style_header is None:
@@ -93,6 +100,14 @@ def main() -> None:
                 f"Clip {clip}: Motion prompt lacks a time-of-day/lighting phrase from the Scene ledger "
                 '(e.g. "bright midday daylight" — without it the model defaults to the location\'s typical '
                 "time of day and the video can jump from day to night)"
+            )
+
+        if prompt and re.search(r"\bcamera\b", prompt, re.IGNORECASE) is None:
+            errors.append(
+                f"Clip {clip}: Motion prompt lacks a camera direction "
+                '(write this clip\'s Camera plan row as type + amplitude + speed, e.g. "the camera '
+                'pushes in with small amplitude at slow speed", or "locked-off static camera" for an '
+                "intentionally static shot — with no camera direction the model moves the camera at random)"
             )
 
         for field in ("Soundscape:", "Music:"):

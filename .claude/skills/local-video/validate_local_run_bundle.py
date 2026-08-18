@@ -7,6 +7,7 @@ Checks every '### H3 inputs (Chapter N)' section in script.md:
 - every Motion prompt redeclares its attachments via 'Required attached input files:'
 - every Motion prompt ends with sound-design lines ('Soundscape:' and 'Music:')
 - a '## Style block' section exists and every Motion prompt contains its one-line style lock verbatim
+- a '## Camera plan' section exists and every Motion prompt contains a camera direction
 - I2V chapters declare First/Last frame files
 - script.md does not reference paths outside the run directory
 """
@@ -51,6 +52,13 @@ def main() -> None:
     text = script_path.read_text(encoding="utf-8")
     if re.search(r"(?:\.\./)+(?:02_CHARACTERS|03_SCRIPTS)/", text):
         errors.append("script.md references files outside the run; copy them into the run and use basenames")
+
+    if re.search(r"^##.*\bCamera plan\b", text, re.MULTILINE | re.IGNORECASE) is None:
+        errors.append(
+            "script.md lacks a '## Camera plan' section "
+            "(shot list across all chapters: shot size & angle, camera move as type + amplitude + speed, "
+            "and join type per chapter; prevents a whole run of identical locked-off shots)"
+        )
 
     style_block = ""
     style_header = re.search(r"^##.*\bStyle block\b.*$", text, re.MULTILINE | re.IGNORECASE)
@@ -97,6 +105,14 @@ def main() -> None:
 
         if re.search(r"^- Duration:", section, re.MULTILINE) is None:
             errors.append(f"Chapter {chapter}: missing Duration line")
+
+        if prompt and re.search(r"\bcamera\b", prompt, re.IGNORECASE) is None:
+            errors.append(
+                f"Chapter {chapter}: Motion prompt lacks a camera direction "
+                '(write this chapter\'s Camera plan row as type + amplitude + speed, e.g. "the camera '
+                'pushes in with small amplitude at slow speed", or "locked-off static camera" for an '
+                "intentionally static shot — with no camera direction the model moves the camera at random)"
+            )
 
         for field in ("Soundscape:", "Music:"):
             if prompt and field not in prompt:

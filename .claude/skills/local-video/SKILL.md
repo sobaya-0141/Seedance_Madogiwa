@@ -26,7 +26,7 @@ description: 窓際族物語の動画をクラウドを使わずフルローカ�
 本スキルは`/seedance`のワークフロー構造を継承する。**次のルール群は`.claude/skills/seedance/SKILL.md`に書かれているものをそのまま適用する**（本ファイルには差分だけを書く。作業前に該当セクションを必ず読むこと）:
 
 - **ステップ0（出力ディレクトリ・参照同梱）**: ラン専用ディレクトリ`03_SCRIPTS/<NN>_<slug>/`の命名、キャラクターシート等を物理ファイルとして同梱、basename参照、正典非改変 — すべて同一。
-- **ステップ1（台本作成）**: Story Formula・禁止事項、Prop state ledger、物理整合性ルール、Scene ledger（場所・時間帯の通し台帳）と場面転換の整合性ルール（昼夜ジャンプ防止）、Fixture layout（機構小物）、画風固定ルール（`## Style block`・全プロンプトへの逐語埋め込み）、キャラクター人数の固定（増殖防止）、話者分離（1生成単位1話者）、リップシンク精度（尺≒発話長＋約1秒）、言語ルール（script.mdは英語、セリフのみ日本語）、話者バインディング — すべて同一。「クリップ」を本スキルでは「チャプター」と読み替える。
+- **ステップ1（台本作成）**: Story Formula・禁止事項、Prop state ledger、物理整合性ルール、Scene ledger（場所・時間帯の通し台帳）と場面転換の整合性ルール（昼夜ジャンプ防止）、カメラワーク設計ルール（`## Camera plan`＝全チャプターのショットリスト・単調防止・クリップ内ムーブのキーフレーム焼き込みと振幅上限・CUTの作法）、Fixture layout（機構小物）、画風固定ルール（`## Style block`・全プロンプトへの逐語埋め込み）、キャラクター人数の固定（増殖防止）、話者分離（1生成単位1話者）、リップシンク精度（尺≒発話長＋約1秒）、言語ルール（script.mdは英語、セリフのみ日本語）、話者バインディング — すべて同一。「クリップ」を本スキルでは「チャプター」と読み替える。
 - **ステップ2（セリフ音声）**: 配役の正典は`02_CHARACTERS/VOICE_CAST.md`。Irodori-TTSボイスクローン（そば屋・福ちゃん・やめたろう・おかやまん・よーたん）とVOICEVOX、そば屋のモンスターボイス加工、無音トリム、Dialogue audio表、VOICEVOXクレジット義務 — すべて同一。**スクリプトもseedance同梱のものをそのまま使う**（`irodori_speak.sh` / `voicevox_speak.sh` / `sobaya_monsterize.sh`）。
 
 キーフレーム生成の技法（draw-things-cli固有）は本ファイルのステップ5に完結して書いてある（seedance側がCodex生成のままのバージョンでも本スキル単独で動くようにするため）。
@@ -215,7 +215,7 @@ seedance SKILL.mdステップ1の全ルール（Prop state ledger / Scene ledger
 - 1チャプター1話者の原則はseedanceと同じ。**同一話者の連続セリフでも1チャプターに入れられるwavは3つまで**。超える場合はチャプターを割る。
 - 登場キャラが多くて 2（キーフレーム）＋シート枚数 が9を超える場合もチャプターを割る（画面に映るキャラを減らす）か、そのチャプターで口が動く・大きく動くキャラのシートを優先して残す。
 
-チャプターのつなぎ目はseedanceのクリップと同様、**チャプターNの終了フレーム＝チャプターN+1の開始フレーム（同一ファイル共有）**で消す。
+チャプターのつなぎ目はseedanceのクリップと同様、**チャプターNの終了フレーム＝チャプターN+1の開始フレーム（同一ファイル共有）**で消す。ただしCamera planのJoin列が`CUT`のチャプター（視点切り替え）は共有せず、同じ瞬間を新アングルで描いた開始フレームを別途生成する（ステップ5参照）。
 
 ### 生成モードの使い分け（I2V / R2V）
 
@@ -230,7 +230,7 @@ H3には2つのチェックポイントがあり、チャプターごとにど�
 H3はモデル提供元の公式プロンプトガイド（ https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills/h3-prompt-writing ）の記法で学習されているため、Motion prompt本文はその構造に合わせる。冒頭の`Required attached input files:`（機械検証対象）は従来どおり必須で、その後の本文を次の順・記法で書く:
 
 1. **本文（統合記述）**: 構図→被写体→環境→動作→カメラ→画面内の音の順で、**見える・聞こえるものを具体的に**書く（あらすじ要約にしない）。seedance由来のルール（状態遷移記法・時間帯の句・NG要素・画面内テキスト禁止）はこの本文に入れる。
-2. **カメラは「種類＋振幅＋速度」の標準記法で書く**: 例 "the camera pushes in with small amplitude at slow speed"。動かさないなら "locked-off static camera" と明示する。
+2. **カメラは「種類＋振幅＋速度」の標準記法で書き、`## Camera plan`の該当行と一致させる**: 例 "the camera pushes in with small amplitude at slow speed"。動かさないなら "locked-off static camera" と明示する（無指定はモデルが勝手に動かす）。**全チャプターをlocked-off staticにしない**（単調防止原則はseedanceステップ1「カメラワーク設計ルール」参照）。ムーブはキーフレーム両端の構図差に焼き込まれていること（ステップ5参照）。**セリフのあるR2Vチャプターはstatic〜slow small push-inに留める**（R2VはキーフレームのアンカーがI2Vより緩く、速いムーブは口元の描画とリップシンクを壊す。ダイナミックなムーブはセリフなしI2Vチャプターに置く）。`validate_local_run_bundle.py`が各Motion prompt内のカメラ記述を機械検証する。
 3. **セリフの記法（R2Vのみ）**: 話者に発話順で安定ID `(S1)`/`(S2)` を振り、セリフ本文を `<d>[Japanese] セリフ原文</d>` タグで逐語埋め込みする（翻訳・言い換え禁止。添付wavを使う場合もセリフ本文を`<d>`タグで書く）。例: "ONLY Fukuchan (<Picture 3>, the slim stylish black-haired man) (S1) speaks — he says <d>[Japanese] 快適です！</d>, lip-syncing to <Audio 1>"。画面外ナレーションは "says in an off-screen voiceover" と書き、映っているキャラ全員に "lips remain completely closed" を添える。
 4. **`Soundscape:`（末尾に必須）**: 環境音・動作音を1〜4文の英語で書く。セリフはここに再掲しない。
 5. **`Music:`（末尾に必須）**: 劇伴の有無を必ず明示する。既定は "Music: no background music"（BGMはffmpeg結合時に後載せできる）。生成させる場合は**楽器・テンポ・リズム・強弱で具体的に**書き、抽象的なムード語だけで書かない。
@@ -291,7 +291,7 @@ ffmpeg -y -i ch3_line1_fukuchan.wav -af "apad=whole_dur=2.0" ch3_line1_fukuchan_
 ### 所要時間と実行方法
 
 - M4 Max / 1024x576 で**約23秒/step**（推奨30stepで約11.5分/枚）。チャプター数が多いランは`DT_STEPS=20`に落とす。
-- キーフレーム枚数の下限は「チャプター数＋1」（つなぎ目共有のため）。作業前に総時間を見積もる。
+- キーフレーム枚数の下限は「チャプター数＋1」（つなぎ目共有のため。Camera planのJoin列が`CUT`のチャプターは共有しないため1枚ずつ増える。push-in終了フレームのクロップ作成分は生成不要なので差し引ける）。作業前に総時間を見積もる。
 - チェーン生成なので並列化不可。フォアグラウンドで1枚を待つとツールタイムアウト（10分）に掛かるため、**全フレームを1本のシェルスクリプトにまとめて必ずバックグラウンドで実行**する。スクリプトには「出力が既にあればスキップ」を入れる（中断・再開とステップ6の部分再生成で同じスクリプトを再利用するため）。
 - 使用シードは`script.md`に記録する（部分再生成の再現性のため）。
 - **ノートPCでは`caffeinate`で必ずスリープを禁止する（実測で必要）。** 長時間チェーンを放置するとmacOSがidle sleepに入り、生成が止まる。実例: 1枚16分のフレームが夜間放置で**壁時計9時間24分**かかった（`pmset -g log`に"Wake from Deep Idle"が並ぶ）。生成が異常に遅いときは性能劣化を疑う前に`pmset -g log | grep -E "Sleep|Wake"`でスリープ履歴を見る。
@@ -312,10 +312,11 @@ ffmpeg -y -i ch3_line1_fukuchan.wav -af "apad=whole_dur=2.0" ch3_line1_fukuchan_
 
 `draw-things-cli generate`の`--image`は1枚のみ。複数参照が必要なときは`stitch_refs.py`で1枚の参照キャンバス（`ref_canvas_*.png`と命名。生成用中間ファイルでありH3入力ではない）に連結してから渡す。キャンバスは生成キーフレームと同じアスペクト比で作り、連結順＝画面上の位置（既定`row`）なのでプロンプトでは"The LEFT panel is ..."と位置で役割を指定する。
 
-1. **チャプター1の開始フレーム**: 登場キャラ全員のシートを連結した参照キャンバスを入力に、「入力画像はキャラクターシートの寄せ集め。これらのキャラで新しいシーンを描く」形で生成する。
-2. **チャプター1の終了フレーム**: いま作った開始フレーム単体を入力に、「同じ絵のまま、動きが変える部分だけ終了状態に変える」編集プロンプトで生成する。
-3. **チャプター2の開始フレーム＝チャプター1の終了フレーム**（原則、再生成せず同一ファイルを共有。カメラ・場所が変わるときのみ前フレームを種に新規生成）。
+1. **チャプター1の開始フレーム**: 登場キャラ全員のシートを連結した参照キャンバスを入力に、「入力画像はキャラクターシートの寄せ集め。これらのキャラで新しいシーンを描く」形で生成する（構図はCamera planの該当行のショットサイズ・アングルをプロンプトに入れる）。
+2. **チャプター1の終了フレーム**: いま作った開始フレーム単体を入力に編集プロンプトで生成する。カメラが静止のチャプターは「同じ絵のまま、動きが変える部分だけ終了状態に変える」。**カメラムーブのあるチャプターは構図もムーブ終了位置へ変える**（例: "Reframe the SAME scene from slightly closer — MEDIUM shot on Fukuchan — keeping every character, prop state, lighting and the art style unchanged; additionally change only what the motion changes"）。
+3. **チャプター2の開始フレーム＝チャプター1の終了フレーム**（Camera planのJoin列が`SHARED FRAME`のとき。再生成せず同一ファイルを共有）。**Join列が`CUT`のチャプターは共有せず、前フレーム単体を種に「THE SAME scene at THE SAME moment, rendered from a NEW camera position: <新しいショットサイズ・アングル>」の編集プロンプトで新規生成する**（時間経過ゼロ: 小道具の状態・時間帯・キャラの位置関係・画風は種画像と完全に同一に保つ。場所が変わるときも同様に前フレームを種にする）。
 4. 以降も 開始→終了 の順で前フレームを種にチェーンする。ゼロから独立生成しない。
+5. **ズーム系（push-in / pull-back）の寄り側フレームはクロップで作るのが最も安定**: 広い方の構図のフレームから被写体中心に同アスペクト比でクロップし、元解像度へ拡大する（`ffmpeg`/`sips`等。倍率は解像感が保てる約2倍まで）。push-inの終了フレームは開始フレームのクロップで作れる（**生成不要＝約11.5分/枚の節約にもなる**ので最優先で使う）。pull-backは開始フレームが自由なとき（チャプター1またはCUT境界）に限り「広い終了フレームを先に生成→開始フレームをクロップ」が使える。開始が共有で固定済みのpull-backは引き構図への編集生成になり、種画像に無い周辺を描き足すため崩れやすい — 崩れる場合はpull-backをCUT境界へ移す。
 
 ```
 python3 .claude/skills/local-video/stitch_refs.py 03_SCRIPTS/<NN>_<slug>/ref_canvas_ch1_start.png \
@@ -374,6 +375,7 @@ EOF
 6. **話者の口の開閉**（セリフのあるチャプター: 話者は口が開き、非話者は閉じている）
 7. **画風の一致**（そのランの画風固定文と合っているか。チェーンの進行でアニメ調⇄実写調にドリフトしていないか）
 8. **キャラクターの人数**（フレーム内の人物数が台本と一致し、同一キャラが2人以上写っていない）
+9. **Camera planとの一致**（ショットサイズ・アングルが該当行どおりか。ムーブのあるチャプターの開始/終了フレームの構図差がムーブと一致しているかは隣接フレーム比較＝時系列チェック側で見る）
 
 - `verify_frame.py`は`VERDICT: PASS`/`VERDICT: FAIL`＋指摘リストを返す。**FAILだけでなくPASSでも指摘内容を読み、ClaudeもReadで画像を開いて突き合わせる**（VLMの見落とし・誤検出の両方があり得る。最終判断はClaudeが行う）。
 - 隣接フレーム間の整合（つなぎ目共有、金具位置の連続性、状態遷移に対応する動作の有無、時間帯・照明の連続性）はVLMの単画像検証では見えないため、**Prop state ledger・Scene ledgerの1行ごとに全フレームを時系列で見比べる最終チェック**をClaudeが行う（動作なしに状態が飛んでいる境界、画面内の時間経過描写なしに昼夜・光が変わる境界があれば修正リストに載せる）。
@@ -424,6 +426,7 @@ Generate ONLY the first dialogue chapter, then verify ALL of the following:
 - [ ] The CORRECT character lip-syncs (speaker's mouth moves only while the audio plays; non-speakers stay closed)
 - [ ] The video starts/ends on (or acceptably close to) the start/end keyframes — check R2V frame anchoring
 - [ ] Motion, poses, prop states and fixture hardware match the Motion prompt / ledgers
+- [ ] Camera work matches the chapter's Camera plan row: a static chapter stays locked-off (no drift, no spontaneous camera motion), a moving chapter actually performs the specified move at the specified amplitude and speed, and the final framing lands on the end keyframe
 - [ ] Character identity and NG-change elements survive H3 generation (compare against the sheets)
 - [ ] Every named character appears EXACTLY ONCE in EVERY frame — no duplicated characters or props, especially during appear/disappear/handoff actions
 - [ ] The art style matches the run's Style block and the keyframes, and stays consistent through the whole chapter
@@ -482,6 +485,6 @@ ffmpeg -y -i final_draft.mp4 -vf "drawtext=fontfile='/System/Library/Fonts/ヒ�
 python3 .claude/skills/local-video/validate_local_run_bundle.py 03_SCRIPTS/<NN>_<slug>
 ```
 
-検証内容: H3 inputs表の全ファイルがラン直下に物理ファイルとして存在する / R2Vチャプターの入力が「画像9・音声3・合計12」以内 / 各Motion promptが`Required attached input files:`で全`<Picture N>`/`<Audio N>`をファイル名ごと再宣言している / 各Motion promptに音響指定（`Soundscape:`と`Music:`）がある / `## Style block`セクションが存在し各Motion promptに画風固定文が逐語で含まれている / I2VチャプターにFirst/Last frameがある / `script.md`がラン外パスを参照していない。
+検証内容: H3 inputs表の全ファイルがラン直下に物理ファイルとして存在する / R2Vチャプターの入力が「画像9・音声3・合計12」以内 / 各Motion promptが`Required attached input files:`で全`<Picture N>`/`<Audio N>`をファイル名ごと再宣言している / 各Motion promptに音響指定（`Soundscape:`と`Music:`）がある / `## Style block`セクションが存在し各Motion promptに画風固定文が逐語で含まれている / `## Camera plan`セクションが存在し各Motion promptにカメラ記述がある / I2VチャプターにFirst/Last frameがある / `script.md`がラン外パスを参照していない。
 
 **検証が失敗したままユーザーへ完了報告してはいけない。**
