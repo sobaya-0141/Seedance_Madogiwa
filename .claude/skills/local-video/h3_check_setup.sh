@@ -140,7 +140,21 @@ else
 fi
 
 section "音声合成（Irodori-TTS / VOICEVOX）"
-[ -d "$HOME/irodori_tts" ] && ok "~/irodori_tts" || missing "~/irodori_tts（https://github.com/Aratako/Irodori-TTS の手順で導入）"
+if [ -d "$HOME/irodori_tts" ]; then
+  # 上流に新バージョンが公開されていないか確認する（実際の更新はirodori_speak.shが実行時に自動で行う）
+  if [ -e "$HOME/irodori_tts/.git" ] && git -C "$HOME/irodori_tts" fetch --quiet origin main 2>/dev/null; then
+    BEHIND=$(git -C "$HOME/irodori_tts" rev-list --count HEAD..origin/main 2>/dev/null || echo 0)
+    if [ "${BEHIND:-0}" -gt 0 ]; then
+      ok "~/irodori_tts（上流に新バージョンあり: ${BEHIND}コミット差分。次のirodori_speak.sh実行時に自動更新される）"
+    else
+      ok "~/irodori_tts（最新）"
+    fi
+  else
+    ok "~/irodori_tts（上流の更新確認はスキップ）"
+  fi
+else
+  missing "~/irodori_tts（https://github.com/Aratako/Irodori-TTS の手順で最新版を導入: git clone https://github.com/Aratako/Irodori-TTS.git ~/irodori_tts && cd ~/irodori_tts && uv sync --extra cpu）"
+fi
 [ -d "$HOME/voicevox_engine" ] && ok "~/voicevox_engine" || missing "~/voicevox_engine（VOICEVOXヘッドレスエンジン）"
 
 section "ffmpeg（結合・パディング・クレジット焼き込み）"
