@@ -70,9 +70,9 @@ Apple SiliconでH3が実行できない理由（MPSの型/オペレータ非対�
 - **local-videoラン** → local-videoのステップ1〜6を完了させた状態から引き継ぐ
 
 1. **ローカル**: 素材を受け取り、必要ならH3向けに変換する（7章）。
-2. **ローカル**: ポータブルバンドルを作る（下記2章）。
-3. ノートブック`.claude/skills/colab-video/h3_colab.ipynb`（本スキル同梱・製品生成専用）をユーザーに渡し、 https://colab.research.google.com →「アップロード」で開いてもらう。
-4. **Colab（L4）**: パイロットチャプター→残りチャプターを生成する（下記5章）。
+2. **ローカル**: `build_h3_run_package.py`でラン直下の`h3/`に**バンドルzip＋I2V用/R2V用ノートブック**の3ファイルを生成する（下記2章）。
+3. `h3/`の3ファイルをユーザーに渡す: zipはDriveの`h3_inputs/`へ置いてもらい、ノートブック（I2V用・R2V用の2本。片モードのランは1本）は https://colab.research.google.com →「アップロード」で開いてもらう。
+4. **Colab（L4）**: パイロットチャプター→残りチャプターを生成する（下記5章）。2本のノートブックは**別セッションで同時に回してよい**（L4×2並列）。
 5. **ローカル**: mp4を回収し、結合して仕上げる（下記6章）。
 
 セルの実行はユーザーがブラウザで行う。Claudeの担当は「バンドルとworkflow JSONの準備」「ノートブックと手順の提示」「ユーザーが貼ったセル出力・ログの診断」「回収後の検証と結合」。
@@ -89,12 +89,23 @@ Apple SiliconでH3が実行できない理由（MPSの型/オペレータ非対�
 - ツール一式: `build_h3_workflow.py` / `extract_prompts.py` / `h3_run.py` / `gen_all_workflows.sh` / `assemble.sh`
 - `RUNBOOK_CUDA.md`相当の手順書（パイロットのチェックリスト込み。テンプレートは`03_SCRIPTS/26_kansha_no_bug_ichimankai/RUNBOOK_CUDA.md`）
 
+揃ったら**`build_h3_run_package.py`（本スキル同梱）でラン一式を生成する**のが既定:
+
 ```
-cd 03_SCRIPTS && zip -r <NN>_<slug>_bundle.zip <NN>_<slug> \
-  -x "*/ref_canvas_*" -x "*/validation/*" -x "*/.DS_Store"
+python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<NN>_<slug>
 ```
 
-zipは通常20〜200MB程度。受け渡しはノートブックのセル4で「ブラウザから直接アップロード」または「Google Driveに置いてパスを指定」のどちらでもよい。
+生成物は`03_SCRIPTS/<NN>_<slug>/h3/`に3ファイル:
+
+- `<NN>_<slug>_h3_bundle.zip` — ポータブルバンドル（除外は従来どおり`ref_canvas_*`・`validation/`・`.DS_Store`＋`h3/`自身。通常20〜200MB）
+- `h3_colab_i2v.ipynb` / `h3_colab_r2v.ipynb` — 正典`h3_colab.ipynb`のセル1に「そのモードの`CHAPTERS`（workflowの`unet_name`から自動分類）・`BUNDLE_ZIP_FROM_DRIVE=/content/drive/MyDrive/h3_inputs/<NN>_<slug>_h3_bundle.zip`・`OUT_DRIVE_DIR=/content/drive/MyDrive/h3_outputs/<NN>_<slug>`」を書き込んだもの。**片モードしか無いランはそのモードの1本だけ生成される**
+
+運用:
+
+- zipはDriveの**`h3_inputs/`直下**へファイル名そのまま置く。成果物はラン名と同名の**`h3_outputs/<NN>_<slug>/`**に貯まる（どちらもノートブックに設定済みで、ユーザーの編集は不要）
+- **I2V/R2Vの2セッション並列が既定の回し方**: 2本を別々のColabセッション（L4×2推奨）で同時に★一括実行する。モード毎にユニットが分かれているため干渉せず、ユニット入れ替えも発生しない（`NEED_I2V`/`NEED_R2V`は各ノートブックの`CHAPTERS`から自動判定、`AUTO_SHUTDOWN`も各自の担当分だけ確認して切断する）
+- スクリプトがチャプターのモード分類と所要時間の目安（L4+sage実測の線形則: 約10.7秒/フレーム）を表示するので、そのままユーザーへの案内に使う
+- 手動でzipだけ作る場合は従来コマンド（`cd 03_SCRIPTS && zip -r <NN>_<slug>_h3_bundle.zip <NN>_<slug> -x "*/ref_canvas_*" -x "*/validation/*" -x "*/.DS_Store" -x "*/h3/*"`）でもよい
 
 - workflow JSONの重み名はどのGPU向けでもよい（ノートブックのセル5が、割り当てられたGPUに合う重み名へ自動で書き換え、SaveVideoの`codec`も補完する）。
 - `--frames`のグリッド（17k+5）、R2Vの入力上限（画像9・音声3・合計12）はローカルと同一。local-video形式のランは`validate_local_run_bundle.py`をzip前に通しておく（seedance変換ランは対象外）。
