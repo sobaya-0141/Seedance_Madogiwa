@@ -198,7 +198,7 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 
 ## 2. 出力ディレクトリと参照同梱
 
-seedance SKILL.mdステップ0と同一規則。`03_SCRIPTS/<NN>_<slug>/`を作成し、使用する全キャラクターシート・スケール参照を物理ファイルとしてコピーする。
+seedance SKILL.mdステップ0と同一規則。`03_SCRIPTS/<NN>_<slug>/`を作成し、使用する全キャラクターシート・スケール参照を物理ファイルとしてコピーする。**コピーした`*_sheet.png`は全枚Readで開き、各キャラ設定mdの「シート照合チェックリスト」と突き合わせて正典の姿を確認してから台本・プロンプトを書く**（seedanceステップ0の同梱手順4と同一。同定句や記憶だけで書かない）。
 
 ## 3. 台本＋チャプター分割（deliverableは英語の`script.md`）
 
@@ -368,7 +368,7 @@ EOF
 チェックリストに必ず含める観点（フレームごとに`script.md`の該当箇所から具体化する）:
 
 1. **1枚絵として成立しているか**（複数パネル・シート化・文字混入・ウォーターマークがない）
-2. **登場キャラ全員のNG要素**（各`02_CHARACTERS/0N_*.md`のNG変更。形の崩れと「丸ごと消える」の両方）
+2. **登場キャラ全員のキャラ同一性**: 各`02_CHARACTERS/0N_*.md`の**シート照合チェックリスト**を1項目1行に展開する（NG変更の形の崩れと「丸ごと消える」の両方。仮面の目穴・口のスリット・マーキング本数、後ろ姿での髪・NG小物の有無、体型・肌の色・衣装まで見る）。**チェックリストを書く前にそのキャラの`*_sheet.png`をReadで開く**（省略禁止）
 3. **Prop state ledgerの該当セルとの一致**（グラスの中身・持ち方等）
 4. **Scene ledgerの該当セルとの一致**（場所と時間帯・光。昼の場面なのに夜景・夜空・点灯した提灯になっていないか等）
 5. **Fixture layoutとの一致**（蝶番側・ノブ側・開き方向）
@@ -427,7 +427,7 @@ Generate ONLY the first dialogue chapter, then verify ALL of the following:
 - [ ] The video starts/ends on (or acceptably close to) the start/end keyframes — check R2V frame anchoring
 - [ ] Motion, poses, prop states and fixture hardware match the Motion prompt / ledgers
 - [ ] Camera work matches the chapter's Camera plan row: a static chapter stays locked-off (no drift, no spontaneous camera motion), a moving chapter actually performs the specified move at the specified amplitude and speed, and the final framing lands on the end keyframe
-- [ ] Character identity and NG-change elements survive H3 generation (compare against the sheets)
+- [ ] Character identity survives H3 generation — open each `*_sheet.png` alongside the clip and check that character's canon checklist item by item (mask construction and marking count, hair visible from the back, skin tone, body build and height ratio, exact outfit, signature prop). A near-miss is a FAIL
 - [ ] Every named character appears EXACTLY ONCE in EVERY frame — no duplicated characters or props, especially during appear/disappear/handoff actions
 - [ ] The art style matches the run's Style block and the keyframes, and stays consistent through the whole chapter
 - [ ] Ambient sound and music match the prompt's Soundscape/Music lines (no unrequested background music)

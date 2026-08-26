@@ -12,8 +12,9 @@ description: 窓際族物語のストーリー（あらすじ）からSeedance�
 3. 台本＋Seedanceプロンプト（英語）の作成（各クリップに開始状態と終了状態を明記する）
 4. VOICEVOX/Irodori-TTSによる全セリフの音声候補生成（等速＋1.5倍速の2テイク）→ユーザーが聴いて採用テイクを確定→最終ファイル作成（確認が取れるまで次の工程へ進まない）。この音声は**Seedanceに渡すボイスサンプル**であり、実際のセリフ音声はSeedanceが動画と一緒に生成する
 5. Codexによる各クリップのキーフレーム生成（**開始フレーム＋終了フレームの2枚**を作る）
-6. Seedanceへの入力対応表と、各Motion prompt内の添付宣言を`script.md`に明記する
-7. 生成実行プロトコルを明記し、同梱物の機械検証を通す
+6. **生成した全キーフレームのキャラ同一性検証（必須ゲート）**: キャラクターシートと1項目ずつ照合し、identity FAILが1件でも残っている間はCapCutへ進まない
+7. Seedanceへの入力対応表と、各Motion prompt内の添付宣言を`script.md`に明記する
+8. 生成実行プロトコルを明記し、同梱物の機械検証を通す
 
 ### 精度の要（この方式にする理由）
 
@@ -46,8 +47,9 @@ description: 窓際族物語のストーリー（あらすじ）からSeedance�
 1. 全クリップの登場キャラを列挙する（画面外の声だけのキャラも、Motion promptで`@ImageN`参照するなら対象）。
 2. 各キャラ設定mdの「キャラクターシート」に記載された`*_sheet.png`をラン専用ディレクトリ直下へコピーする。
 3. `height_lineup.png`等をCapCut入力で使う場合も同じ場所へコピーする。
-4. `script.md`冒頭の`Character references`には同梱後のbasenameだけを書く。
-5. 以降のキーフレーム生成とCapCut入力には、ラン専用ディレクトリ内のコピーを使う。これにより同梱漏れを制作途中で発見する。
+4. **同梱した`*_sheet.png`を全枚Readで開き、各キャラ設定md（`02_CHARACTERS/0N_*.md`）の「シート照合チェックリスト」と突き合わせて正典の姿を目に入れる（必須・省略禁止）。** 同定句や記憶だけで台本・プロンプト・検証を書かない。シートを開かずに進めたランは未完成とする。
+5. `script.md`冒頭の`Character references`には同梱後のbasenameだけを書く。
+6. 以降のキーフレーム生成とCapCut入力には、ラン専用ディレクトリ内のコピーを使う。これにより同梱漏れを制作途中で発見する。
 
 ## 1. 台本作成（deliverableはすべて英語）
 
@@ -208,6 +210,16 @@ Seedanceはプロンプト内の日本語セリフ引用や添付音声につら
 - **全キーフレーム生成プロンプトと全Motion promptに、この画風固定文を毎回一字一句同じ文で入れる。** Production intent（冒頭の説明文）に書くだけでは各生成プロンプトに反映されず、チェーン生成が参照シートの画風へ勝手にドリフトする。言い換え・要約も禁止（表記ゆれ自体がドリフトの原因になる）。
 - **キーフレームの目視確認に画風を含める**: 新しいフレームを生成するたびにクリップ1の開始フレームと並べ、画風（実写/アニメ/3D調・質感・色乗り）が揃っているか確認する。ドリフトしていたら、画風固定文＋前フレーム＋シートを種にそのフレームを作り直してからチェーンを続ける。
 - `validate_run_bundle.py`が`## Style block`セクションの存在と、各Motion promptへの画風固定文の逐語埋め込みを機械検証する。
+
+### キャラ正典ルール（Character canon block・必須）
+
+**キャラの見た目の正は`02_CHARACTERS/<キャラ名>_sheet.png`（キャラクターシート）であり、記憶でも同定句でもない。** 同定句（"a white mask with red markings"等）は短い要約にすぎず、これだけでプロンプトを書くとモデルが空白を勝手に埋める（実測: そば屋の仮面が「人間の顔＋白い顔ペイント＋赤いライン2本」になり、目穴・口のスリット・マーキング本数が全部変わった）。
+
+- **台本を書く前に、そのランに登場する全キャラの`*_sheet.png`をReadで開く**（ステップ0の同梱手順4）。
+- **`script.md`の`## Character references`に、キャラごとの`PRESERVE:`列を書く**。内容は各キャラ設定mdの「シート照合チェックリスト」から**シートで実際に確認した特徴**を英語へ落とす（形状・個数・色・配置まで数えて書く。「red markings」ではなく "four red vertical markings, two flanking each eye, plus a small black dot centered on the forehead"）。あわせて`do NOT carry over:`にシートのポーズ・パネルレイアウト・文字ラベル・背景を書く。
+- **全キーフレーム生成プロンプトと全Motion promptに、そのクリップに映るキャラの`PRESERVE:`列を入れる。** 要約・言い換えは禁止（ステップ3・4の逐語ルールと同じ）。
+- **崩れやすい要素には否定形を添える**（実測の崩れ方をそのまま書く）: 仮面キャラなら "the mask has TWO large black circular eye holes — NO human eyes, eyelids, eyelashes or eyebrows are visible, NO realistic nose or lips, the mouth is a single horizontal black slit"、後ろ姿・横顔のあるクリップなら "his short spiky black hair is visible from BEHIND as well — the back of his head is NOT a smooth white helmet"。
+- **後ろ姿・横顔・遠景のクリップは特に念入りに書く**（正面以外はシートの参照が効きにくく、NG要素が丸ごと消える）。
 
 ### キャラクター人数の固定（増殖防止・重要）
 
@@ -371,10 +383,26 @@ codex exec -s workspace-write --enable image_generation \
 - 終了フレーム生成では**開始フレームを必ず`-i`の先頭に入れ**、「framing/lighting/locationは維持、動きが変える部分だけ変更」と指示する。これが崩壊防止の肝。
 - クリップ間で同じ絵を共有できるときは**再生成せずファイルを使い回す**（生成ゆらぎを持ち込まない）。
 - **セリフのあるクリップのキーフレームには話者を視覚的に示す**: 話者は口を開けて話している最中の状態（ジェスチャー含む）で描き、非話者は口を閉じた状態で描く（例: "Fukuchan is mid-speech with his mouth open; Yametaro's mouth is closed, listening"）。キーフレーム自体が「誰が話しているか」の最も強いシグナルになり、リップシンクの取り違えを防ぐ。生成後の目視確認でも話者の口の開閉をチェックする。
+- **生成した1枚ごとに、そのクリップに映る全キャラの`*_sheet.png`をReadで開いた状態でキャラ同一性を照合する（必須・最優先）。** 照合項目は各キャラ設定md（`02_CHARACTERS/0N_*.md`）の「シート照合チェックリスト」の**全項目**。生成画像を眺めて「だいたい合っている」で通さず、項目を1つずつ読み上げてPASS/FAILを付ける。**1項目でもFAILなら、その場でチェーンを止めて再生成する**（崩れたフレームを種にすると下流が全部崩れる）。実測の崩れ方（この順で疑う）:
+  - **仮面が人間の顔になる**: 目穴に人間の目・まぶた・まつげが描かれる、鼻・唇が写実的に出る、口のスリットが消える、赤いマーキングの本数・左右対称性が変わる。
+  - **後ろ姿・横顔でNG要素が消える**: 後頭部の髪が消えてつるつるの白いヘルメット状になる、触手・ウクレレ・ギターがフレーム外の言い訳で消える。
+  - **体型が別人になる**: 100kgの巨漢が細身のボディビルダーになる、実写等身のキャラがチビ化する、チビキャラが等身大になる。
+  - **色が正典から外れる**: グレーの肌が肌色に戻る、金髪が黒髪になる、衣装の色が変わる。
+  - **衣装が丸ごと入れ替わる**: 白Tシャツがスーツになる、他キャラのストラップ・名札が移る、参照画像のロゴ・文字が顔や衣服へ焼き込まれる。
 - 画像生成プロンプトには台本のProp states（グラスの中身の量、瓶の持ち方等）・Fixture layout（蝶番側・ノブ側・開き方向）・**Scene ledgerの時間帯・光の句**（例: "bright midday daylight"）・**Camera planのショットサイズ・アングル句**（例: "WIDE establishing shot, eye level"）・**画風固定文（`## Style block`の1行・逐語）**・**画面内の人数指定**をそのまま含める。**生成後は各画像をReadで開き、小道具の状態がProp state ledgerの該当セルと一致しているか、建具の蝶番・ノブがFixture layoutどおりの側にあるか、時間帯・照明がScene ledgerの該当セルと一致しているか、構図（ショットサイズ・アングル）がCamera planの該当行と一致し、ムーブのあるクリップは開始/終了フレームの構図差がムーブどおりか（push-inなのに同一構図になっていないか、逆に振幅が大きすぎて別シーンに見えないか）、人物数が台本と一致し同一キャラが重複していないか、画風がクリップ1の開始フレームと揃っているか目視確認する**（例: 開始フレームのグラスが空であるべきなのに満杯で描かれていないか、瓶に口をつけていないか、閉まったドアのノブが蝶番側に付いたり消えたりしていないか、昼の場面なのに夜景・夜空で描かれていないか、アニメ調で始まったチェーンが実写調に変わっていないか）。ズレていたら再生成する。キーフレームが間違っているとSeedanceは間違った状態間を忠実に補間してしまう。
 - 全キーフレーム生成後、**台帳（Prop state ledger・Scene ledger）の1行ごとに全フレームを時系列で見比べる最終チェック**を行う: 隣り合うフレーム間で小道具の状態が変わっている箇所すべてに、そのクリップのMotion prompt内の対応する動作があるか、時間帯・場所が変わっている箇所すべてに画面内の移動・時間経過の描写が対応しているかを確認する。動作なしに状態が飛んでいる境界が1つでもあれば、該当フレームを再生成するか台本を直してから次の工程に進む。
 - 保存先は必ず `03_SCRIPTS/<NN>_<slug>/` 配下。
 - ユーザーからストーリーを渡された際は、台本・Seedanceプロンプト作成に続けて、このルール（クリップごとに開始＋終了の2枚、前フレームを種にチェーン、キャラ参照を必ず添付、つなぎ目は共有）に沿ってキーフレームも生成する。
+
+## 3.5 キーフレーム検証（必須ゲート・CapCutへ進む前に必ず通す）
+
+全クリップのキーフレームが出揃ったら、**CapCutで1本も動画を生成する前に**共通スキル **`/image-validation`**（`.claude/skills/image-validation/SKILL.md`）を実行する。キーフレームの誤りはSeedanceが忠実に補間・増幅するため、ここで潰さないと動画側では直せない。
+
+- 対象は`03_SCRIPTS/<NN>_<slug>/`の全`clipN_start.png`／`clipN_end.png`。
+- フレームごとのチェックリストには、`/image-validation`のステップ2の全観点に加えて、**そのフレームに映る全キャラの「シート照合チェックリスト」（各キャラ設定md）を1項目1行で必ず展開する**。「NG要素があるか」という粗い1行にまとめない。
+- **キャラ同一性のFAILはブロッキング**: 1件でも残っている間はCapCutでの動画生成に進まない（`fix_list.md`確定 → 上流から再生成 → 該当フレームだけ再検証、で閉じる）。
+- Ollamaが無い環境ではVLM検証をスキップしてよいが、その場合は**全フレーム・全項目をReadでの目視照合で行い**、レポートに「VLM検証は未実施」と明記する（`/image-validation`冒頭の規定と同じ）。
+- 検証を実施せずに「問題なし」と報告してはいけない。
 
 ## 4. CapCut（Seedance）への入力対応表
 
@@ -450,6 +478,7 @@ Generate ONLY Clip 1, then verify ALL of the following before touching any other
 - [ ] The dialogue voice is generated by Seedance and matches the attached voice sample (same character voice and speaking style; no doubled voices, no second voice track)
 - [ ] The CORRECT character speaks each line (the speaker named in the prompt moves their mouth; every non-speaker's mouth stays closed)
 - [ ] Mouth motion starts and ends WITH the generated speech: no lip-flap before the line starts or after it ends
+- [ ] EVERY character matches their character model sheet in EVERY frame — open the `*_sheet.png` files alongside the clip and check the `PRESERVE:` list item by item (mask construction and marking count, hair present from every angle including the back of the head, skin tone, body build and height ratio, exact outfit, signature prop). A near-miss is a FAIL: masks must not turn into painted human faces, and NG-change elements must not vanish in profile, rear or wide shots
 - [ ] Motion, poses and prop states match the Motion prompt and the Prop state ledger
 - [ ] Camera work matches the clip's Camera plan row: a static clip stays locked-off (no drift, no spontaneous camera motion), a moving clip actually performs the specified move at the specified amplitude and speed, and the final framing lands on the end keyframe
 - [ ] Location, time of day and lighting match the Scene ledger in EVERY frame — no unexplained day-to-night (or night-to-day) jump anywhere in the clip, including during location transitions
@@ -500,6 +529,11 @@ python3 .claude/skills/seedance/validate_run_bundle.py 03_SCRIPTS/<NN>_<slug>
 - `script.md`が`../../02_CHARACTERS/`等の外部パスを参照していない
 - 各Motion promptに`Required attached reference files:`があり、対応表の全`@ImageN = filename`がファイル名ごと再宣言されている
 - 各クリップのFrame A、Frame B、Audioが存在する
+
+あわせて、次を人手（実行エージェント）で確認する。1つでも欠けていたら完了報告してはいけない:
+
+- [ ] ステップ0で全キャラの`*_sheet.png`をReadで開き、正典の姿を確認した
+- [ ] ステップ3.5の`/image-validation`を実行し、キャラ同一性のFAILが残っていない（実施していない検証を「問題なし」と報告しない）
 - `## Scene ledger`セクションが存在し、各Motion promptに時間帯・光の語（daylight/daytime/midday/evening/night等）が含まれている
 - `## Camera plan`セクションが存在し、各Motion promptにカメラ記述（"camera"への言及）が含まれている
 - 各Motion promptに音響指定（`Soundscape:`と`Music:`）が含まれている
