@@ -208,7 +208,7 @@ seedance SKILL.mdステップ1の全ルール（Prop state ledger / Scene ledger
 
 **1チャプター＝1回のH3生成**。MiniMax H3には1回の生成あたり入力ファイル数の上限があるため、ストーリーを次の制約を満たすチャプターに分割する:
 
-- **尺: 4〜15秒**（24fps。指定尺は17k+5フレームのグリッドに丸められる）
+- **尺: 4〜15秒**（24fps。指定尺は17k+5フレームのグリッドに丸められる）。ただし上限まで使ってよいのはイベントが尺を埋めるチャプターだけで、**動きの少ないチャプターは90フレーム（3.75秒）以下に短くするか、中間キーフレームを1枚追加して2チャプターに分割する**。低イベントの長尺はモデルが間を持たせようとして台本に無い動作を発明する（実測: 124fのフード歩きでフードが勝手に落ちた）。下記「I2Vの弱点と必須ガード」参照。
 - **入力ファイル合計: 最大12**（R2Vモード時。画像・音声・動画の合計）
 - **画像: 最大9枚**（キーフレーム＋キャラクターシート等の参照）
 - **音声: 最大3ファイル**（各2〜15秒、合計15秒以内）
@@ -224,6 +224,22 @@ H3には2つのチェックポイントがあり、チャプターごとにど�
 - **I2V（FL2VA）— セリフのないチャプター**: 開始フレーム＋終了フレームを`first_frame`/`last_frame`として厳密に固定できる（seedanceのFrame A/Frame B相当）。音声入力は持てない。キャラ同一性はキーフレーム自体で担保する。
 - **R2V（Ref2VA）— セリフのあるチャプター**: 参照画像（最大9）＋音声（最大3）を渡せる唯一のモード。**開始・終了キーフレームは<Picture 1>/<Picture 2>として渡し、プロンプトで「動画はこの絵で始まりこの絵で終わる」と明示的に拘束する**（I2Vほど厳密なアンカーではないため、パイロット検証で乖離を確認する）。残りの画像スロットにキャラクターシートを入れて同一性を固定する。
 - 添付ファイルはプロンプト内で**接続順のタグ**で参照する: `<Picture 1>`, `<Audio 1>`（seedanceの`@Image1`/`@Audio1`に相当。話者バインディングもこのタグで行う）。
+
+#### I2Vの弱点と必須ガード（2026-08の実測事故に基づく）
+
+I2V（fl2va）は参照画像を受け取れないため、**開始・終了キーフレームの2枚に写っていない要素には視覚的な拘束が一切かからず、テキストからの想像で描かれる**。プロンプトで明示的に禁止していても突破された実測事故が2件ある:
+
+- 両端キーフレームがフードで顔を隠すチャプター（124f）で、中間だけフードが落ち、非正典の仮面・体型が約4.5秒露出した（`76_sobaya_desert_mega_beer` ch1）。
+- 缶と手だけの極端なクローズアップ（人物はアンカーの画面外・90f）で、実写指定にもかかわらずフラット2Dのちびキャラが中間に出現した（`74_yametaro_ultra_dry_home_shopping` ch16）。
+
+このためチャプター設計時に次を必ず判定・適用する:
+
+1. **アンカー可視性チェック**: そのチャプターで正典を守るべき要素（仮面・顔・体型・NG変更小道具）が開始・終了キーフレームの**両方に**はっきり写っているか。写っていない（隠れている／画面外／中間で露出が変わる）チャプターは事故リスクが高い。該当したら (a) セリフが無くても**R2Vへ切り替えてキャラクターシートを渡す**（境界アンカーが緩くなる副作用は許容し、script.mdに理由を明記）か、(b) I2Vのまま下記ガードを全て入れて**90f以下に短縮**する。
+2. **I2V必須ガード（プロンプト強化）**: アンカーに写らない正典要素・画面外の人物があるI2Vチャプターでは、本文に次を否定形込みで必ず入れる:
+   - 隠している物は全フレームで隠し続ける: 例 "The hood completely covers his head, face and mask in EVERY frame; the hood never slips, never falls, never turns transparent, and the face is never revealed."
+   - 人物の増減禁止: "No new person or character enters the frame at any time; nobody appears, materializes, or walks in."
+   - 画風の固定: "Photorealistic live-action only in every frame; no 2D, anime, cartoon, chibi, or illustrated character ever appears."
+3. **中間フレームQC**: パイロット・VLM検証・目視QCでは境界フレームだけでなく**中間フレームも必ずサンプリングする**（事故は両端が正しく中間だけで起きるため、境界比較だけでは検出できない）。上記1に該当するチャプターは全数、それ以外も1チャプターにつき最低3点の中間フレームを確認する。
 
 ### Motion promptの内部構造（公式h3-prompt-writing準拠）
 
@@ -428,12 +444,17 @@ Generate ONLY the first dialogue chapter, then verify ALL of the following:
 - [ ] Motion, poses, prop states and fixture hardware match the Motion prompt / ledgers
 - [ ] Camera work matches the chapter's Camera plan row: a static chapter stays locked-off (no drift, no spontaneous camera motion), a moving chapter actually performs the specified move at the specified amplitude and speed, and the final framing lands on the end keyframe
 - [ ] Character identity survives H3 generation — open each `*_sheet.png` alongside the clip and check that character's canon checklist item by item (mask construction and marking count, hair visible from the back, skin tone, body build and height ratio, exact outfit, signature prop). A near-miss is a FAIL
+- [ ] Mid-chapter frames are sampled (at least 3 per chapter, not just the boundary frames): nothing hidden
+      in the keyframes gets revealed, no new person/character appears, and the art style stays
+      photorealistic live-action in EVERY sampled frame
 - [ ] Every named character appears EXACTLY ONCE in EVERY frame — no duplicated characters or props, especially during appear/disappear/handoff actions
 - [ ] The art style matches the run's Style block and the keyframes, and stays consistent through the whole chapter
 - [ ] Ambient sound and music match the prompt's Soundscape/Music lines (no unrequested background music)
 - [ ] Duration matches the H3 inputs table (remember the 17k+5-frame grid rounding)
 If any check fails, fix the workflow inputs/prompt and regenerate the pilot until all pass.
-Only then generate the remaining chapters, and re-run at least the audio + duration checks on each.
+Only then generate the remaining chapters, and re-run at least the audio + duration + mid-frame
+checks on each (mid-frame sampling is mandatory for every I2V chapter whose keyframes hide a
+canonical element or keep the subject out of frame).
 
 ### Step 2 — Prompts are verbatim
 Copy each chapter's Motion prompt into the workflow JSON EXACTLY as written here. Do NOT
