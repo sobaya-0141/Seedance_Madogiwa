@@ -201,17 +201,18 @@ python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<NN>_<slug
 
 seedance形式のラン（クリップ・CapCut inputs・`@ImageN`/`@Audio1`タグ）をH3チャプターへ変換する手順。実例: `03_SCRIPTS/41_okayaman_watching_cm/H3_COLAB.md`。
 
-1. **クリップ→チャプター対応**: 1クリップ＝1チャプター。境界共有（クリップNのFrame B＝クリップN+1のFrame A）はそのまま引き継ぐ。尺は17k+5グリッド（24fps）へ丸め、対応表を`H3_COLAB.md`に記録する。
-2. **モード判定**: セリフなし＝I2V（Frame A/Bを`--first`/`--last`に）。セリフあり＝R2V（Frame A/Bを`<Picture 1>`/`<Picture 2>`に、シート・スケール参照を残りスロットへ。画像9・音声3・合計12の上限に注意）。
+1. **クリップ→チャプター対応**: 1クリップ＝1チャプター。境界共有（クリップNのFrame B＝クリップN+1のFrame A）はそのまま引き継ぐ。尺は17k+5グリッド（24fps）へ丸め、対応表を`H3_COLAB.md`に記録する。**動きの少ないクリップは90フレーム（3.75秒）以下へ短縮するか、中間キーフレームを1枚作って2チャプターに分割する**（低イベントの長尺はモデルが台本に無い動作を発明する。判定基準はlocal-video SKILL.mdの「I2Vの弱点と必須ガード」）。
+2. **モード判定**: セリフなし＝I2V（Frame A/Bを`--first`/`--last`に）。セリフあり＝R2V（Frame A/Bを`<Picture 1>`/`<Picture 2>`に、シート・スケール参照を残りスロットへ。画像9・音声3・合計12の上限に注意）。**ただしセリフが無くても、正典を守るべき要素（仮面・顔・体型・NG変更小道具）がFrame A/Bの両方に写っていないクリップ（フードで隠れている・人物が画面外等）はI2Vにしない** — R2Vへ切り替えてシートを渡すか、I2Vのまま必須ガード＋90f以下への短縮を適用する（local-video SKILL.md「I2Vの弱点と必須ガード」のアンカー可視性チェック）。
 3. **プロンプト変換**（逐語ベース。要約禁止はseedanceと同じ）:
    - **I2VはH3に参照画像を渡せない**ため、`Required attached reference files: @ImageN...`の宣言部を削除し、本文中の`(@ImageN, ...)`は同定句だけ残す。冒頭付近に "The video starts EXACTLY on the attached first frame and ends EXACTLY on the attached last frame." を足す。
+   - **I2V必須ガード**: アンカー2枚に写らない正典要素・画面外の人物があるチャプターでは、本文に「隠している物は全フレームで隠し続ける（never slips / never falls / never revealed）」「新しい人物・キャラクターは一切現れない（no new person or character enters the frame at any time）」「全フレーム実写のみ（no 2D, anime, cartoon, chibi, or illustrated character ever appears）」を否定形込みで必ず入れる（実測事故2件の再発防止。詳細はlocal-video SKILL.md）。
    - R2Vは`@ImageN`→`<Picture N>`（接続順に振り直し）、`@Audio1`→`<Audio 1>`、話者に`(S1)`、セリフは`<d>[Japanese] 原文</d>`で逐語埋め込み。
    - **音声のセマンティクス差**: seedanceの「voice sample（似た声を生成）」記述は、H3では「Use <Audio 1> AS-IS as the dialogue audio and do NOT generate any voice」に置き換える。
    - `Soundscape:`/`Music:`行はseedanceランに既にあるのでそのまま使える。
 4. **音声パディング**: H3は1ファイル2.0秒以上。短いwavは`apad`で末尾パディングした**別名ファイル**（`*_h3pad.wav`）を作り、元ファイルは変更しない（seedance側の正典を保つ）。
 5. **workflow生成**: `build_h3_workflow.py`（local-videoスキル同梱・codec対応版）をラン直下にコピーして`chN_workflow.json`を生成。`h3_run.py`も同梱してからzipする。
 6. **atmosphere参照（ポスター等）はH3入力にしない**（雰囲気はキーフレームに焼き込み済み。文字漏れリスクも避けられる）。
-7. パイロットは**セリフのあるチャプター**。チェックリストはseedanceランの`script.md`の生成プロトコルを使い、音声の項だけ「添付wavそのものが鳴っているか」に読み替える。
+7. パイロットは**セリフのあるチャプター**。チェックリストはseedanceランの`script.md`の生成プロトコルを使い、音声の項だけ「添付wavそのものが鳴っているか」に読み替える。**回収後のQCは境界フレームだけでなく中間フレームも必ずサンプリングする**（1チャプター最低3点。アンカーに正典要素が写らないI2Vチャプターは重点確認。事故は両端が正しく中間だけで起きる）。
 
 ## 8. LTX-2.5モード（セリフなしI2Vチャプターの代替エンジン）
 
@@ -248,4 +249,4 @@ H3の代わりに**LTX-2.5**（Lightricks・2026-08公開のオープンウェ�
 
 3. **プロンプト変換**はH3のI2V変換と同じ（`@ImageN`宣言部を削除し同定句だけ残す、"starts EXACTLY on the attached first frame..."を足す）。**`Soundscape:`/`Music:`行は必ず残す** — LTXはここから音声を自動生成する。音声wavは投入しない（できない）。
 4. **バンドル要件**: `script.md`＋`ch*_start.png`/`ch*_end.png`＋`ch*_prompt.txt`＋`ch*_workflow.json`＋`build_ltx25_workflow.py`。wav・キャラクターシートは不要（I2Vは参照画像を取れない）。
-5. **パイロット**のチェックリストは「キーフレームアンカー・NG要素・尺・生成環境音の質」。環境音が合わなければ`ffmpeg -an`で消してローカルの音に差し替える（結合はlocal-videoステップ8と同じ）。
+5. **パイロット**のチェックリストは「キーフレームアンカー・NG要素・尺・生成環境音の質・中間フレーム（最低3点、隠れた要素の露出・人物の湧きが無いか）」。環境音が合わなければ`ffmpeg -an`で消してローカルの音に差し替える（結合はlocal-videoステップ8と同じ）。
