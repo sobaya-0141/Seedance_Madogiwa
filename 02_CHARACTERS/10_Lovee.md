@@ -18,7 +18,7 @@
 
 NG変更: バーチャル美少女アバターの姿そのもの（黒ロングヘア、頭頂のアホ毛、左頬のハートマーク）、「中身はおっさん」という設定。生身のおっさんの姿を画面に出すこと。
 
-シート照合チェックリスト（画像を生成したら、参照画像（`Lovee_sheet.png`。未作成の間は`Lovee.png`）をReadで開いた状態で1項目ずつ照合する。1項目でもズレていたら再生成する）：
+シート照合チェックリスト（画像を生成したら、参照画像（`Lovee_sheet.png`）をReadで開いた状態で1項目ずつ照合する。1項目でもズレていたら再生成する）：
 1. **3DのVTuber風アニメ美少女**の姿である（おっさんの姿・リアル調の人物は不合格）。
 2. 髪は**黒のストレートロングヘア**（茶髪化・ショート化は不合格）。
 3. 頭頂に**くるんと1回巻いたアホ毛が1本**（複数本・消失は不合格）。
@@ -29,6 +29,6 @@ NG変更: バーチャル美少女アバターの姿そのもの（黒ロング�
 8. 白いトップスに**細い黒のストラップ2本**（服が見えるカットのみ判定）。
 
 画像ファイル：Lovee.png（アイコン風の1枚絵。ピンクの和柄背景（梅・雲・市松）はアイコン装飾でありキャラデザインの一部ではないため、生成時に持ち込まない。ウインクもこの1枚のポーズであり必須ではない）
-キャラクターシート：Lovee_sheet.png（**未作成**。多面図モデルシートを作成したらここを更新する。それまでは`Lovee.png`をSeedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
+キャラクターシート：Lovee_sheet.png（多面図モデルシート: 三面図＋顔クローズアップ＋表情/アクション差分＋髪・ハートマーク・衣装ディテール＋カラーパレット。`Lovee_sheet.png`をSeedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
 プロンプト用同定句（英語）：lovee — a 3D VTuber-style anime girl avatar (secretly a middle-aged man inside) with long straight black hair, one curled ahoge on top of the head, long side-swept bangs partly covering one eye, large brown eyes with white highlights, thin black eyebrows, fair skin with soft blush, a single black heart-shaped mark on her left cheek, wearing a white top with two thin black shoulder straps
 声：未定（`VOICE_CAST.md`で配役が決まるまでセリフ音声は作らない。「見た目は美少女・声はおっさん」にするか「声も美少女」にするかは配役決定時に選ぶ）
