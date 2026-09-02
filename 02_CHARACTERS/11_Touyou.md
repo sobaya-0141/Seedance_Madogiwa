@@ -25,6 +25,6 @@ NG変更: 忍者装束（黒装束＋頭巾）、顔の白い鋭角エンブレ�
 6. 装束の露出部（手・首等）に肌色の肌が見えていない。
 
 画像ファイル：Touyou.png（**未配置**。本人のアイコン画像をこのパスに保存したらここを更新する。アイコンの角丸スクエアの枠・背景はアイコン装飾でありキャラデザインの一部ではないため、生成時に持ち込まない）
-キャラクターシート：Touyou_sheet.png（**未作成**。多面図モデルシートを作成したらここを更新する。それまでは`Touyou.png`をSeedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
+キャラクターシート：Touyou_sheet.png（多面図モデルシート: 三面図＋顔クローズアップ＋高速移動アクション＋頭巾・手甲・脚絆・足袋・エンブレムのディテール。`Touyou_sheet.png`をSeedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
 プロンプト用同定句（英語）：Touyou — a ninja in full black shinobi garb with a hood, whose face is a flat near-black surface bearing a single white sharp-angled geometric emblem (two angular arrow-like shapes interlocking diagonally into a lightning/Z-shaped zigzag, straight lines and sharp angles only, no eyes or mouth), moving at incredible speed with afterimages and motion blur
 声：未定（`VOICE_CAST.md`で配役が決まるまでセリフ音声は作らない）

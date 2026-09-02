@@ -17,6 +17,6 @@ NG変更: 頭頂の巻きアンテナ、大きなピンクの耳、両手のOK�
 7. **両手ともに親指と人差し指で丸を作ったOKサイン**（残り3本の指は伸びている）。片手だけ・グッドサイン等への置き換えは不合格。
 
 画像ファイル：Kaikai.png（アイコン風の1枚絵。黄色の背景・青い枠・キラキラの装飾はステッカー演出でありキャラデザインの一部ではないため、生成時に持ち込まない）
-キャラクターシート：Kaikai_sheet.png（**未作成**。多面図モデルシートを作成したらここを更新する。それまでは`Kaikai.png`をSeedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
+キャラクターシート：Kaikai_sheet.png（多面図モデルシート: 三面図＋顔クローズアップ＋表情/アクション差分＋アンテナ・耳・目・鼻・手のディテール＋カラーパレット。`Kaikai_sheet.png`をSeedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
 プロンプト用同定句（英語）：Kaikai — the small Teletubby-like mascot with a cream-colored face, big glossy round eyes, a pink round nose, one green curled antenna on top of the head, large pointed ears with magenta-pink inner sides, a green-blue-purple gradient bodysuit, always making an OK sign (thumb and index finger circle) with BOTH hands, looking perpetually unmotivated
 声：未定（`VOICE_CAST.md`で配役が決まるまでセリフ音声は作らない）
