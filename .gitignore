@@ -1,3 +1,7 @@
 .idea/
 .DS_Store
 dist-pages/
+
+# Local pickup compilation media, renders, and Python caches
+.local/
+__pycache__/
