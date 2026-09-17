@@ -188,3 +188,73 @@ ch2→ch3 the mismatch includes a **~1.5% scale pop** (correcting for the zoom r
 So the shared-frame design does not buy an invisible continuation here — the joins read as a small
 pop. Mitigation if it bothers on playback: a 3–5 frame crossfade at the four shared joins (needs a
 re-encode, so `-c copy` no longer applies). Left as-is in `final_draft.mp4`.
+
+## Smoothing the joins — `final_smooth.mp4` (`build_smooth_cut.py`)
+
+The straight `-c copy` concat stutters at every chapter join. Measured causes, and what the
+script does about each:
+
+### 1. The picture freezes before every join
+
+H3 decelerates onto the pinned last keyframe, so dead frames pile up at each chapter's tail.
+Measured mean per-frame pixel motion:
+
+| Ch | mid-chapter | last 8 frames | dead tail frames |
+|---|---:|---:|---:|
+| 1 | 0.41 | 0.35 | 0 |
+| 2 | 0.65 | 0.06 | 16 (0.67s) |
+| 3 | 2.73 | 0.04 | 16 (0.67s) |
+| 4 | 0.70 | 0.34 | 0 |
+| 5 | 1.43 | 0.08 | 9 (0.38s) |
+| 6 | **9.27** | **0.04** | **27 (1.12s)** |
+| 7 | 0.84 | 0.39 | 0 |
+| 8 | 0.64 | 0.04 | 16 (0.67s) |
+
+**84 of 788 frames — 3.5s, over 10% of the film — are frozen tail.** ch6 is the worst: the
+Sobaya face completes and then sits motionless for 1.12s, right on the money shot.
+
+The script drops the measured dead frames, with two deliberate exceptions: ch6 keeps an 8-frame
+hold so the reveal lands, and ch8's tail is the film's ending so it stays.
+
+### 2. The picture pops at the join
+
+Covered above: 16.7–18.6 dB across shared joins vs a 42–50 dB within-clip baseline.
+**5-frame dissolves at the four SHARED joins only.** The three CUT joins (ch3→4, ch4→5, ch7→8)
+are intentional angle changes in the camera plan and stay hard cuts. Worst single-frame jump
+inside each dissolve is now 1.3–3.5 (ch5→ch6 reads 12.3, but ch5's own motion is 8–11 there, so
+it is in line with its surroundings rather than a discontinuity).
+
+### 3. The sound jumps between chapters
+
+Each chapter's soundscape is generated independently, and the levels came out **29 dB apart**:
+
+| Ch | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| source RMS (dBFS) | -43.7 | -39.4 | -42.6 | -43.9 | -27.0 | **-15.5** | -38.1 | **-44.6** |
+
+ch6 peaked at -1.0 dBFS while ch8 sat at -44.6. The script gives each chapter a fixed gain onto a
+target curve that keeps the intended arc — quiet shrine, fire growing, the face as the peak, then
+calming to embers — and only removes the steps. Result: **spread 29.1 dB → 10.9 dB**, no join step
+larger than 4.8 dB, true peak -1.8 dBFS.
+
+A `loudnorm` master was tried first and rejected: it works dynamically and flattened the intended
+arc (ch8 landed 7 dB under its target). A fixed master gain plus `alimiter` keeps the curve exactly
+as `TARGET_RMS` specifies.
+
+### 4. The sound drops out at the join
+
+`-c copy` splices eight separately-encoded AAC streams, and ffmpeg reports non-monotonic DTS at
+all seven joins — audible dropouts. The script decodes everything and re-encodes the audio **once**
+as a single stream (equal-power crossfades at the shared joins, 20 ms fades at the hard cuts to
+kill clicks). ffmpeg now reports no warnings on the output.
+
+### Result
+
+`final_smooth.mp4` — **700 frames / 29.17s** (from 788 / 32.83s; the 3.7s removed is almost
+entirely frozen tail). Video is re-encoded once at CRF 16.
+
+`final_draft.mp4` (the raw `-c copy` concat) is kept as the unprocessed reference.
+
+Remaining option not taken: a single continuous ambience bed under the whole film would hide the
+soundscape's change of character at each join completely. It is a creative addition rather than a
+repair, and `script.md` forbids background music, so it is left to a decision.
