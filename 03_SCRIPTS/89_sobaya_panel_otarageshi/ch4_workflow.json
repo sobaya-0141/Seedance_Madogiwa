@@ -1,0 +1,181 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "ch4",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "clip4_start.png"
+    }
+  },
+  "201": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "clip4_end.png"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "The video starts EXACTLY on the attached first frame and ends EXACTLY on the attached last frame. HIGH-ANGLE MEDIUM-WIDE view looking down into the same circular stone-lined fire pit in the shrine courtyard, in CLEAR LATE-AFTERNOON DAYLIGHT, dry calm weather, NOT night. Exactly one living character appears on screen: Fukuchan appears EXACTLY ONCE at the right edge of frame, with no duplicate person; the printed person on the cardboard pieces is not alive and does not count. Fukuchan — the slim, stylish 170cm 48-year-old black-haired man in a white ceremonial shinto-style outer robe with gold trim over deep purple hakama, black SPONSOR lanyard and horizontal white name badge — watches the APPROXIMATELY TWELVE dry cardboard pieces and lowers his white zigzag paper wand slightly. The visible state transition is NO FLAMES and NO SMOKE becoming SMALL CONTROLLED ORANGE FLAMES licking the edges of the pieces, with a thin pale-gray smoke column rising straight up. The pieces stay inside the single pit, do not multiply, do not scatter out of the pit and do not burn away yet. The fire stays small and controlled; it never flares into a large blaze and never leaves the stone ring. Camera: locked-off static camera. Preserve Fukuchan in EVERY frame: realistic adult proportions, medium black mushroom-layered hair with fringe over the eyebrows, warm smile, black SPONSOR lanyard, white name badge, white ceremonial robe over deep purple hakama; his face, hair and costume never change and never swap. The printed artwork on the burning pieces never comes alive and never moves on its own. The smoke stays formless and never gathers into a face, a head or a figure in this shot. No new person or character enters the frame at any time; nobody appears, materializes, or walks in. Photorealistic live-action only in every frame; no 2D, anime, cartoon, chibi, or illustrated character ever appears. The only allowed text is the original lettering already printed on the physical cardboard pieces; do NOT render any on-screen text — no subtitles, no captions, no new lettering, no Japanese characters outside the panel artwork, no logos, no watermarks; the video must contain no new text at all. No speech, no narration, no voices. Soundscape: dry cardboard crackle, a small ceremonial fire catching and taking hold, soft shrine courtyard ambience and a light rustle of the paper wand, no voices. Music: no background music. Photorealistic live-action shrine comedy with natural skin, fabric, cardboard, fire and volumetric smoke textures; warm clear late-afternoon daylight stays continuous from start to finish; no flat 2D anime, no cartoon lineart, no 3D-rendered human characters, no gore, no grim horror.",
+      "width": 1344,
+      "height": 768,
+      "length": 90,
+      "first_frame": [
+        "200",
+        0
+      ],
+      "last_frame": [
+        "201",
+        0
+      ]
+    }
+  }
+}

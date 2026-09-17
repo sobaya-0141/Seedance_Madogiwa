@@ -1,0 +1,8 @@
+This image is Clip 2 FIRST FRAME and must be identical to Clip 1 LAST FRAME. Verify ALL items and answer PASS or FAIL per item:
+1. File content is identical to clip1_end.png at the shared join.
+2. Exactly ONE living Fukuchan appears once; the panel figure is not alive.
+3. Fukuchan's face, black layered hair, warm smile, requested white robe, purple hakama, SPONSOR lanyard, 福ちゃん badge and wand are preserved.
+4. The panel is ONE intact object with exactly THREE luminous cut lines; no separated pieces, no fire, no smoke.
+5. CLEAR LATE-AFTERNOON DAYLIGHT and dry weather remain unchanged.
+6. No new text, subtitle, caption, watermark or sheet layout appears.
+7. Photorealistic shrine-comedy style is consistent.

@@ -1,0 +1,181 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "ch8",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "clip8_start.png"
+    }
+  },
+  "201": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "clip8_end.png"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "The video starts EXACTLY on the attached first frame and ends EXACTLY on the attached last frame. WIDE eye-level view of the same traditional Shinto shrine courtyard in CLEAR LATE-AFTERNOON DAYLIGHT, warm sun and gentle shrine shadows, dry calm weather, NOT night. Exactly one living character appears on screen: Fukuchan appears EXACTLY ONCE at the right side, with no duplicate person. Fukuchan — the slim, stylish 170cm 48-year-old black-haired man in a white ceremonial shinto-style outer robe with gold trim over deep purple hakama, black SPONSOR lanyard and horizontal white name badge — stands in a relaxed, respectful pose with his hands lowered, smiling gently. The single stone fire pit remains in the foreground. The visible state transition is the last thin wisp of smoke dispersing completely into the air while the fire dies down: by the last frame there is NO smoke at all and only quiet glowing embers, with NO flame. No cardboard panel remains standing and no recognizable panel piece survives; only burned remnants and embers lie in the pit. The Sobaya smoke face is fully gone and never returns in this shot; no face, mask or figure ever forms in the air. Camera: the camera pulls back with small amplitude at slow speed. Preserve Fukuchan in EVERY frame: realistic adult proportions, medium black mushroom-layered hair with fringe over the eyebrows, warm smile, black SPONSOR lanyard, white name badge, white ceremonial robe over deep purple hakama; his face, hair and costume never change and never swap. No new person or character enters the frame at any time; nobody appears, materializes, or walks in, and no duplicate Fukuchan, duplicate fire pit or extra prop copy ever appears. Photorealistic live-action only in every frame; no 2D, anime, cartoon, chibi, or illustrated character ever appears. Do NOT render any on-screen text — no subtitles, no captions, no new lettering, no Japanese characters, no logos, no watermarks; the video must contain no text at all. No speech, no narration, no voices. Soundscape: a final soft ember crackle, a light breeze moving through the shrine courtyard and then a clean quiet tail, no voices. Music: no background music. Photorealistic live-action shrine comedy with natural skin, fabric, cardboard, fire and volumetric smoke textures; warm clear late-afternoon daylight stays continuous from start to finish; no flat 2D anime, no cartoon lineart, no 3D-rendered human characters, no gore, no grim horror.",
+      "width": 1344,
+      "height": 768,
+      "length": 90,
+      "first_frame": [
+        "200",
+        0
+      ],
+      "last_frame": [
+        "201",
+        0
+      ]
+    }
+  }
+}

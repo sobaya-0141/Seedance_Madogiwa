@@ -1,0 +1,8 @@
+This image is Clip 3 FIRST FRAME and must be identical to Clip 2 LAST FRAME. Verify ALL items and answer PASS or FAIL per item:
+1. File content is identical to clip2_end.png at the shared join.
+2. Exactly FOUR large panel pieces, one Fukuchan, one wand; no duplicate pieces or people.
+3. Fukuchan identity, requested ritual costume, SPONSOR lanyard and 福ちゃん badge are preserved.
+4. No flames and no smoke; dry pieces remain hovering.
+5. CLEAR LATE-AFTERNOON DAYLIGHT, dry weather, NOT night.
+6. No new text or sheet labels.
+7. Photorealistic shrine-comedy style is consistent.

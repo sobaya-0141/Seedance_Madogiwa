@@ -1,0 +1,181 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "ch6",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "clip6_start.png"
+    }
+  },
+  "201": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "clip6_end.png"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "The video starts EXACTLY on the attached first frame and ends EXACTLY on the attached last frame. CLOSE-UP at a slight low angle of the same single stone-lined fire pit, lit by CLEAR LATE-AFTERNOON DAYLIGHT mixed with warm firelight, dry calm weather, NOT night. Exactly ZERO living people are on screen in EVERY frame. ONE smoke mass only, appearing EXACTLY ONCE, rises above the flames and gradually coheres from a vague rounded silhouette into ONE recognizable Sobaya smoke face. Preserve that face exactly as it stands in the last frame: a hard white mask-like smoke surface with TWO large black circular eye holes that contain NO human eyes, NO eyelids, NO eyelashes and NO eyebrows; ONE horizontal black mouth slit and no lips; exactly FOUR symmetrical red vertical markings, two flanking each eye; ONE small black dot centred on the forehead; and short spiky black hair above the mask. The count of red markings is exactly four and never three or five, and there is exactly one forehead dot. The face is always made of smoke and is never a solid head; it never grows a torso, limbs, hands or a beer mug, never duplicates into a second face, and no other face of any kind ever appears in the smoke or in the fire. The fire stays below in the single pit and the burning cardboard remnants never multiply. Camera: locked-off static camera. No person, character, hand, arm or human face enters the frame at any time; nobody appears, materializes, or walks in. Photorealistic live-action only in every frame; no 2D, anime, cartoon, chibi, or illustrated character ever appears, and no drawn or painted face is ever composited into the smoke. The printed artwork on the burning pieces stays flat physical print; it never comes alive and never moves on its own. Do NOT render any on-screen text — no subtitles, no captions, no new lettering, no Japanese characters outside the printed cardboard artwork, no logos, no watermarks; the video must contain no new text at all. No speech, no narration, no voices, and the smoke face never opens its mouth slit to speak. Soundscape: the fire crackle softens under a deep airy smoke swell, with a faint shrine breeze and one gentle magical resonance as the face forms, no voices. Music: no background music. Photorealistic live-action shrine comedy with natural skin, fabric, cardboard, fire and volumetric smoke textures; warm clear late-afternoon daylight stays continuous from start to finish; no flat 2D anime, no cartoon lineart, no 3D-rendered human characters, no gore, no grim horror.",
+      "width": 1344,
+      "height": 768,
+      "length": 90,
+      "first_frame": [
+        "200",
+        0
+      ],
+      "last_frame": [
+        "201",
+        0
+      ]
+    }
+  }
+}
