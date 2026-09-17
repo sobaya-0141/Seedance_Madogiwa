@@ -33,6 +33,22 @@ https://sobaya-0141.github.io/Seedance_Madogiwa/
 - **[窓際族バトル 〜立ち飲み処の決闘〜](09_VOXEL_BATTLE_GAME/README.md)** (`09_VOXEL_BATTLE_GAME/`): 部屋コードを交換して離れた相手と対戦する、オンライン1対1のターン制コマンドバトル。8体から1体を選び、固有スキルで決闘。ゲーム本体はGitHub Pages配信のまま、対戦同期にFirebase Realtime Databaseを利用する（同じPCの2タブで遊べるローカル対戦モードも搭載）。Vite + TypeScript + Three.js製。セットアップは[ゲームのREADME](09_VOXEL_BATTLE_GAME/README.md)を参照。
 - **[ギュンギュン・クエスト 〜魔王そば屋と最高の一杯〜](10_GYUN_GYUN_QUEST_GAME/README.md)** (`10_GYUN_GYUN_QUEST_GAME/`): 福ちゃん王にもらった500円で最高の一杯を選び、城下町・平原・洞窟を旅して魔王そば屋へ届けるファミコンRPG風2Dアドベンチャー。オープニングムービーと3種類のエンディングを収録。Vite + TypeScript製。
 
+## ピックアップ動画の結合
+
+公式サイトのピックアップ動画を取得し、同じシャッフル順で「単純結合版」と「各動画の前にタイトルを2秒表示する版」をローカル生成できます。横1920×1080に統一し、縦長動画の左右は黒い余白にします。
+
+Python 3・curl・FFmpegが必要です。管理者ログインやAPIキーは不要です。
+
+```bash
+# 対象だけ確認
+python3 tools/compile_pickup_videos.py --dry-run
+
+# 2種類のMP4を生成
+python3 tools/compile_pickup_videos.py
+```
+
+出力先は `.local/pickup-compilations/`。初回セットアップ、フォント指定、最新N作品への絞り込みは [使い方](tools/COMPILE_PICKUP_VIDEOS.md) を参照してください。
+
 ## IPの原典
 - 世界観: [01_WORLD/WORLD_BIBLE.md](01_WORLD/WORLD_BIBLE.md)
 - 正史エピソード年表: [01_WORLD/STORY_TIMELINE.md](01_WORLD/STORY_TIMELINE.md)
