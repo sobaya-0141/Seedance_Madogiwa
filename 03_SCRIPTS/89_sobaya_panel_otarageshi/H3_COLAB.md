@@ -106,3 +106,85 @@ ffmpeg -y -f concat -safe 0 -i concat.txt -c copy final_draft.mp4
 ```
 
 No dialogue track, no background music and no VOICEVOX credit card are added (`script.md` § Credits).
+
+## Generation result (2026-09-17, L4 + sage + 8-step turbo)
+
+All eight chapters generated in one session. `bench_log.csv` is bundled.
+
+| Ch | Frames | Wall | s/step |
+|---|---:|---:|---:|
+| 1 | 124 | 12.0 min | 64.2 |
+| 2 | 90 | 7.8 min | 42.4 |
+| 3 | 124 | 10.8 min | 64.8 |
+| 4 | 90 | 7.8 min | 42.4 |
+| 5 | 90 | 7.8 min | 42.2 |
+| 6 | 90 | 7.8 min | 42.2 |
+| 7 | 90 | 7.8 min | 42.2 |
+| 8 | 90 | 7.8 min | 42.3 |
+
+Total 69 min (estimate was 92 min). Every mp4 is 1344x768 / 24fps / h264 + AAC with the exact
+frame count its workflow asked for.
+
+`final_draft.mp4` = the eight chapters concatenated with `-c copy` (no re-encode):
+**788 frames / 32.87s**.
+
+## QC result
+
+**Guards all held.** Middle frames were sampled at 6 points per chapter (0/20/40/60/80/100%):
+
+- No extra person, no duplicate Fukuchan, nobody walking into frame, in any chapter.
+- No 2D / anime / chibi / illustrated character anywhere — the failure mode that hit
+  `74_yametaro` ch16 did not recur in the people-free close-ups ch5–ch7.
+- ch5: the smoke stays a featureless head-and-shoulders silhouette for the whole chapter — no
+  eyes, no mouth, no markings. The "no face forms yet" guard worked.
+- ch6/ch7: the Sobaya mask holds canon through every readable stage — two black circular eye
+  holes, one horizontal mouth slit, exactly four red markings, one forehead dot, spiky black hair.
+  No second face, no solid head, no torso, no beer mug.
+- Fukuchan's identity and ritual costume are stable across ch1–ch4.
+- No subtitles, captions, logos or watermarks anywhere.
+
+### Open issue 1 — the panel's printed figure is duplicated from ch2 on
+
+When the panel splits down the middle, the left and right pieces each carry a **complete** printed
+Sobaya figure (full mask, full torso) instead of two halves of one figure. It propagates through
+ch3–ch7 as the pieces are subdivided and burned.
+
+**This is inherited from `clip2_end.png`**, which already has it and was signed off PASS in
+`validation/summary.md` — that checklist asked for "exactly four large clean pieces" and never
+asked whether the artwork was duplicated. H3 reproduced the approved keyframe faithfully.
+
+Fixing it means regenerating `clip2_end.png` and, because the keyframes are a serial chain, every
+keyframe downstream of it, then re-running ch2–ch7.
+
+### Open issue 2 — katakana on Fukuchan's robe in ch8
+
+In ch8 the ritual robe is covered in repeated katakana reading ギュンギュン, which breaks the
+"no new Japanese lettering" rule in the final shot of the video.
+
+**Also inherited**: both `clip8_start.png` and `clip8_end.png` carry the lettering, and both were
+signed off PASS. ch1/ch3/ch4 show the same robe with plain gold geometric motifs, so the drift
+entered when the ch8 keyframes were generated as a fresh CUT composition, not during generation.
+
+Contained fix: regenerate only `clip8_start.png` / `clip8_end.png` (ch8 is a CUT on both sides, so
+nothing downstream depends on them) and re-run ch8 alone — about 8 minutes of L4 time.
+
+### Shared joins are not seamless
+
+Measured frame-to-frame PSNR across the four shared joins against the within-clip adjacent-frame
+baseline:
+
+| Join | Within-clip adjacent | Across the join |
+|---|---:|---:|
+| ch1 → ch2 | 42.3 dB | **16.7 dB** |
+| ch2 → ch3 | 45.7 dB | **16.8 dB** |
+| ch5 → ch6 | 43.4 dB | **18.2 dB** |
+| ch6 → ch7 | 49.8 dB | **18.6 dB** |
+
+Cause: H3's **last-frame anchor is much looser than its first-frame anchor**. Each chapter's first
+frame matches its keyframe at 25–28 dB, but the last frame only reaches 17–19 dB. On ch1→ch2 and
+ch2→ch3 the mismatch includes a **~1.5% scale pop** (correcting for the zoom recovers only
+16.7 → 19.2 dB); the rest, and all of ch5→ch6 and ch6→ch7, is a full-frame texture re-render.
+
+So the shared-frame design does not buy an invisible continuation here — the joins read as a small
+pop. Mitigation if it bothers on playback: a 3–5 frame crossfade at the four shared joins (needs a
+re-encode, so `-c copy` no longer applies). Left as-is in `final_draft.mp4`.
