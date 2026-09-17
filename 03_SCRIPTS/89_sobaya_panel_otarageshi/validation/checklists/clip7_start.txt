@@ -1,0 +1,6 @@
+This image is Clip 7 FIRST FRAME and must be identical to Clip 6 LAST FRAME. Verify ALL items and answer PASS or FAIL per item:
+1. File content is identical to clip6_end.png at the shared join.
+2. Exactly ONE Sobaya smoke face, one continuous smoke mass, no body or duplicate face.
+3. TWO black circular eye holes, ONE black mouth slit, FOUR red vertical markings, ONE black forehead dot and short black hair are still visible.
+4. Fire, light, weather and no-text state match clip6_end.
+5. Photorealistic volumetric smoke style is consistent.

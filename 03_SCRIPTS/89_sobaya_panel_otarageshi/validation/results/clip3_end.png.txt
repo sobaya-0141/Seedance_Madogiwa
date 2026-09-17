@@ -1,0 +1,4 @@
+
+--- stderr ---
+ollama server not running — starting `ollama serve` ...
+ERROR: could not reach the ollama server (install: https://ollama.com/download)

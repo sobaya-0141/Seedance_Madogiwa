@@ -1,0 +1,6 @@
+This image is Clip 6 FIRST FRAME and must be identical to Clip 5 LAST FRAME. Verify ALL items and answer PASS or FAIL per item:
+1. File content is identical to clip5_end.png at the shared join.
+2. Exactly zero living people; one fire pit; one vague smoke silhouette with no face yet.
+3. Fire, cardboard count, daylight and warm firelight state match clip5_end.
+4. No subtitles, captions, watermarks or new text.
+5. Photorealistic volumetric smoke and shrine-comedy style are consistent.
