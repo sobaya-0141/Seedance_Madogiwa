@@ -1,0 +1,196 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "video/MiniMax_H3",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_clerk_sheet.png"
+    }
+  },
+  "201": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_student_sheet.png"
+    }
+  },
+  "202": {
+    "class_type": "LoadAudio",
+    "inputs": {
+      "audio": "ch9_line1_clerk.wav"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "Required attached input files: <Picture 1> = Mob_clerk_sheet.png — the cafe clerk's model sheet, identity/design reference only, NOT a composition reference (PRESERVE: a 35-year-old Japanese man 176cm tall of average build, dark brown-black wavy tousled medium-short hair with volume on top, clean-shaven, a cream long-sleeve button shirt with the sleeves rolled to the elbows, a dark forest-green full bib apron with a neck strap, two front waist pockets and a BLANK cream rectangular patch on the chest, a cream towel with two thin green stripes tucked at his right waist, dark brown trousers and brown leather derby shoes, and NO hat and NO cap of any kind; do NOT carry over: pose, camera angle, sheet background, panel layout, text labels, and the coffee cup and milk pitcher shown in the sheet's prop panels); <Picture 2> = Mob_student_sheet.png — the job-hunting student's model sheet, identity/design reference only, NOT a composition reference (PRESERVE: a 23-year-old Japanese man 178cm tall of slim-average build, black layered slightly tousled medium-short hair with a fringe falling over the forehead, clean-shaven, NO glasses, a dark navy single-breasted two-button suit jacket and matching dark navy trousers, a white dress shirt, a steel-blue textured necktie, a black leather belt, black leather derby shoes, and a black leather briefcase with two short handles; do NOT carry over: pose, camera angle, sheet background, panel layout, text labels); <Audio 1> = ch9_line1_clerk.wav — the cafe clerk's spoken line, use AS-IS. These attachments are REQUIRED inputs. None of the attached pictures is a frame of this video: the video does NOT start on, end on or reproduce any sheet — no panels, no beige or gray sheet background, no labels or text. Photorealistic live-action cinematography with natural live-action proportions in a bright daylit ground-floor cafe; the young man in the navy suit and the cafe clerk are real photographed people. NOT flat 2D anime, NOT cartoon lineart. The shot opens on a MEDIUM CLOSE-UP from the chest up at eye level on the clerk, who stands at frame CENTRE behind the counter facing camera with a blank, neutral expression. The student's shoulder clips the RIGHT edge of frame in the foreground. The bright daylit cafe is behind the clerk and every seat is EMPTY. Exactly two characters appear in this chapter — the cafe clerk and the young man in the navy suit — and each appears EXACTLY ONCE; the cafe is otherwise completely empty and nobody else enters the frame at any time. Beat 1 (0–0.8s): a single sharp glint of light flashes across BOTH of the clerk's eyes for only a few frames and then fades away; his face is otherwise still. Beat 2 (0.8–1.4s): one corner of his mouth lifts into a small knowing smile. Beat 3 (1.4–3.0s): the clerk speaks. Beat 4 (3.0–4.46s): he tips his chin toward the back of the shop, turns away from camera so his back is to us, and takes his first step away. ONLY the cafe clerk (S1), the man in the dark green bib apron, speaks — he says <d>[Japanese] ついてきな</d>, lip-syncing to <Audio 1>; he begins the line at 1.4s, his mouth moves ONLY while <Audio 1> is playing, and afterwards his mouth stays CLOSED. The student does NOT speak and his mouth stays CLOSED for the whole chapter. Use <Audio 1> AS-IS as the dialogue audio and do NOT generate any voice. The camera stays locked-off and static for the whole chapter — no push, no pan, no tilt, no handheld sway. The shot ends with the clerk turned away from camera mid-step, the student's shoulder still at the right edge of frame. The cafe clerk moves as ONE continuous person and is never duplicated, and the cream patch on his green apron stays completely BLANK in every frame — no lettering, no logo, no name. The young man in the navy suit moves as ONE continuous person and is never duplicated. The eye glint is a brief specular flash of light only: the clerk's eyes stay ordinary human eyes throughout, they do NOT change colour, they do NOT emit beams and they do NOT glow continuously. Do NOT render any on-screen text — no subtitles, captions, lettering, Japanese characters, signage or logos; the video must contain no text at all. Soundscape: a quiet cafe room tone, the hiss of a distant espresso machine, the clerk's leather shoes turning on the floor. Music: no background music.",
+      "width": 1344,
+      "height": 768,
+      "length": 107,
+      "audio_vae": [
+        "120",
+        0
+      ],
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "200",
+        0
+      ],
+      "ref_images.ref_image_1": [
+        "201",
+        0
+      ],
+      "ref_audios.ref_audio_0": [
+        "202",
+        0
+      ]
+    }
+  }
+}
