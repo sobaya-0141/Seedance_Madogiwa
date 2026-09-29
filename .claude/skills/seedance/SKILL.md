@@ -290,7 +290,7 @@ Seedanceはプロンプト内の日本語セリフ引用や添付音声につら
 - **語尾切れチェック**: 1.5倍速候補は末尾が自然に減衰して終わっているか確認する（波形末尾の音量がおおむね-40dBまで落ちて終わっているか。大きい音のまま終わっていたら語尾が切れているので、尺を+0.05〜0.1秒して再生成する）。
 - そば屋は両候補ともmonsterize加工まで済ませてから提示する（正典の声は加工後のため）。
 - VOICEVOXはエンジン未起動なら自動起動する（設置場所は`~/voicevox_engine/`）。Irodori-TTSは`~/irodori_tts`に設置済みであること（無いマシンではスクリプトのエラーメッセージに従い**最新版を**セットアップする。1文あたり数十秒〜数分かかる）。
-- **Irodori-TTSのバージョン**: `irodori_speak.sh`が実行時に上流（GitHub）を確認し、新バージョンが公開されていれば自動で更新する（チェックは24時間に1回）。使用モデルも上流の推奨最新チェックポイントを自動選択する。**モデルが変わるとシードによる過去テイクの再現はできなくなる**ため、過去ランのテイクを再現したいときは`IRODORI_TTS_CHECKPOINT=<当時のモデル>`（Dialogue audio表のmodel記録参照）を指定して実行する。自動更新を止めたいときは`IRODORI_TTS_NO_UPDATE=1`。
+- **Irodori-TTSのバージョン**: `irodori_speak.sh`が実行時に上流（GitHub）を確認し、コードの新バージョンが公開されていれば自動で更新する（チェックは24時間に1回）。使用モデルは**プロジェクト正典の`Aratako/Irodori-TTS-v4-Large`**（3.29Bパラメータ。2026-09-29にユーザー指定。初回は約12GBダウンロード、MPS/fp32でM4 Max実測1文あたり約25秒）で、スクリプトの既定値として固定している。**モデルが変わるとシードによる過去テイクの再現はできなくなる**ため、過去ランのテイク（v4.1-Small等で生成したもの）を再現したいときは`IRODORI_TTS_CHECKPOINT=<当時のモデル>`（Dialogue audio表のmodel記録参照）を指定して実行する。自動更新を止めたいときは`IRODORI_TTS_NO_UPDATE=1`。v4-LargeはGemma Terms of Use（なりすまし・ディープフェイク禁止）が適用されるため、参照音声は`VOICE_CAST.md`の本人同意の範囲でのみ使う。
 - 両スクリプトは合成後に**前後の無音を自動トリム**する（先頭約0.1秒・末尾約0.2秒だけ残す。長い無音はSeedanceの口パク開始位置を狂わせるため）。Dialogue audio表に記録する再生時間はトリム後の値を使う。
 - **ファイル名**: 候補は`clipN_lineM_<char>_1.0x.wav` / `clipN_lineM_<char>_1.5x.wav`、確定後の最終ファイルは`clipN_lineM_<char>.wav`（N=クリップ番号、M=クリップ内の発話順、char=キャラ名小文字。例: `clip1_line2_sobaya.wav`）。台本ファイル・画像と同じ階層に置く。
 - 生成テキストは**実際に発話される日本語のセリフそのまま**を渡す（英訳やローマ字にしない）。イントネーションがおかしい場合は読み仮名に直したテキストで再生成してよい（台本上の表記は変えない）。
@@ -309,7 +309,7 @@ Seedanceはプロンプト内の日本語セリフ引用や添付音声につら
 ### 生成手順 — フェーズ3: 確定（最終ファイルの用意）
 
 - 採用テイクを正式名 `clipN_lineM_<char>.wav` にコピーして最終ファイルとする。
-- Dialogue audio表には**採用テイクのパラメータ（model、seed、speedまたはseconds）と実測長**を記録する（例: `Irodori-TTS (Irodori-TTS-v4.1-Small, ref: Yametaro_voice.wav, seed 7, seconds 0.91)`。modelは`irodori_speak.sh`のOK行に出力される。モデルが変わるとシード再現ができないため必ず残す）。
+- Dialogue audio表には**採用テイクのパラメータ（model、seed、speedまたはseconds）と実測長**を記録する（例: `Irodori-TTS (Irodori-TTS-v4-Large, ref: Yametaro_voice.wav, seed 7, seconds 0.91)`。modelは`irodori_speak.sh`のOK行に出力される。モデルが変わるとシード再現ができないため必ず残す）。
 - 不採用の候補ファイル（`_1.0x.wav` / `_1.5x.wav`）はラン専用ディレクトリから削除する（CapCut入力表が参照しないファイルを成果物に残さない）。
 
 ### script.mdへの記載（Dialogue audio表・必須）
@@ -321,7 +321,7 @@ Seedanceはプロンプト内の日本語セリフ引用や添付音声につら
 
 | File | Clip | Character | Voice (engine) | Line (ja) | Duration |
 |------|------|-----------|----------------|-----------|----------|
-| clip1_line1_sobaya.wav | 1 | Sobaya | Irodori-TTS (Irodori-TTS-v4.1-Small, ref: Sobaya_voice.wav, seed 42) + monsterize | 快適です！ | 1.8s |
+| clip1_line1_sobaya.wav | 1 | Sobaya | Irodori-TTS (Irodori-TTS-v4-Large, ref: Sobaya_voice.wav, seed 42) + monsterize | 快適です！ | 1.8s |
 | clip1_line2_yotan.wav  | 1 | Yotan  | VOICEVOX (style 100) | ロックだぜ。 | 1.5s |
 ```
 

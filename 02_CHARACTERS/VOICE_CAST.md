@@ -38,7 +38,7 @@ VOICEVOXの利用規約により、VOICEVOX音声を使った動画等を公開�
 VOICEVOX:Voidoll / VOICEVOX:白上虎太郎 / VOICEVOX:ずんだもん
 ```
 
-各音源キャラクターには個別の利用規約がある（商用利用可否など）。新しい話者を配役に加えるときはVOICEVOX公式サイトで当該キャラの規約を確認すること。Irodori-TTSはMITライセンス（モデルの利用条件はHugging Faceの`Aratako/Irodori-TTS-500M-v3`を参照）。
+各音源キャラクターには個別の利用規約がある（商用利用可否など）。新しい話者を配役に加えるときはVOICEVOX公式サイトで当該キャラの規約を確認すること。Irodori-TTSのコードはMITライセンス。使用モデルは`Aratako/Irodori-TTS-v4-Large`（2026-09-29〜。`irodori_speak.sh`の既定値）で、テキストエンコーダにT5Gemma 2を含むため**Gemma Terms of Use**（https://huggingface.co/Aratako/Irodori-TTS-v4-Large の`GEMMA_TERMS_OF_USE.md`・`GEMMA_PROHIBITED_USE_POLICY.md`。なりすまし・誤情報・ディープフェイク用途の禁止）が適用される。上記「参照音声の扱い」の本人同意ルールはこの規約への準拠でもある。旧モデル（v4.1-Small以前）で生成したテイクのシード再現は`IRODORI_TTS_CHECKPOINT`で当時のモデルを指定する。
 
 ## 音声パラメータの目安（VOICEVOX）
 
