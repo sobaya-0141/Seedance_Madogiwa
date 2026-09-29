@@ -86,6 +86,7 @@ Apple SiliconでH3が実行できない理由（MPSの型/オペレータ非対�
 - `ch*_prompt.txt`（`extract_prompts.py`で逐語抽出済み）
 - `ch*_workflow.json`（`gen_all_workflows.sh`または`build_h3_workflow.py`で生成済み）
 - ツール一式: `build_h3_workflow.py` / `extract_prompts.py` / `h3_run.py` / `gen_all_workflows.sh` / `assemble.sh`
+  - **`h3_run.py`と`build_h3_workflow.py`はノートブックが実行時に呼ぶ**（セル7・セル9）。欠けていると**Colabで初めて、しかも全チャプターが即失敗する**（2026-09-29の実測: 重み49GBをDL済みのセッションを捨てることになった）。`build_h3_run_package.py`が不足分をスキルからコピーし、zip作成後に中身も検証するので、**手動でzipせず必ずこのスクリプトを通す**。
 - `RUNBOOK_CUDA.md`相当の手順書（パイロットのチェックリスト込み。テンプレートは`03_SCRIPTS/26_kansha_no_bug_ichimankai/RUNBOOK_CUDA.md`）
 
 揃ったら**`build_h3_run_package.py`（本スキル同梱）でラン一式を生成する**のが既定:
@@ -104,7 +105,7 @@ python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<NN>_<slug
 - zipはDriveの**`h3_inputs/`直下**へファイル名そのまま置く。成果物はラン名と同名の**`h3_outputs/<NN>_<slug>/`**に貯まる（どちらもノートブックに設定済みで、ユーザーの編集は不要）
 - **I2V/R2Vの2セッション並列が既定の回し方**: 2本を別々のColabセッション（L4×2推奨）で同時に★一括実行する。モード毎にユニットが分かれているため干渉せず、ユニット入れ替えも発生しない（`NEED_I2V`/`NEED_R2V`は各ノートブックの`CHAPTERS`から自動判定、`AUTO_SHUTDOWN`も各自の担当分だけ確認して切断する）
 - スクリプトがチャプターのモード分類と所要時間の目安（L4+sage実測の線形則: **0.645秒/フレーム/step**＝蒸留8stepで約5.2秒/フレーム。2026-09・83ラン ch3 158f）を表示するので、そのままユーザーへの案内に使う
-- 手動でzipだけ作る場合は従来コマンド（`cd 03_SCRIPTS && zip -r <NN>_<slug>_h3_bundle.zip <NN>_<slug> -x "*/ref_canvas_*" -x "*/validation/*" -x "*/.DS_Store" -x "*/h3/*"`）でもよい
+- 手動でzipだけ作る場合は従来コマンド（`cd 03_SCRIPTS && zip -r <NN>_<slug>_h3_bundle.zip <NN>_<slug> -x "*/ref_canvas_*" -x "*/validation/*" -x "*/.DS_Store" -x "*/h3/*"`）でもよいが、**`h3_run.py`と`build_h3_workflow.py`がzipに入っているかを`unzip -l`で必ず確認する**（この2本が無いとColabで全チャプターが失敗する）。**zipを展開して作り直す運用は避ける** — 実測でこの経路からツールが落ちた
 
 - workflow JSONの重み名はどのGPU向けでもよい（ノートブックのセル5が、割り当てられたGPUに合う重み名へ自動で書き換え、SaveVideoの`codec`も補完する）。
 - `--frames`のグリッド（17k+5）、R2Vの入力上限（画像9・音声3・合計12）はローカルと同一。local-video形式のランは`validate_local_run_bundle.py`をzip前に通しておく（seedance変換ランは対象外）。
