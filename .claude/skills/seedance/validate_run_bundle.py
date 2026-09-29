@@ -14,6 +14,37 @@ def fail(messages: list[str]) -> None:
     raise SystemExit(1)
 
 
+BEAT_PATTERN = re.compile(
+    r"Beat\s*(\d+)\s*\(\s*[\d.]+\s*[\u2013\u2014-]\s*[\d.]+\s*s\s*\)", re.IGNORECASE
+)
+
+
+def prompt_region(section: str, marker: str) -> str:
+    """Text of the Motion prompt only.
+
+    The prompt itself may span several lines, so it cannot be read as one line, but the
+    section runs on into the NEXT clip's narrative. Cut at the next top-level heading so a
+    clip can never satisfy a check using the following clip's text.
+    """
+    start = section.find(marker)
+    if start < 0:
+        return ""
+    rest = section[start:]
+    nxt = re.search(r"\n##+ ", rest)
+    return rest[: nxt.start()] if nxt else rest
+
+
+def check_beats(label: str, prompt: str, errors: list) -> None:
+    beats = BEAT_PATTERN.findall(prompt)
+    if len(beats) < 2:
+        errors.append(
+            f"{label}: Motion prompt needs at least TWO numbered action beats with timings, "
+            'written as "Beat 1 (0-1.2s): ..." (see the seedance skill, step 1 "Action beats"). '
+            "Start and end states alone leave the middle of the shot to the model, which is where "
+            f"off-script motion appears; found {len(beats)}"
+        )
+
+
 def main() -> None:
     if len(sys.argv) != 2:
         fail(["usage: validate_run_bundle.py 03_SCRIPTS/<NN>_<slug>"])
@@ -78,8 +109,9 @@ def main() -> None:
             prompt = ""
             input_table = section
         else:
-            prompt = section[prompt_marker:]
+            prompt = prompt_region(section, "- Motion prompt:")
             input_table = section[:prompt_marker]
+            check_beats(f"Clip {clip}", prompt, errors)
 
         mappings = re.findall(r"@Image(\d+)\s*=\s*`([^`]+\.png)`", input_table)
         if mappings and "Required attached reference files:" not in prompt:

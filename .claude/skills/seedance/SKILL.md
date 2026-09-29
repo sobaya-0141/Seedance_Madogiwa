@@ -64,6 +64,33 @@ description: 窓際族物語のストーリー（あらすじ）からSeedance�
 - **First frame**: そのクリップ冒頭の静止画で写っている内容（構図・キャラの位置・表情）。構図＝ショットサイズ・アングルはCamera plan（後述）の該当行に従う。
 - **Last frame**: そのクリップ終端の静止画。ここまでにどう動いた結果になるか。カメラムーブのあるクリップは**ムーブ終了時の構図**で書く（push-inなら開始より寄った構図）。
 - **Prop states**: そのクリップで状態が変わる小道具（グラス・瓶・食器・箱など）ごとに、First frame時点とLast frame時点の状態（中身の量、開栓/未開栓、手に持つ/置いてある、蓋の有無 等）を1行ずつ明記する。
+- **Action beats**: First frameからLast frameへ**どう動くか**を、番号付きで**おおよその秒数を添えて**順に書く（下記「アクションビート」参照）。
+
+### アクションビート（動きの指定・必須）
+
+開始状態と終了状態だけを書いて間を生成モデルに任せると、**両端は正しいのに途中が台本と違う**動画になる（人物が勝手に増える、指示していない動作が挟まる、逆に何も起きないまま尺が過ぎる）。これを防ぐため、**各クリップの動きを番号付きのビートに分解して書く**。
+
+- **台本の各クリップに`Action beats`を書く**。1ビート＝1動作で、**おおよその秒数を添える**。「誰が・どこから・どこへ・どう」を書き、動作は「前状態→動作→後状態」の形にする（物理整合性ルールと同じ）。
+
+```
+- Action beats:
+  1. (0–1.2s) The steel door swings open inward, away from camera.
+  2. (1.2–3.0s) Guard A steps out first, then Sobaya, then Guard B.
+  3. (3.0–4.5s) The three stop side by side with Sobaya in the MIDDLE; each guard rests one hand on his upper arm.
+```
+
+- **同じビートを、そのクリップのMotion promptにも`Beat 1 (0–1.2s): …`の形でそのまま入れる**（言い換えない）。`validate_run_bundle.py`が各Motion promptに**2つ以上の番号付きビートと秒数**が入っていることを機械検証する。
+- **ビートの合計はクリップ尺に収める**。収まらないならクリップを割る（ビートが4つを超えたら分割を検討する目安）。
+- **セリフのあるクリップは、セリフ自体を1つのビートにする**（「話し始める→話す→口を閉じる」がその区間に収まる）。リップシンク精度ルールの尺見積もりと矛盾しないようにする。
+- **ビートに書いていない動作は起きない前提で書く**。「その間ほかは動かない」ことを明示したいクリップでは、静止している人物・小道具についてそのまま書く（例: "the officers do not move their feet during this beat"）。
+
+### ビートのユーザー確認（キーフレーム生成の前・必須ゲート）
+
+キーフレーム生成は1枚あたり数分〜十数分かかる（Codex/draw-things いずれも）。**動きが違ったまま全クリップ分のキーフレームを作ると、そのまま作り直しになる。** そのため、ステップ3（キーフレーム生成）へ進む前に、**全クリップのAction beatsを一覧にしてユーザーに提示し、確認を取る**。
+
+- 提示は「クリップ番号・尺・登場・ビート（秒数つき）・セリフ」の一覧にする。全クリップまとめて1回でよい。
+- ユーザーの修正を反映してから、はじめてキーフレーム生成に着手する。
+- 確認が取れる前にキーフレームを1枚も生成しない。
 
 さらに**つなぎ目を消すため、クリップNの Last frame と クリップN+1の First frame は同一の絵にする**（後述のとおり同じ画像ファイルを共有する）。小道具の状態も同様に引き継ぐ（クリップNのLast frameの状態 ＝ クリップN+1のFirst frameの状態。クリップをまたいで勝手に満杯に戻る/空になる等を起こさない）。
 
@@ -426,6 +453,7 @@ codex exec -s workspace-write --enable image_generation \
 
 - **開始/終了フレームは必ず両方セット**する。片方だけだと単一フレームからの外挿になりブレやすい。
 - **Motion promptは「そのまま貼れる完成形」で書き、実行時の要約・短縮を禁止する。** `script.md`のMotion promptがCapCutに入力される最終文字列そのものであり、生成実行者（人間・エージェント問わず）が独自に圧縮・言い換えしてはならない（過去に要約で開始/終了状態・プロップ・NG変更の制約が欠落し、整合性が崩れた）。プロンプトが長すぎて入らない・守られない場合は、要約するのではなく**台本に戻ってクリップを分割**し、1本あたりの情報量を減らす。
+- **全クリップのMotion promptに、そのクリップのAction beatsを`Beat 1 (0–1.2s): …`の形で順番どおり入れる**（ステップ1「アクションビート」参照）。台本のAction beatsと同じ内容・同じ順序にし、言い換えない。`validate_run_bundle.py`が2つ以上の番号付きビートと秒数の記載を機械検証する。
 - **全クリップのMotion promptに画面内テキスト禁止の否定指示を必ず入れる**（ステップ1「画面内テキスト禁止ルール」参照）: "do NOT render any on-screen text — no subtitles, no captions, no lettering, no Japanese characters; the video must contain no text at all"。台本が画面内文字を指定するクリップは、その文字だけを唯一の例外として明記する。`validate_run_bundle.py`がこの記載（"on-screen text"への言及）を機械検証する。
 - **全クリップのMotion promptに、Scene ledgerの時間帯・光の句を必ず入れる**（ステップ1「Scene ledger」参照）: 例 "bright midday daylight"。場所転換のあるクリップは転換先の時間帯まで明示し、典型絵が別の時間帯の場所には否定形を添える（"it is DAYTIME, NOT night"）。`validate_run_bundle.py`が`## Scene ledger`セクションの存在と、各Motion prompt内の時間帯語（daylight/daytime/midday/night等）を機械検証する。
 - **全クリップのMotion promptに、音響指定（`Soundscape:`と`Music:`）を必ず入れる**（ステップ1「音響設計ルール」参照）。既定は "Music: no background music"。`validate_run_bundle.py`が両方の記載を機械検証する。
