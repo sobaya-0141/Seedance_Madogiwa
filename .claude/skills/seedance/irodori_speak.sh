@@ -11,8 +11,13 @@
 # Irodori-TTS本体の設置場所は IRODORI_TTS_DIR（既定: ~/irodori_tts）。
 # 実行時に上流（GitHub origin/main）を確認し、新バージョンが公開されていれば自動更新する
 # （チェックは24時間に1回。IRODORI_TTS_NO_UPDATE=1 で無効化できる）。
-# 使用チェックポイントは上流リポジトリの推奨最新を自動選択する。過去テイクをシードで
-# 再現したいときは IRODORI_TTS_CHECKPOINT=Aratako/Irodori-TTS-500M-v3 のように当時のモデルを指定する。
+# 使用チェックポイントはプロジェクト正典の Aratako/Irodori-TTS-v4-Large（3.29Bパラメータ、
+# 2026-09-29ユーザー指定）。過去テイクをシードで再現したいときは
+# IRODORI_TTS_CHECKPOINT=Aratako/Irodori-TTS-v4.1-Small のように当時のモデルを指定する。
+# v4-LargeはテキストエンコーダにT5Gemma 2を使うため Gemma Terms of Use が適用される
+# （なりすまし・ディープフェイク禁止。参照音声は本人同意の範囲でのみ使う）。
+# 初回実行時に約12GBのモデルをダウンロードする（回線次第で10分以上）。Apple Silicon(MPS)では
+# fp32で動作し、実測（M4 Max）で1文あたり約25秒（v4.1-Smallと同程度）。
 set -eu
 
 TEXT="${1:?セリフテキストを指定してください}"
@@ -55,14 +60,15 @@ if [ -z "${IRODORI_TTS_NO_UPDATE:-}" ] && [ -e "$TTS_DIR/.git" ]; then
   fi
 fi
 
-# --- 使用チェックポイントの決定（上流の推奨最新をgradio_app.pyの既定値から導出） ---
-CKPT="${IRODORI_TTS_CHECKPOINT:-}"
-if [ -z "$CKPT" ]; then
-  CKPT=$(grep -o 'Aratako/Irodori-TTS-[A-Za-z0-9.-]*' "$TTS_DIR/gradio_app.py" 2>/dev/null | head -1 || true)
-fi
-if [ -z "$CKPT" ]; then
-  CKPT="Aratako/Irodori-TTS-v4.1-Small"
-  echo "WARN: 上流の推奨チェックポイントを導出できなかったため $CKPT を使います" >&2
+# --- 使用チェックポイントの決定 ---
+# プロジェクト正典は v4-Large（02_CHARACTERS/VOICE_CAST.md 参照）。IRODORI_TTS_CHECKPOINT で上書きできる。
+DEFAULT_CKPT="Aratako/Irodori-TTS-v4-Large"
+CKPT="${IRODORI_TTS_CHECKPOINT:-$DEFAULT_CKPT}"
+if ! grep -q 'def default_runtime_device' "$TTS_DIR/irodori_tts/inference_runtime.py" 2>/dev/null \
+   || ! grep -qi 't5gemma' "$TTS_DIR/irodori_tts/model.py" 2>/dev/null; then
+  case "$CKPT" in
+    *v4-Large*) echo "ERROR: 設置済みのIrodori-TTSコードが古く v4-Large に未対応です。cd $TTS_DIR && git pull --ff-only && uv sync --extra cpu で更新してください（自動更新に失敗した場合は上のWARN参照）" >&2; exit 1 ;;
+  esac
 fi
 
 # 出力先を絶対パスにする（infer.pyはTTS_DIRで実行するため）
