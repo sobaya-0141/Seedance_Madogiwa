@@ -22,12 +22,21 @@ import glob
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import zipfile
 
 DRIVE_IN = "/content/drive/MyDrive/h3_inputs"
 DRIVE_OUT = "/content/drive/MyDrive/h3_outputs"
 ZIP_EXCLUDES = ["*/ref_canvas_*", "*/validation/*", "*/.DS_Store", "*/h3/*"]
+# ノートブックが実行時に呼ぶファイル。1つでも欠けるとColabで初めて失敗する
+# （2026-09-29の実測: h3_run.py が無いバンドルで全チャプターが即失敗し、
+#  49GBの重みをDL済みのセッションを捨てることになった）。
+REQUIRED_TOOLS = ["h3_run.py", "build_h3_workflow.py"]
+SKILL_SOURCES = [
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "local-video"),
+]
 # 所要時間の目安（サンプリングはフレーム数×stepに線形）。
 # 2026-09実測（L4+sage・83ラン ch3 158f）: 101.9 s/step ÷ (158f × 20step) = 0.645 s/frame/step。
 # 既定は蒸留8step（正典ノートブックの TURBO_8STEP=True）なので8を掛ける。
@@ -61,6 +70,44 @@ def classify_chapters(run_dir):
     if not out:
         raise SystemExit(f"{run_dir} に ch*_workflow.json が無い — 先にworkflowを生成する（7章）")
     return out
+
+
+def ensure_tools(run_dir):
+    """ノートブックが呼ぶツールがラン直下に実体であることを保証する（無ければスキルからコピー）。"""
+    copied = []
+    for name in REQUIRED_TOOLS:
+        dst = os.path.join(run_dir, name)
+        if os.path.isfile(dst) and not os.path.islink(dst):
+            continue
+        src = next((os.path.join(d, name) for d in SKILL_SOURCES
+                    if os.path.isfile(os.path.join(d, name))), None)
+        if src is None:
+            raise SystemExit(
+                f"{run_dir}/{name} が無く、スキル側にも見つからない。"
+                " ノートブックのセル7がこれを実行するので、欠けたままzipするとColabで全チャプターが失敗する")
+        shutil.copy(src, dst)
+        copied.append(name)
+    if copied:
+        print(f"★ 不足していたツールをコピーした: {', '.join(copied)}")
+
+
+def verify_zip(zip_path, slug):
+    """zipに必要物が実際に入っているか確認する（除外規則の取りこぼし検出）。"""
+    with zipfile.ZipFile(zip_path) as zf:
+        names = set(zf.namelist())
+    missing = [n for n in REQUIRED_TOOLS + ["script.md"]
+               if f"{slug}/{n}" not in names]
+    if missing:
+        raise SystemExit(f"{os.path.basename(zip_path)} に必要物が入っていない: {', '.join(missing)}")
+    workflows = [n for n in names if n.startswith(f"{slug}/ch") and n.endswith("_workflow.json")]
+    prompts = [n for n in names if n.startswith(f"{slug}/ch") and n.endswith("_prompt.txt")]
+    if not workflows:
+        raise SystemExit(f"{os.path.basename(zip_path)} に ch*_workflow.json が入っていない")
+    if len(prompts) < len(workflows):
+        raise SystemExit(
+            f"{os.path.basename(zip_path)}: workflow {len(workflows)}本に対し prompt {len(prompts)}本しか無い"
+            " — extract_prompts.py を流し直す")
+    print(f"★ zip検証OK: workflow {len(workflows)}本 / prompt {len(prompts)}本 / ツール {len(REQUIRED_TOOLS)}本")
 
 
 def make_zip(run_dir, zip_path):
@@ -122,8 +169,10 @@ def main():
     h3_dir = os.path.join(run_dir, "h3")
     os.makedirs(h3_dir, exist_ok=True)
 
+    ensure_tools(run_dir)
     zip_path = os.path.join(h3_dir, f"{slug}_h3_bundle.zip")
     size = make_zip(run_dir, zip_path)
+    verify_zip(zip_path, slug)
 
     made = []
     for mode in ("i2v", "r2v"):
