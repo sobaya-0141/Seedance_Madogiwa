@@ -172,14 +172,17 @@ def main() -> None:
                         f"Chapter {chapter}: Cast entry '{c}' is neither a canon name {CANON} nor 'Mob:<slug>'"
                     )
 
-        prompt_marker = section.find("- Motion prompt:")
-        if prompt_marker < 0:
+        # The Motion prompt is exactly the one line extract_prompts.py feeds to H3 — not the rest
+        # of the section. Reading to the end of the section would swallow the next chapter's prose
+        # and make the "no absent character" check below fire on text H3 never sees.
+        prompt_match = re.search(r"^- Motion prompt:[ ]?(.*)$", section, re.MULTILINE)
+        if prompt_match is None:
             errors.append(f"Chapter {chapter}: missing Motion prompt")
             prompt = ""
             input_table = section
         else:
-            prompt = section[prompt_marker:]
-            input_table = section[:prompt_marker]
+            prompt = prompt_match.group(1).strip()
+            input_table = section[:prompt_match.start()]
 
         dur = re.search(r"^- Duration:.*?Frames:\s*(\d+)", input_table, re.MULTILINE)
         if dur is None:

@@ -1,21 +1,30 @@
 #!/bin/bash
-# モブキャラクター用のモデルシート（Mob_<slug>_sheet.png）をローカルで1枚生成する（no-image-videoスキル同梱）。
-# local-videoスキルの dt_generate.sh（draw-things-cli + Qwen Image Edit 2511）をtext-to-image（参照なし）で呼び、
-# 正典シートと同じ「白背景・ターンアラウンド＋顔クローズアップ＋衣装ディテール＋短い英語ラベル」のレイアウト文を
-# 自動で前後に付ける。stdinにはモブの外見仕様（英語・PRESERVE相当）だけを書けばよい。
+# モブキャラクター用のシート（Mob_<slug>_sheet.png）をローカルで1枚生成する（no-image-videoスキル同梱）。
+# local-videoスキルの dt_generate.sh（draw-things-cli + Qwen Image Edit 2511）をtext-to-image（参照なし）で呼ぶ。
+#
+# **「スタジオ写真」として記述する（重要・2026-09-29の実測）**
+#   このモデルに "character model sheet" / "turnaround" / "panel" / "FRONT / SIDE / BACK labels" のような
+#   シート用語で指示すると、出力が**イラスト調（線画・塗り絵調）に倒れる**。実測では刑務官シートが
+#   線画調になり、指定した制帽が片方から消え、パネルラベルの文字も崩れた（正典シートは実写ベースなので、
+#   このシートを動画に渡すと画風がイラスト側へ引っ張られる）。
+#   そこで本スクリプトは**多面図を諦め、「無地の背景の前に立つ全身のスタジオ写真」**として記述する。
+#   モブは背景要員であり、固定したいのは顔の角度ではなく**制服・衣装・年齢感**なので、正面全身1カットで足りる。
 #
 # usage:
 #   .claude/skills/no-image-video/make_mob_sheet.sh 03_SCRIPTS/<NN>_<slug>/Mob_<slug>_sheet.png [seed] <<'EOF'
-#   <English design spec of the mob — age, build, hair, face, uniform/outfit with colors, cap, props>
+#   <English description of the people: how many, where each stands (LEFT/RIGHT), age, build, hair, face,
+#    and the exact outfit with colors and headwear>
 #   EOF
 #
-# - 出力ファイル名は必ず Mob_<slug>_sheet.png（slugは小文字・数字・アンダースコア）。ラベル名はslugから自動生成
-#   （guard_a → "GUARD A"）。MOB_LABEL で上書き可。
-# - 同型モブの組（刑務官2人等）は1枚の組シートにまとめてよい: MOB_LAYOUT=pair にすると
-#   「LEFT half = first person / RIGHT half = second person」の2人構成で描く（specに2人分を書く。ラベルは "GUARD A" / "GUARD B" 等を
-#   MOB_LABEL="GUARD A / GUARD B" で渡す）。
-# - サイズは正典シートと同じ16:9系（既定 1600x896・64の倍数）。MOB_SIZE で上書き可。ステップ数は DT_STEPS（dt_generate.shに渡る）。
+# - 出力ファイル名は必ず Mob_<slug>_sheet.png（slugは小文字・数字・アンダースコア）。
+# - 同型モブの組（刑務官2人等）は1枚にまとめてよい。specに "The man on the LEFT is ... The man on the RIGHT is ..."
+#   と書き、プロンプト側からは位置で参照する（<Picture N>のPRESERVE列も「LEFTの人物 / RIGHTの人物」で書く）。
+#   MOB_PEOPLE=1 にすると1人構成の文面になる。
+# - サイズは既定 1344x768（H3の出力と同じ16:9）。MOB_SIZE で上書き可。ステップ数は DT_STEPS（既定24）。
+# - 1枚あたり約7分（M4 Max / 1344x768 / 24step 実測）。**必ずバックグラウンドで実行**し、使用シードを
+#   script.md の「Mob sheet generation log」に記録する。
 # - 生成後は必ずReadで開き、specの各項目をPASS/FAIL判定してからユーザーに提示する（SKILL.md ステップ3）。
+#   特に「写真になっているか（イラスト化していないか）」「帽子・小物が消えていないか」を最初に見る。
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,34 +32,26 @@ DT="${SKILL_DIR}/../local-video/dt_generate.sh"
 [ -x "$DT" ] || { echo "ERROR: dt_generate.sh が見つかりません: $DT" >&2; exit 1; }
 
 OUT="${1:?出力パス（.../Mob_<slug>_sheet.png）を指定してください}"
-SEED="${2:-$((RANDOM * 32768 + RANDOM))}"   # dt_generate.shは位置引数なので常にシードを渡す（省略時はランダム。出力に表示される）
+SEED="${2:-$((RANDOM * 32768 + RANDOM))}"
 BASENAME="$(basename "$OUT")"
 if [[ ! "$BASENAME" =~ ^Mob_[a-z0-9_]+_sheet\.png$ ]]; then
   echo "ERROR: 出力ファイル名は Mob_<slug>_sheet.png（slug=小文字・数字・_）にしてください: $BASENAME" >&2
   exit 1
 fi
-SLUG="${BASENAME#Mob_}"; SLUG="${SLUG%_sheet.png}"
-LABEL="${MOB_LABEL:-$(echo "$SLUG" | tr '_' ' ' | tr '[:lower:]' '[:upper:]')}"
-SIZE="${MOB_SIZE:-1600x896}"
-LAYOUT="${MOB_LAYOUT:-single}"
+SIZE="${MOB_SIZE:-1344x768}"
+PEOPLE="${MOB_PEOPLE:-2}"
 
 SPEC="$(cat)"
 [ -n "$SPEC" ] || { echo "ERROR: stdinにモブの外見仕様（英語）を渡してください" >&2; exit 1; }
 
-case "$LAYOUT" in
-  single)
-    WHO="ONE person only, the SAME person in every panel with an identical face, hair, build and outfit"
-    PANELS="At the far left a full-body FRONT view standing relaxed; then a TURNAROUND row of three full-body views labeled FRONT, SIDE and BACK; a large FACE CLOSE-UP; and an OUTFIT DETAILS close-up of the uniform/clothing and any props"
-    ;;
-  pair)
-    WHO="exactly TWO different people, the first person on the LEFT half and the second person on the RIGHT half; each half shows only that one person, with an identical face, hair, build and outfit across that half's panels; the two must be clearly distinguishable from each other"
-    PANELS="Each half contains: a full-body FRONT view, a smaller SIDE view and BACK view, and a FACE CLOSE-UP, with small labels FRONT / SIDE / BACK / FACE CLOSE-UP"
-    ;;
-  *) echo "ERROR: MOB_LAYOUT は single または pair: $LAYOUT" >&2; exit 1 ;;
+case "$PEOPLE" in
+  1) WHO='The person stands upright facing the camera in a relaxed neutral pose with their arms at their sides and their whole body including their shoes inside the frame.' ;;
+  2) WHO='Both people stand upright side by side facing the camera in relaxed neutral poses with their arms at their sides and their whole bodies including their shoes inside the frame.' ;;
+  *) echo "ERROR: MOB_PEOPLE は 1 または 2: $PEOPLE" >&2; exit 1 ;;
 esac
 
-PROMPT="A character model sheet on a plain flat white background (16:9), in the style of a professional live-action casting/costume reference sheet: real photographed people, natural human proportions, even studio lighting, sharp focus. The sheet shows ${WHO}. ${PANELS}. Clean small black sans-serif labels only: the name label \"${LABEL}\" at the top-left, and the panel labels; no other text, no watermark, no logo. No background scenery, no props other than those listed, no other characters. Character design: ${SPEC} NOT anime, NOT cartoon, NOT illustration, NOT a 3D render — a photographic reference sheet."
+PROMPT="A full-length professional studio photograph taken with a 50mm lens against a seamless plain light gray photography backdrop, with even soft box lighting, sharp focus, natural skin texture and true-to-life colour. ${WHO} This is a real photograph of real people: NOT an illustration, NOT a drawing, NOT line art, NOT anime, NOT a painting, NOT a 3D render, NOT a cartoon. There is no text, no lettering, no caption, no watermark, no logo, no border and no panel division anywhere in the picture, and no scenery or furniture behind them. ${SPEC}"
 
-echo "label:  $LABEL"
-echo "layout: $LAYOUT"
+echo "people: $PEOPLE"
+echo "size:   $SIZE"
 printf '%s\n' "$PROMPT" | "$DT" "$OUT" none "$SEED" "$SIZE"

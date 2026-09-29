@@ -88,23 +88,19 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 
 **画面に映るモブ全員**（セリフの有無を問わず。通行人・店員・刑務官・記者等）について、ラン専用のモデルシート`Mob_<slug>_sheet.png`をラン直下に作る。キーフレームが無い本スキルでは、モブの見た目を固定できる入力はシートだけ。文章指定だけで済ませることを禁止する。
 
-- **命名**: `Mob_<slug>_sheet.png`（slugは小文字・数字・`_`。例: `Mob_guard_a_sheet.png`）。同型モブの組（刑務官2人・記者2人等）は**1枚の組シート**にまとめてよい（例: `Mob_guards_sheet.png`。左=A、右=B、ラベル付き。画像9枚の枠を節約できる）。組シートにした場合、`- Cast:`には`Mob:guards`と書く。
+- **命名**: `Mob_<slug>_sheet.png`（slugは小文字・数字・`_`。例: `Mob_guard_a_sheet.png`）。同型モブの組（刑務官2人・記者2人等）は**1枚の組シート**にまとめてよい（例: `Mob_guards_sheet.png`。2人が横に並んで写った1枚の写真にし、左の人物＝A・右の人物＝Bとして位置で呼び分ける。**文字ラベルは入れない** — 崩れた文字が動画へ漏れるため。画像9枚の枠も節約できる）。組シートにした場合、`- Cast:`には`Mob:guards`と書く。
 - **仕様**: `chapter_plan.md`のモブ欄（ゲート2で承認済み）を英語に落とし、`script.md`の`## Character references`にモブの`PRESERVE:`列として書く（年齢感・体格・髪・顔立ち・制服/衣装の色と部位・帽子・小物を数えて書く）。正典メンバーに似せない（白い仮面・金髪ロッカー等の正典要素を持たせない）。
-- **生成（ローカル・既定）**: 同梱の`make_mob_sheet.sh`（local-videoの`dt_generate.sh`＝draw-things-cli + Qwen Image Edit 2511をtext-to-imageで呼ぶ。参照画像は渡さない — 連結キャンバスや正典シートを種にすると崩れる／正典の顔が混ざる）:
-
-```
-.claude/skills/no-image-video/make_mob_sheet.sh 03_SCRIPTS/<NN>_<slug>/Mob_guard_a_sheet.png 42 <<'EOF'
-a stocky Japanese man in his 50s, about 172 cm, gray crew-cut hair, square jaw, calm stern expression; navy-blue prison guard uniform: navy jacket with two chest pockets and silver buttons, matching navy trousers, white shirt, dark-navy tie, navy peaked cap with a small silver badge, black leather belt, black leather shoes; no weapon, no sunglasses.
-EOF
-
-# 同型2人の組シート
-MOB_LAYOUT=pair MOB_LABEL="GUARD A / GUARD B" .claude/skills/no-image-video/make_mob_sheet.sh 03_SCRIPTS/<NN>_<slug>/Mob_guards_sheet.png 42 <<'EOF'
-LEFT half — GUARD A: <上と同じ>. RIGHT half — GUARD B: a tall lean Japanese man in his 30s, about 182 cm, short black hair, clean-shaven, mild expression; the SAME navy uniform, cap and shoes as Guard A.
-EOF
-```
-
-  - 1枚あたり数分〜十数分（M4 Maxで約23秒/step）。**バックグラウンドで実行**し、使用シードを`script.md`に記録する。draw-things-cliが無い環境ではCodexの画像生成（seedanceステップ3のコマンド形・`-i`なし）で同じレイアウト文を使ってよい。
-- **照合（必須）**: 生成したシートを**Readで開き**、モブの`PRESERVE:`列を1項目ずつPASS/FAIL判定する（複数パネルで同一人物か、制服の色・帽子・小物が仕様どおりか、文字ラベルが崩れていないか、正典メンバーの要素が混ざっていないか）。1項目でもFAILならシード・仕様文を変えて再生成する。Ollamaがあれば`/image-validation`の`verify_frame.py`でVLM二重チェックしてよい。
+- **入手（既定はユーザー提供・重要）**: **モブシートはユーザーに作ってもらうのが既定**。ゲート2で承認された外見仕様を英語で渡し、次の形式で用意してもらう:
+  - 実写のスタジオ写真で、**正面・斜め・後ろ・顔クローズアップの4面**を横に並べた1枚（無地のグレー背景、**文字ラベルなし**）。正典シート（`02_CHARACTERS/*_sheet.png`）と同じ register にする。
+  - 1人1枚。同型の組を1枚にまとめる必要はない（H3の画像9枚枠に収まる範囲で、1人1枚のほうがプロンプト側から位置ではなく名前で指定でき、群衆の作り分けもできる）。
+  - 受け取ったら`Mob_<slug>_sheet.png`へ改名してラン直下にコピーし、**全枚Readで開いて**`PRESERVE:`列を書き起こす（記憶や仕様書だけで書かない）。
+- **ローカル生成は実測で不可（2026-09-29）**: 同梱の`make_mob_sheet.sh`（draw-things-cli + Qwen Image Edit 2511のtext-to-image）では**実写の人物シートを作れない**。3枚試した結果は、刑務官が3D/ゲームキャラ調、警察官と客が平面的な2Dイラスト調だった。次の対策はいずれも効かなかった:
+  - シート用語（`character model sheet` / `turnaround` / `panel` / `FRONT / SIDE / BACK labels`）を排除して「無地の背景の前に立つ全身のスタジオ写真」として記述する — **イラスト度は下がるが実写にはならない**（最初の版ではさらに悪く、線画調になった上に指定した制帽が片方から丸ごと消え、ラベル文字も`BACE`等に崩れた）。
+  - カメラ機種・レンズ・ISO・`visible skin pores`・`NOT a 3D render, NOT CGI`まで書く — 変化なし。
+  正典シートは実写ベースなので、イラスト調のモブシートを渡すと動画の画風がそちらへ引っ張られる。**時間の無駄なので、実写向けのモデルがローカルに入っていない限り`make_mob_sheet.sh`に頼らない**（スクリプトは残してあるが、実写でなくてよい企画向け）。
+  - **否定形で書いた物体はかえって描かれる**: 客のシートに`neither holds a musical instrument`と書いたら2人ともエレキギターを持って出てきた（`no lanyard`と書いた青いストラップも付いた）。画像生成では、その場に無い物は**否定形で書かずに一切言及しない**。否定形が効くのは「崩れやすい既存要素の形を守る」用途（`NOT rectangular glasses`）に限る。
+  - **Codex CLIへのフォールバックも当てにしない**（2026-09-29の実測: 本リポジトリの`.codex/config.toml`にある`default_tools_approval_mode = "writes"`をローカルの`codex` 0.139.0が受け付けず即時終了し、リポジトリ外で実行してもアカウントの既定モデルにCLIが未対応で失敗した）。使うなら先に`codex exec`が1回通ることを確認する。
+- **照合（必須）**: 受け取った（または生成した）シートを**Readで開き**、モブの`PRESERVE:`列を1項目ずつPASS/FAIL判定する（4面で同一人物か、制服の色・帽子・小物が仕様どおりか、文字が写り込んでいないか、正典メンバーの要素が混ざっていないか、**実写になっているか**）。1項目でもFAILなら作り直してもらう。Ollamaがあれば`/image-validation`の`verify_frame.py`でVLM二重チェックしてよい。
 - **ユーザー確認**: 合格したシートをユーザーに見せ、承認されたら`chapter_plan.md`のモブ欄の該当行を`Sheet: APPROVED`にする（検証スクリプトがこの行を見る）。
 - **モブの声**: `02_CHARACTERS/VOICE_CAST.md`の「ナレーション（窓際メンバー以外の発話全般）」行＝Irodori-TTS `Narrator_voice.wav`が既定。複数モブが話すときはシードを変えて声を分ける。VOICEVOX話者を使う場合はユーザーに確認し、クレジット義務（seedanceステップ2）に従う。H3は添付wavをそのまま使う設計のため、**モブのセリフも必ずローカルで生成して添付する**（seedanceの「モブはサンプルなし可」の例外は本スキルでは使えない）。
 
@@ -229,6 +225,14 @@ python3 .claude/skills/no-image-video/validate_no_image_run_bundle.py 03_SCRIPTS
 
 検証内容: `chapter_plan.md`の全チャプターが`APPROVED`で番号が`script.md`と一致 / 使用する全`Mob_*_sheet.png`が`Sheet: APPROVED` / `script.md`がキーフレーム（`chN_start/end.png`）やラン外パスを参照していない / `## Character references`・`## Scene ledger`・`## Camera plan`がある / 全チャプターが`R2V`で`- Cast:`がある / 添付画像が全て`*_sheet.png`か`height_lineup.png`で物理ファイルとして存在し、Castと双方向に一致する / 画像9・音声3・合計12以内、wavが2.0〜15.0秒 / `Frames:`が17k+5グリッド / Motion promptが全添付を再宣言し、必須句（`Required attached input files:`・`NOT a composition reference`・`None of the attached pictures is a frame of this video`・カメラ・`EXACTLY ONCE`・`on-screen text`・`Soundscape:`・`Music:`、セリフ章は`(S1)`/`<d>[Japanese]`/`AS-IS`、無音章は`no speech`）を含む / **Castにいない正典キャラの名前がMotion promptに出ていない**。
 
+さらに、ワークフローJSONを作ったあと（ステップ7の2の直後）に**台本との突き合わせ**を必ず通す:
+
+```
+python3 .claude/skills/no-image-video/check_workflows_match_script.py 03_SCRIPTS/<NN>_<slug>
+```
+
+検証内容: 各`chN_workflow.json`の`<Picture N>`のファイル名**と接続順**、`<Audio N>`、フレーム数、プロンプト本文が`script.md`の入力表と`chN_prompt.txt`に一致している。workflowの生成は手書きのシェルスクリプトになりがちで、シートの取り違えや順序ズレは**キーフレームが無い本スキルでは生成物が返ってくるまで気づけない**（`<Picture N>`の順序がプロンプト内のタグの意味を決めるため、入れ替わると全タグが別人を指す）。
+
 **検証が失敗したまま生成に進んだり完了報告したりしてはいけない。**
 
 ## 7. 動画生成（パイロット→残り）
@@ -252,10 +256,15 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 
 `/local-video`ステップ8と同一（既定は埋め込み音声をそのまま使い、ffmpeg concat。VOICEVOX使用時はdrawtextでクレジット焼き込み）。つなぎ目はCUTなので絵飛びのチェックは「場所・時間帯・キャラの衣装が章間で変わっていないか」に絞る。
 
+- **ランに置く`assemble.sh`はbash 3.2で書く**（macOS標準のbashは3.2で、`declare -A`＝連想配列が使えず`invalid option`で落ちる。実測済み）。チャプター→wavの対応は`case`文にする。
+- **回収したら結合前にフレーム数を照合する**: 各`chN.mp4`のパケット数が`script.md`の`Frames:`と一致しているか確認する（`ffprobe -count_packets -show_entries stream=nb_read_packets`）。ズレていればそのチャプターは生成し直し。
+- **結合後は全チャプターの中間フレームを1枚のコンタクトシートにして目視する**（`ffmpeg`で各章の中間を抜き、`tile=4x4`で並べる）。画像なし制作では**台本に無い物が湧く**のが主な事故なので、章ごとに「指定した人数・車両数・画面内テキストの有無」を見る。実測（2026-09-29）では、1台だけと明示した章に2台目の車が出て読めるナンバープレートまで付き、別の章では指定していないのぼりに崩れた日本語が出た。**サムネイルサイズでの判定は誤りやすい**（モニター内のキャラを別人と誤認した）。怪しい箇所は必ずクロップして拡大してから判定する。
+
 ## 完了条件（すべて満たすまで完了報告しない）
 
 - [ ] `chapter_plan.md`の全チャプターと全モブシートがユーザー承認済み（`APPROVED`）
 - [ ] 正典シートを全枚Readで開いて確認した。モブシートは仕様と照合してPASSし、ユーザーが承認した
+- [ ] `check_workflows_match_script.py`がOK（ワークフローJSONと台本の突き合わせ）
 - [ ] セリフ音声はユーザーが採用テイクを選び、2.0秒以上に整えた
 - [ ] 全Motion promptが「添付宣言→Style line（映るものだけ）→開始配置→ビート→セリフ→カメラ→終了状態→ガード→音」の構造で、承認済みビートを漏れなく含む
 - [ ] `validate_no_image_run_bundle.py`がOK
