@@ -202,7 +202,7 @@ seedance SKILL.mdステップ0と同一規則。`03_SCRIPTS/<NN>_<slug>/`を作�
 
 ## 3. 台本＋チャプター分割（deliverableは英語の`script.md`）
 
-seedance SKILL.mdステップ1の全ルール（Prop state ledger / Scene ledger（場所・時間帯）と場面転換の整合性 / Fixture layout / 話者分離 / リップシンク精度 / 言語ルール / 話者バインディング）を適用した上で、クリップの代わりに**チャプター**へ分割する。
+seedance SKILL.mdステップ1の全ルール（Prop state ledger / Scene ledger（場所・時間帯）と場面転換の整合性 / Fixture layout / 話者分離 / リップシンク精度 / 言語ルール / 話者バインディング / **アクションビートとそのユーザー確認ゲート**）を適用した上で、クリップの代わりに**チャプター**へ分割する。**キーフレーム生成（ステップ5）は1枚あたり11分以上かかるので、全チャプターのAction beatsをユーザーに確認してもらってから着手する**（seedanceステップ1「ビートのユーザー確認」）。
 
 ### チャプターの定義（H3の入力制限が分割の根拠）
 
@@ -246,11 +246,12 @@ I2V（fl2va）は参照画像を受け取れないため、**開始・終了キ�
 H3はモデル提供元の公式プロンプトガイド（ https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills/h3-prompt-writing ）の記法で学習されているため、Motion prompt本文はその構造に合わせる。冒頭の`Required attached input files:`（機械検証対象）は従来どおり必須で、その後の本文を次の順・記法で書く:
 
 1. **本文（統合記述）**: 構図→被写体→環境→動作→カメラ→画面内の音の順で、**見える・聞こえるものを具体的に**書く（あらすじ要約にしない）。seedance由来のルール（状態遷移記法・時間帯の句・NG要素・画面内テキスト禁止）はこの本文に入れる。
-2. **カメラは「種類＋振幅＋速度」の標準記法で書き、`## Camera plan`の該当行と一致させる**: 例 "the camera pushes in with small amplitude at slow speed"。動かさないなら "locked-off static camera" と明示する（無指定はモデルが勝手に動かす）。**全チャプターをlocked-off staticにしない**（単調防止原則はseedanceステップ1「カメラワーク設計ルール」参照）。ムーブはキーフレーム両端の構図差に焼き込まれていること（ステップ5参照）。**セリフのあるR2Vチャプターはstatic〜slow small push-inに留める**（R2VはキーフレームのアンカーがI2Vより緩く、速いムーブは口元の描画とリップシンクを壊す。ダイナミックなムーブはセリフなしI2Vチャプターに置く）。`validate_local_run_bundle.py`が各Motion prompt内のカメラ記述を機械検証する。
-3. **セリフの記法（R2Vのみ）**: 話者に発話順で安定ID `(S1)`/`(S2)` を振り、セリフ本文を `<d>[Japanese] セリフ原文</d>` タグで逐語埋め込みする（翻訳・言い換え禁止。添付wavを使う場合もセリフ本文を`<d>`タグで書く）。例: "ONLY Fukuchan (<Picture 3>, the slim stylish black-haired man) (S1) speaks — he says <d>[Japanese] 快適です！</d>, lip-syncing to <Audio 1>"。画面外ナレーションは "says in an off-screen voiceover" と書き、映っているキャラ全員に "lips remain completely closed" を添える。
-4. **`Soundscape:`（末尾に必須）**: 環境音・動作音を1〜4文の英語で書く。セリフはここに再掲しない。
-5. **`Music:`（末尾に必須）**: 劇伴の有無を必ず明示する。既定は "Music: no background music"（BGMはffmpeg結合時に後載せできる）。生成させる場合は**楽器・テンポ・リズム・強弱で具体的に**書き、抽象的なムード語だけで書かない。
-6. **分量**: 本文全体で**350〜500語**を目安にする（公式ガイドの推奨値）。セリフの多いチャプターは語数より発話タイムラインの完全性を優先する。長すぎるなら要約せずチャプターを割る。
+2. **アクションビート（必須）**: そのチャプターの動きを`Beat 1 (0–1.2s): …`の形で番号付き・秒数つきに並べる（seedanceステップ1「アクションビート」と同一。台本の`Action beats`と同じ内容・同じ順序で、言い換えない）。両端のキーフレームが正しくても**中間だけ台本と違う動きになる**のを防ぐのが目的で、本スキルの「I2Vの弱点と必須ガード」と同じ事故（中間でフードが落ちる・人物が湧く）への対策でもある。`validate_local_run_bundle.py`が2つ以上の番号付きビートと秒数の記載を機械検証する。
+3. **カメラは「種類＋振幅＋速度」の標準記法で書き、`## Camera plan`の該当行と一致させる**: 例 "the camera pushes in with small amplitude at slow speed"。動かさないなら "locked-off static camera" と明示する（無指定はモデルが勝手に動かす）。**全チャプターをlocked-off staticにしない**（単調防止原則はseedanceステップ1「カメラワーク設計ルール」参照）。ムーブはキーフレーム両端の構図差に焼き込まれていること（ステップ5参照）。**セリフのあるR2Vチャプターはstatic〜slow small push-inに留める**（R2VはキーフレームのアンカーがI2Vより緩く、速いムーブは口元の描画とリップシンクを壊す。ダイナミックなムーブはセリフなしI2Vチャプターに置く）。`validate_local_run_bundle.py`が各Motion prompt内のカメラ記述を機械検証する。
+4. **セリフの記法（R2Vのみ）**: 話者に発話順で安定ID `(S1)`/`(S2)` を振り、セリフ本文を `<d>[Japanese] セリフ原文</d>` タグで逐語埋め込みする（翻訳・言い換え禁止。添付wavを使う場合もセリフ本文を`<d>`タグで書く）。例: "ONLY Fukuchan (<Picture 3>, the slim stylish black-haired man) (S1) speaks — he says <d>[Japanese] 快適です！</d>, lip-syncing to <Audio 1>"。画面外ナレーションは "says in an off-screen voiceover" と書き、映っているキャラ全員に "lips remain completely closed" を添える。
+5. **`Soundscape:`（末尾に必須）**: 環境音・動作音を1〜4文の英語で書く。セリフはここに再掲しない。
+6. **`Music:`（末尾に必須）**: 劇伴の有無を必ず明示する。既定は "Music: no background music"（BGMはffmpeg結合時に後載せできる）。生成させる場合は**楽器・テンポ・リズム・強弱で具体的に**書き、抽象的なムード語だけで書かない。
+7. **分量**: 本文全体で**350〜500語**を目安にする（公式ガイドの推奨値）。セリフの多いチャプターは語数より発話タイムラインの完全性を優先する。長すぎるなら要約せずチャプターを割る。
 
 `validate_local_run_bundle.py`が各Motion prompt内の`Soundscape:`と`Music:`の記載を機械検証する。
 

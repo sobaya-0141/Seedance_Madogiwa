@@ -316,6 +316,7 @@ seedance形式のラン（クリップ・CapCut inputs・`@ImageN`/`@Audio1`タ�
    - **I2VはH3に参照画像を渡せない**ため、`Required attached reference files: @ImageN...`の宣言部を削除し、本文中の`(@ImageN, ...)`は同定句だけ残す。冒頭付近に "The video starts EXACTLY on the attached first frame and ends EXACTLY on the attached last frame." を足す。
    - **I2V必須ガード**: アンカー2枚に写らない正典要素・画面外の人物があるチャプターでは、本文に「隠している物は全フレームで隠し続ける（never slips / never falls / never revealed）」「新しい人物・キャラクターは一切現れない（no new person or character enters the frame at any time）」「全フレーム実写のみ（no 2D, anime, cartoon, chibi, or illustrated character ever appears）」を否定形込みで必ず入れる（実測事故2件の再発防止。詳細はlocal-video SKILL.md）。
    - R2Vは`@ImageN`→`<Picture N>`（接続順に振り直し）、`@Audio1`→`<Audio 1>`、話者に`(S1)`、セリフは`<d>[Japanese] 原文</d>`で逐語埋め込み。
+   - **Action beats（`Beat 1 (0–1.2s): …`）はそのまま残す**（seedanceステップ1「アクションビート」）。尺を17k+5グリッドへ丸めたときは、最後のビートの終了秒だけ新しい尺に合わせる。ビートが無い旧ランを変換する場合は、変換時にFirst/Last frameの記述から起こして追記する — 中間の動きが台本と違う事故は、両端のキーフレームでは防げない。
    - **音声のセマンティクス差**: seedanceの「voice sample（似た声を生成）」記述は、H3では「Use <Audio 1> AS-IS as the dialogue audio and do NOT generate any voice」に置き換える。
    - `Soundscape:`/`Music:`行はseedanceランに既にあるのでそのまま使える。
 4. **音声パディング**: H3は1ファイル2.0秒以上。短いwavは`apad`で末尾パディングした**別名ファイル**（`*_h3pad.wav`）を作り、元ファイルは変更しない（seedance側の正典を保つ）。
