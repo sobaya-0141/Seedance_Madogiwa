@@ -1,0 +1,7 @@
+label,chapter,gpu,workers,sage,fast_flags,comfy_flags,wall_sec,sampling_s_per_step
+default,ch1,NVIDIA L4,1,1,-,-,1313,129.9
+default,ch2,NVIDIA L4,1,1,-,-,1231,130.1
+default,ch3,NVIDIA L4,1,1,-,-,721,72.2
+default,ch4,NVIDIA L4,1,1,-,-,840,85.9
+default,ch5,NVIDIA L4,1,1,-,-,420,38.3
+default,ch6,NVIDIA L4,1,1,-,-,720,72.4
