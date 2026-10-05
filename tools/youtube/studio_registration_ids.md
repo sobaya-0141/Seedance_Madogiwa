@@ -5,17 +5,12 @@
 
 状態の凡例: ✅=完了 / 🔸=途中 / ⬜=未
 
-**55番の残り**: `clip1`〜`clip10` の開始終了キーフレーム20枚と、参照音声10本
-（`ch2_line1_okayaman_original` / `ch3_line1_sobaya_original` / `ch5_line1_yametaro` /
-`ch9_line1_yametaro` / `clip2_line1_okayaman` / `clip3_line1_sobaya` / `clip5_line1_yametaro` /
-`clip9_line1_yametaro` / `clip10_line1_narrator` / `endcard_narrator`）。
-
 | ラン | slug（またはバージョン追加先） | generationId | 動画 | 入力素材 | プロンプト本文 |
 |---|---|---|---|---|---|
 | 45_fukuchan_yametaro_estimates | `fukuchan-yametaro-estimates` | `b5698a78-5fda-45c1-9936-ac5db3124e2e` | ✅ | ✅ 41件 | ⬜ |
 | 52-54_sobayahazard_combined | `sobayahazard-underground-continuation` | `9510c870-e346-4e52-be17-6a871a1e79f3` | ✅ | ✅ 34件 | ⬜ |
-| 55_okayaman_watching_movie_cm | `okayaman-watching-movie-cm` | `653730ea-856b-4467-b98b-59a5d78be9a7` | ✅ | 🔸33/63件 | ⬜ |
-| 58_sobaya_ai_pull_request | `sobaya-ai-pull-request` | `6b6ce7cd-9df2-4a3d-a528-b6d4847f7291` | ✅ | ⬜ | ⬜ |
+| 55_okayaman_watching_movie_cm | `okayaman-watching-movie-cm` | `653730ea-856b-4467-b98b-59a5d78be9a7` | ✅ | ✅ 63件 | ⬜ |
+| 58_sobaya_ai_pull_request | `sobaya-ai-pull-request` | `6b6ce7cd-9df2-4a3d-a528-b6d4847f7291` | ✅ | ✅ 40件 | ⬜ |
 | 72_beer_only_engine_press_conference | `beer-only-engine-press-conference` | `e3e62cce-7dbd-43d0-b40a-a1b937fcd5f7` | ✅ | ⬜ | ⬜ |
 | 74_yametaro_ultra_dry_home_shopping | `yametaro-ultra-dry-home-shopping` | `66a2f0df-d697-408d-969c-1c9ed7f4e64d` | ✅ | ⬜ | ⬜ |
 | 76_sobaya_desert_mega_beer | `sobaya-desert-mega-beer` | `c0592de7-8df0-4be9-9034-cc229b0bcfbb` | ✅ | ⬜ | ⬜ |
