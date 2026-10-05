@@ -1,0 +1,584 @@
+{
+  "source": "https://madogiwa.work",
+  "episodes": [
+    {
+      "slug": "sobaya-m202-office-blast",
+      "title": "そば屋のアニキ、M202全弾発射",
+      "description": "そば屋がM202ロケットランチャーを全弾発射し、ゆめみオフィスの壊滅を背にビールを飲む15秒のアクションパロディ。",
+      "video_url": "https://madogiwa.work/media/5d21f15a-8053-4d57-8eb3-3693d59e1a13",
+      "poster_url": "https://madogiwa.work/posters/5d21f15a-8053-4d57-8eb3-3693d59e1a13",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-m202-office-blast"
+    },
+    {
+      "slug": "gyun-gyun-quest-opening",
+      "title": "ぎゅんぎゅんクエスト — オープニング",
+      "description": "ゲーム『ぎゅんぎゅんクエスト』の居酒屋シーンから始まるオープニングカットシーン。",
+      "video_url": "https://madogiwa.work/media/bc0c9767-a1a5-481e-a6d5-f5ac28668462",
+      "poster_url": "https://madogiwa.work/posters/bc0c9767-a1a5-481e-a6d5-f5ac28668462",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/gyun-gyun-quest-opening"
+    },
+    {
+      "slug": "fukuchan-yametaro-engineer-stereotypes",
+      "title": "福ちゃんとやめ太郎：エンジニアあるある",
+      "description": "福ちゃんがやめ太郎にエンジニアのステレオタイプを次々と投げ、やめ太郎が穏やかに切り返す長尺の漫才風オフィスコメディ。",
+      "video_url": "https://madogiwa.work/media/3ffea4b0-5b0b-4ca8-8fc8-88cd6abb8b47",
+      "poster_url": "https://madogiwa.work/posters/3ffea4b0-5b0b-4ca8-8fc8-88cd6abb8b47",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-yametaro-engineer-stereotypes"
+    },
+    {
+      "slug": "yumemin-hundred-babies",
+      "title": "ゆめみんと百匹の赤ちゃん",
+      "description": "明るいリビングで、ゆめみんを小さくした百匹の赤ちゃんが安全に登場する、魔法のファミリーコメディ。",
+      "video_url": "https://madogiwa.work/media/a0a75c07-e4be-47fb-8c1a-9d91d8f7893b",
+      "poster_url": "https://madogiwa.work/posters/a0a75c07-e4be-47fb-8c1a-9d91d8f7893b",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/yumemin-hundred-babies"
+    },
+    {
+      "slug": "takosan-php-prompt-pun",
+      "title": "PHP Means What?",
+      "description": "たこさんの質問に、やめ太郎がPHPを「パワ・ハラ・プロンプト」と誤解して答える、友好的なオフィス言葉遊び。",
+      "video_url": "https://madogiwa.work/media/11128474-3878-4301-ba6c-8e3735051286",
+      "poster_url": "https://madogiwa.work/posters/11128474-3878-4301-ba6c-8e3735051286",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/takosan-php-prompt-pun"
+    },
+    {
+      "slug": "php-prompt-pun-yumemin",
+      "title": "PHP: Papa's Hilarious Prompt",
+      "description": "ゆめみんがノートPCを指し、やめ太郎がPHPを「パワ・ハラ・プロンプト」と誤解する、温かなオフィス言葉遊び。",
+      "video_url": "https://madogiwa.work/media/c09b8556-7218-4553-94e8-cf8cac00fe67",
+      "poster_url": "https://madogiwa.work/posters/c09b8556-7218-4553-94e8-cf8cac00fe67",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/php-prompt-pun-yumemin"
+    },
+    {
+      "slug": "professional-morning-takosan",
+      "title": "プロフェッショナルの朝は、遅い。",
+      "description": "たこさんの出社から窓際での仕事ぶりまでを追う、企業密着ドキュメンタリー風15秒コメディ。",
+      "video_url": "https://madogiwa.work/media/4460776e-b703-40b7-bc2e-8eeb679a788d",
+      "poster_url": "https://madogiwa.work/posters/4460776e-b703-40b7-bc2e-8eeb679a788d",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/professional-morning-takosan"
+    },
+    {
+      "slug": "sobaya-never-drops-beer",
+      "title": "そば屋：ビールだけは落とさない",
+      "description": "よーたんとの衝突で荷物が宙を舞う中、そば屋がビールジョッキだけを完璧に救う15秒のスローモーションコメディ。",
+      "video_url": "https://madogiwa.work/media/b2a8382e-8962-436f-9fe2-6cdcbf111826",
+      "poster_url": "https://madogiwa.work/posters/b2a8382e-8962-436f-9fe2-6cdcbf111826",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-never-drops-beer"
+    },
+    {
+      "slug": "sobaya-beer-encouragement",
+      "title": "そば屋の励まし",
+      "description": "自信をなくした無職やめ太郎を、そば屋が極度乾燥ビールで励ます15秒のトイジオラマ風エピソード。",
+      "video_url": "https://madogiwa.work/media/dc41978b-c215-4113-9472-50942a78e83d",
+      "poster_url": "https://madogiwa.work/posters/dc41978b-c215-4113-9472-50942a78e83d",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-beer-encouragement"
+    },
+    {
+      "slug": "ai-human-pet-shop",
+      "title": "人間ペットショップ",
+      "description": "快適な部屋で暮らす無職やめ太郎が、実はAI向け人間ペットショップの商品だったと明かされる10秒エピソード。",
+      "video_url": "https://madogiwa.work/media/3ec285d7-ea20-4898-bb41-4b54034737c1",
+      "poster_url": "https://madogiwa.work/posters/3ec285d7-ea20-4898-bb41-4b54034737c1",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/ai-human-pet-shop"
+    },
+    {
+      "slug": "sobamoot-soba-flare",
+      "title": "そばムート「そばフレア」",
+      "description": "味方召喚獣そばムートが宇宙から必殺技「そばフレア」を放ち、たこさんを撃破する15秒のRPG風エピソード。",
+      "video_url": "https://madogiwa.work/media/366d6dc5-c05a-4ea9-9d13-a27d435f8878",
+      "poster_url": "https://madogiwa.work/posters/366d6dc5-c05a-4ea9-9d13-a27d435f8878",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/sobamoot-soba-flare"
+    },
+    {
+      "slug": "first-class-madogiwa-employee",
+      "title": "一流の窓際社員",
+      "description": "屋上で追い詰められたそば屋が巨大な窓を生み出し、窓際社員らしい方法で脱出するエピソード。",
+      "video_url": "https://madogiwa.work/media/19c5d31f-98e9-489a-8216-0ad00ba31193",
+      "poster_url": "https://madogiwa.work/posters/19c5d31f-98e9-489a-8216-0ad00ba31193",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/first-class-madogiwa-employee"
+    },
+    {
+      "slug": "yotan-vs-sobaya-grindhouse-battle",
+      "title": "よーたん対そば屋：爆音ジョッキ決戦",
+      "description": "強化エレキギターのよーたんと、大型ビールジョッキのそば屋がライブハウスで激突する30秒のグラインドハウス風バトル。",
+      "video_url": "https://madogiwa.work/media/44bfe261-a18d-4751-8ec4-132ee6883271",
+      "poster_url": "https://madogiwa.work/posters/44bfe261-a18d-4751-8ec4-132ee6883271",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/yotan-vs-sobaya-grindhouse-battle"
+    },
+    {
+      "slug": "giant-sobaya-office-rampage",
+      "title": "巨大そば屋・オフィス暴走",
+      "description": "ビールを探す3.2メートルの巨大そば屋がオフィスを破壊し、炎上案拳を操る無職やめ太郎と激突する30秒エピソード。",
+      "video_url": "https://madogiwa.work/media/96abddc4-8b2b-41d4-b052-697843bad46f",
+      "poster_url": "https://madogiwa.work/posters/96abddc4-8b2b-41d4-b052-697843bad46f",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/giant-sobaya-office-rampage"
+    },
+    {
+      "slug": "giant-takosan-regulation-beam",
+      "title": "巨大たこさん：レギュレーション違反ビーム",
+      "description": "巨大化したたこさんが渋谷を襲い、窓際王おかやまんのレギュレーション違反ビームで鎮圧される30秒の特撮エピソード。",
+      "video_url": "https://madogiwa.work/media/497ded5a-1fa1-45e0-b193-16a407f03329",
+      "poster_url": "https://madogiwa.work/posters/497ded5a-1fa1-45e0-b193-16a407f03329",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/giant-takosan-regulation-beam"
+    },
+    {
+      "slug": "giant-sobaya-vs-enjo-anken",
+      "title": "巨大そば屋 vs 炎上案拳",
+      "description": "巨大化したそば屋と、炎上案拳を放つ無職やめ太郎が街で激突する30秒の特撮アクションコメディ。",
+      "video_url": "https://madogiwa.work/media/ad9ffd49-ab8f-420e-832a-c6b36aea1ea1",
+      "poster_url": "https://madogiwa.work/posters/ad9ffd49-ab8f-420e-832a-c6b36aea1ea1",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/giant-sobaya-vs-enjo-anken"
+    },
+    {
+      "slug": "chikuwa-landing-news",
+      "title": "ちくわの水揚げが最盛期",
+      "description": "浜松で最盛期を迎えた天然ちくわの水揚げを、ゆめテレの朝ニュースが伝える15秒エピソード。",
+      "video_url": "https://madogiwa.work/media/fe3c52ca-593d-4b01-8252-631443d2020b",
+      "poster_url": "https://madogiwa.work/posters/fe3c52ca-593d-4b01-8252-631443d2020b",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/chikuwa-landing-news"
+    },
+    {
+      "slug": "mcp-video-registration-validation-20260816",
+      "title": "MCP動画登録検証",
+      "description": "CodexからRemote MCP経由でプロンプトと動画を登録し、Web再生を確認するための検証用エピソード。",
+      "video_url": "https://madogiwa.work/media/6d6a5bfb-06a5-4b7a-a399-dd84ef3b0a4e",
+      "poster_url": "https://madogiwa.work/posters/6d6a5bfb-06a5-4b7a-a399-dd84ef3b0a4e",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/mcp-video-registration-validation-20260816"
+    },
+    {
+      "slug": "sobaya-beer-battery",
+      "title": "そば屋ビールバッテリー",
+      "description": "極度乾燥ビールをめぐる、オフィスでの短編エピソード。",
+      "video_url": "https://madogiwa.work/media/40000000-0000-4000-8000-000000000040",
+      "poster_url": "https://madogiwa.work/posters/40000000-0000-4000-8000-000000000040",
+      "published_at": "2026-08-17T09:34:31.187Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-beer-battery"
+    },
+    {
+      "slug": "balcony-bar-construction-timelapse",
+      "title": "窓際酒場 建築タイムラプス",
+      "description": "汚れたベランダ席で働くそば屋が、怪力でオフィス用品を破壊・廃棄し、清掃と床張りを経て窓際酒場を完成させ、福ちゃんととーくんと乾杯する30秒の実写建築タイムラプス。Wan 3.0通常版とPrime版を比較。",
+      "video_url": "https://madogiwa.work/media/ed9573c4-25e7-4dab-b7c5-0cd9a1f24b7e",
+      "poster_url": "https://madogiwa.work/posters/ed9573c4-25e7-4dab-b7c5-0cd9a1f24b7e",
+      "published_at": "2026-08-26T02:11:33.165Z",
+      "episode_url": "https://madogiwa.work/episodes/balcony-bar-construction-timelapse"
+    },
+    {
+      "slug": "aronchia-makers-vlog",
+      "title": "アーロンチュアを作る男たち",
+      "description": "福ちゃん、よーたん、そば屋が配送用段ボール箱を切り、組み、手書きで「アーロンチュア」と名付けて耐荷重テストする30秒の実写社内工作Vlog。",
+      "video_url": "https://madogiwa.work/media/124f895c-4dca-446e-995d-f8947bd11408",
+      "poster_url": "https://madogiwa.work/posters/124f895c-4dca-446e-995d-f8947bd11408",
+      "published_at": "2026-08-26T07:26:36.620Z",
+      "episode_url": "https://madogiwa.work/episodes/aronchia-makers-vlog"
+    },
+    {
+      "slug": "sobaya-hazard-trailer",
+      "title": "そば屋ハザード",
+      "description": "福ちゃんが霧の寒村、古城、水牢を駆け抜け、ゾンビではなく白仮面のそば屋たちに襲われる30秒のサバイバルホラーゲーム風トレーラー。英語・スペイン語音声と日本語字幕、専用タイトルロゴを収録。",
+      "video_url": "https://madogiwa.work/media/edf72857-8a12-47a0-9b10-0f926c0ea05a",
+      "poster_url": "https://madogiwa.work/posters/edf72857-8a12-47a0-9b10-0f926c0ea05a",
+      "published_at": "2026-08-26T07:26:39.303Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-hazard-trailer"
+    },
+    {
+      "slug": "sobaya-akasaka-gta-parody",
+      "title": "そば屋 赤坂GTAパロディ",
+      "description": "そば屋が赤坂でバイクを奪い、ビールを飲み、アクシデンチュアのオフィスへ突入して暴れ回る30秒のオープンワールド犯罪アクションゲーム風パロディ。",
+      "video_url": "https://madogiwa.work/media/1ecc5d9e-6830-4072-86f5-7391fe3d0fab",
+      "poster_url": "https://madogiwa.work/posters/1ecc5d9e-6830-4072-86f5-7391fe3d0fab",
+      "published_at": "2026-08-26T07:26:41.896Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-akasaka-gta-parody"
+    },
+    {
+      "slug": "wai-window-side-ai",
+      "title": "WAI — Window-Side AI",
+      "description": "無職やめ太郎の一人称「ワイ」を冠した架空AIサービスが、VS CodeとiTerm2に積み上がるエラーや複雑なコードを、プロジェクトごと消去して技術的負債ゼロを実現する30秒の企業発表風コメディ。英語ナレーションと日本語字幕で、学習元の「日本のプロフェッショナル」としてそば屋と福ちゃんが登場する。",
+      "video_url": "https://madogiwa.work/media/198da1bc-3197-4adf-95d6-bf2ab4452b97",
+      "poster_url": "https://madogiwa.work/posters/198da1bc-3197-4adf-95d6-bf2ab4452b97",
+      "published_at": "2026-08-26T23:56:56.731Z",
+      "episode_url": "https://madogiwa.work/episodes/wai-window-side-ai"
+    },
+    {
+      "slug": "sobaya-breaking-news-arrest",
+      "title": "速報 そば屋逮捕連行",
+      "description": "ニュース速報仕立ての約23秒コメディ。冒頭はニューススタジオのアナウンサーが「速報です。」と伝え、以降は昼間の警察署前を歩く連行B-rollにナレーションが重なる。他人に同じ白仮面を着けさせ、自分の代わりに出社・労働させていた罪で、そば屋が二人の制服警官に連行される。最後は連行されながらのそば屋本人の一言で締める。暴力・陰惨さのない穏やかな連行として描いた。MiniMax H3で6チャプターを生成し、ナレーションはローカルで重ねた。",
+      "video_url": "https://madogiwa.work/media/ac55bab3-9a75-45b6-bf62-89175c2e3200",
+      "poster_url": "https://madogiwa.work/posters/ac55bab3-9a75-45b6-bf62-89175c2e3200",
+      "published_at": "2026-08-27T03:10:08.207Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-breaking-news-arrest"
+    },
+    {
+      "slug": "buyobuyo-puzzle-arrival",
+      "title": "新作パズル ぶよぶよ 到着編",
+      "description": "架空の落ちものパズル『ぶよぶよ』のゲームCM、約26秒。そば屋が家のインターホンを鳴らし、迎え入れられ、「新しいゲーム買ったよ！」と新作を披露する。福ちゃん・やめ太郎・たこさん・ゆめみんが「よし！やろうぜ！」と乗り、全員のアイコンが落ちものパズルの盤面で連鎖していく。紫がそば屋、赤がやめ太郎で、4つつながると消える。締めはナレーションの「（そば屋の腹は）ぶよぶよ！近日発売」。MiniMax H3で6チャプター生成し、H3のR2V音声上限3本を超えるゆめみんの鳴き声だけローカルでミックスした。",
+      "video_url": "https://madogiwa.work/media/d36b8ae2-722a-4105-87d3-283d3f6e6d94",
+      "poster_url": "https://madogiwa.work/posters/d36b8ae2-722a-4105-87d3-283d3f6e6d94",
+      "published_at": "2026-08-27T03:17:06.255Z",
+      "episode_url": "https://madogiwa.work/episodes/buyobuyo-puzzle-arrival"
+    },
+    {
+      "slug": "sobayahazard-game-cm",
+      "title": "そば屋ハザード ゲームCM",
+      "description": "架空のサバイバルホラーゲーム『SOBAYAHAZARD』の約17秒テレビCM。ゲームのルールが一目で分かる構成で、生存道具はビール瓶。空のジョッキを正しく満たせば白仮面のそば屋は穏やかに飲んで立ち去り、こぼせば仮面が赤く染まってゲームオーバーの追跡が始まる。夜のオフィスラウンジで福ちゃんが「え、全員ジョッキ空っぽやん……！」から「ギュンギュンどころじゃない！こぼしたー！」まで駆け抜ける。緊張感は出しつつ、流血・残酷描写や陰惨な結末は排した。MiniMax H3で4チャプター生成し、末尾にパッケージ広告カードをローカルで付加した。",
+      "video_url": "https://madogiwa.work/media/5122c3a9-665d-4e63-9ad4-b7717e88dce3",
+      "poster_url": "https://madogiwa.work/posters/5122c3a9-665d-4e63-9ad4-b7717e88dce3",
+      "published_at": "2026-08-27T03:22:32.370Z",
+      "episode_url": "https://madogiwa.work/episodes/sobayahazard-game-cm"
+    },
+    {
+      "slug": "yumemi-group-sobaya-figure-shopping",
+      "title": "ゆめみグループ — 等身大そば屋フィギュア通販",
+      "description": "夢グループをパロディした架空通販番組「ゆめみグループ」。福ちゃんが明らかに粗悪な等身大そば屋フィギュアを超高品質として紹介し、とーくん社長がウクレレで価格を決定。最後はそば屋本人と並べて「どっちが本物かわからないぎゅん！」と絶賛する30秒コメディ。Wan 3.0映像へIrodori-TTSの正典音声、とーくんの演奏、分離BGMを合成し、Remotionで自然なテレビショッピングテロップを後付けした。",
+      "video_url": "https://madogiwa.work/media/3463f877-21d2-42e5-836d-b9b672711c73",
+      "poster_url": "https://madogiwa.work/posters/3463f877-21d2-42e5-836d-b9b672711c73",
+      "published_at": "2026-08-27T10:06:03.406Z",
+      "episode_url": "https://madogiwa.work/episodes/yumemi-group-sobaya-figure-shopping"
+    },
+    {
+      "slug": "yametaro-unauthorized-office-livestream",
+      "title": "やめチャンネル — オフィス無断生配信",
+      "description": "無職やめ太郎が同僚の勤務中オフィスを、自撮り棒付きスマートフォンで無断生配信する約32秒のコメディ。そば屋が勤務中のビールに堂々と「かんぱーい！」、やめ太郎も「普通の会社は酒ダメなん？」と悪びれず、視聴者はドン引き。福ちゃんのモニターに「社外秘」が映り込み、激しく止めに入った福ちゃんの手のひらが配信レンズを覆って終了する。Wan 3.0の本編・差し替え映像、Irodori-TTSの正典音声、RemotionのYumeTube Live UI・字幕・実況コメントを統合した完成版。",
+      "video_url": "https://madogiwa.work/media/40403208-9d81-4305-9a7a-66258a1c11c5",
+      "poster_url": "https://madogiwa.work/posters/40403208-9d81-4305-9a7a-66258a1c11c5",
+      "published_at": "2026-08-28T05:40:51.317Z",
+      "episode_url": "https://madogiwa.work/episodes/yametaro-unauthorized-office-livestream"
+    },
+    {
+      "slug": "professional-window-side-sobaya",
+      "title": "プロフェッショナル 窓際の流儀",
+      "description": "公共放送の人物密着番組を思わせる重厚な演出で、アクシデンチュア株式会社のウィンドウサイドエンジニア・そば屋を追う約36.5秒のパロディ。出社後のビール、Excelを開いて閉じる仕事術、そして「一流の窓際族は窓際を作り出す」という哲学を、Wan 3.0映像、正典Irodori-TTS音声、RemotionのYHKタイトル・質問カード・字幕で仕上げた採用版。壁には無職やめ太郎本人の指名手配ポスターが掲示されている。",
+      "video_url": "https://madogiwa.work/media/991edfa4-92c6-4687-ab51-39213c6dc2f0",
+      "poster_url": "https://madogiwa.work/posters/991edfa4-92c6-4687-ab51-39213c6dc2f0",
+      "published_at": "2026-08-31T05:48:13.966Z",
+      "episode_url": "https://madogiwa.work/episodes/professional-window-side-sobaya"
+    },
+    {
+      "slug": "sobaya-guardian-declaration",
+      "title": "そば屋の守護宣言",
+      "description": "劇画調の三段構成で、そば屋がビールを手に「無職やめ太郎も、福ちゃんも、とーくんも、窓際王おかやまんでさえも、俺が守護らねばならぬ」と宣言する約15秒のモーションコミック。GPT Imageで制作した採用B案を、Remotionで完成動画に仕上げた。",
+      "video_url": "https://madogiwa.work/media/26ce3f75-66c8-4eca-8ae6-005ed22482a4",
+      "poster_url": "https://madogiwa.work/posters/26ce3f75-66c8-4eca-8ae6-005ed22482a4",
+      "published_at": "2026-09-04T00:44:47.063Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-guardian-declaration"
+    },
+    {
+      "slug": "chikuwa-line-fishing-soba-shark",
+      "title": "そばシャーク - 遭遇",
+      "description": "小型漁船で海釣りに出たよーたんと福ちゃん。激闘の末に釣り上げたのは、ゴムまりのように激しく暴れ回る巨大な『天然大ちくわ』だった！喜ぶ二人の背後にサメの背びれが急接近し、水煙とともに現れたのは巨大ビールジョッキを手にした『そばシャーク』。豪快な乾杯とともに、大ちくわは海へと帰っていく――実写×残念CGクリーチャーショートコメディ。",
+      "video_url": "https://madogiwa.work/media/a3c2c439-0c12-41b8-a2f5-2c4be16d1565",
+      "poster_url": "https://madogiwa.work/posters/a3c2c439-0c12-41b8-a2f5-2c4be16d1565",
+      "published_at": "2026-09-05T01:35:03.502Z",
+      "episode_url": "https://madogiwa.work/episodes/chikuwa-line-fishing-soba-shark"
+    },
+    {
+      "slug": "madogiwa-super-try-commute",
+      "title": "窓際スーパーつらい — 出社インポッシブル篇",
+      "description": "スパイ映画さながらに高層ビルをよじ登るそば屋。命懸けの潜入と思いきや、外からしか行けないベランダの窓際席への出社だった。福ちゃんの挨拶、冷えたビール、そして「冷えてる。待遇も。」で締める30秒のパロディCM。商品名は窓際スーパーつらい／Madogiwa Super TRY。Wan 3.0・480Pで生成し、Remotionで正確な商品名とコピーを合成。",
+      "video_url": "https://madogiwa.work/media/f3139b70-f378-446c-87aa-56317908c439",
+      "poster_url": "https://madogiwa.work/posters/f3139b70-f378-446c-87aa-56317908c439",
+      "published_at": "2026-09-08T06:41:24.393Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-commute"
+    },
+    {
+      "slug": "madogiwa-super-try-space-casual",
+      "title": "窓際スーパーつらい — 宇宙カジュアル篇",
+      "description": "宇宙服で慎重に船外作業を進めるよーたんと福ちゃん。おかやまんの指示が届くなか、未確認窓際族が接近する。窓際スーパーつらいCM第二弾。英語セリフ・日本語字幕、30秒。",
+      "video_url": "https://madogiwa.work/media/95b2542c-5127-408f-9f3a-501f3bc348a5",
+      "poster_url": "https://madogiwa.work/posters/95b2542c-5127-408f-9f3a-501f3bc348a5",
+      "published_at": "2026-09-09T00:44:56.786Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-space-casual"
+    },
+    {
+      "slug": "madogiwa-super-try-underground",
+      "title": "窓際スーパーつらい — 地下労働篇",
+      "description": "本番データとバックアップを消し、地下労働に送られたやめ太郎。10万ゆめポイントを貯めて脱出する決意は、よーたん班長の冷えたビールで揺らぐ。カイジ地下労働編オマージュのCM。完成v4は45秒。v1〜v3の失敗テイクと実際の入力素材も保存。",
+      "video_url": "https://madogiwa.work/media/717ee648-a9f2-4932-9dfe-98a3fbf0dd1a",
+      "poster_url": "https://madogiwa.work/posters/717ee648-a9f2-4932-9dfe-98a3fbf0dd1a",
+      "published_at": "2026-09-09T04:04:04.186Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-underground"
+    },
+    {
+      "slug": "madogiwa-super-try-sobaya-invasion",
+      "title": "窓際スーパーつらい — そば屋&たこさん初めての東京篇",
+      "description": "赤坂に巨大な三脚マシンが襲来。たこさん収集部隊の目的は、母艦で待つそば屋のための地球のビールだった。ハリウッド侵略映画オマージュのCM第四弾。英語セリフ・日本語字幕、40秒。",
+      "video_url": "https://madogiwa.work/media/0ac20e15-2532-419e-80a0-3a0bcae964b1",
+      "poster_url": "https://madogiwa.work/posters/0ac20e15-2532-419e-80a0-3a0bcae964b1",
+      "published_at": "2026-09-09T10:30:28.239Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-sobaya-invasion"
+    },
+    {
+      "slug": "madogiwa-super-try-sobaya-invasion-trailer",
+      "title": "窓際スーパーつらい — そば屋&たこさん初めての東京篇［予告編］",
+      "description": "窓際族物語、最大の謎がついに明かされる。地球のビールを狙うそば屋とたこさんの侵略を、映画予告編風に紹介。そば屋の日本語ナレーションと4回の暗転、英語本編音声・日本語字幕、最後はビールCM。61.2秒。本編: https://madogiwa-studio.madogiwa-studio.workers.dev/episodes/madogiwa-super-try-sobaya-invasion （MS-GCH4HZGE）。",
+      "video_url": "https://madogiwa.work/media/912872aa-41a1-4902-80cd-e6dc8ba0205d",
+      "poster_url": "https://madogiwa.work/posters/912872aa-41a1-4902-80cd-e6dc8ba0205d",
+      "published_at": "2026-09-09T23:02:50.077Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-sobaya-invasion-trailer"
+    },
+    {
+      "slug": "madogiwa-super-try-keisha",
+      "title": "窓際スーパーつらい — 土下座レース篇",
+      "description": "CMシリーズ第5弾。完成された土下座ほど加速する謎の競技「競謝」。そば屋失格後の最終周、やめ太郎に対し、不動の王者・いーさんが完全土下座で勝負を決める。新メンバーいーさんはアクシデンチュアのトップ営業で窓際族。実況字幕付き25秒。「低姿勢で、ぶっちぎれ。」",
+      "video_url": "https://madogiwa.work/media/374502a4-a357-4f3c-aa3c-f636ae4ca1fd",
+      "poster_url": "https://madogiwa.work/posters/374502a4-a357-4f3c-aa3c-f636ae4ca1fd",
+      "published_at": "2026-09-10T05:35:04.703Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-keisha"
+    },
+    {
+      "slug": "tako-game-dormitory",
+      "title": "タコゲーム — 目覚め",
+      "description": "巨大な多段ベッドの部屋で目覚めたやめ太郎。紫ジャージの窓際族を待っていたのは、水色の武装兵を従えたゲームマスター・たこさんだった。韓国語の真剣な芝居と、いつもの口調の日本語字幕が食い違う30秒パロディ。福ちゃんの「ギュン」だけは音声でもそのまま。",
+      "video_url": "https://madogiwa.work/media/5ab8803c-024c-47a7-849c-20373f65c5e7",
+      "poster_url": "https://madogiwa.work/posters/5ab8803c-024c-47a7-849c-20373f65c5e7",
+      "published_at": "2026-09-10T13:11:21.325Z",
+      "episode_url": "https://madogiwa.work/episodes/tako-game-dormitory"
+    },
+    {
+      "slug": "fukuchan-gold-dance-mv-singleframe-80s",
+      "title": "福ちゃん — ギュンギュン美男子レボリューション：金ピカ・ダンスMV（単一キーフレーム版／80s）",
+      "description": "金ピカ・ダンスMVの単一キーフレーム対照実験版。34チャプター構成を引き継ぎ、福ちゃんの歌唱・ダンスと匿名バックダンサーによる縦型MVとして完成したバリエーション。",
+      "video_url": "https://madogiwa.work/media/eab97209-679a-4200-b872-ab05a93f28a4",
+      "poster_url": "https://madogiwa.work/posters/eab97209-679a-4200-b872-ab05a93f28a4",
+      "published_at": "2026-09-12T06:18:00.621Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-gold-dance-mv-singleframe-80s"
+    },
+    {
+      "slug": "fukuchan-gyungyun-gold-dance-mv",
+      "title": "福ちゃん — ギュンギュン美男子レボリューション：金ピカ・ダンスMV",
+      "description": "福ちゃんが金色のスパンコール衣装で、金色の舞台と紙吹雪の中を匿名バックダンサーたちと歌い踊る34チャプターの縦型ミュージックビデオ。MiniMax H3のR2Vで制作した完成版。",
+      "video_url": "https://madogiwa.work/media/27e6f94b-2771-4238-8497-07a7c4c4ec8d",
+      "poster_url": "https://madogiwa.work/posters/27e6f94b-2771-4238-8497-07a7c4c4ec8d",
+      "published_at": "2026-09-12T06:18:04.369Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-gyungyun-gold-dance-mv"
+    },
+    {
+      "slug": "fukuchan-gyungyun-visual-kei-mv-alt",
+      "title": "福ちゃん — ギュンギュン美男子レボリューション：Visual-Kei Alternate MV",
+      "description": "福ちゃんが黒いロングコートとマイクで歌う、赤と黒の劇的な照明による縦型ビジュアル系オルタナティブMV。Seedance 2.5 in CapCutで制作した完成版。",
+      "video_url": "https://madogiwa.work/media/69772454-bb5d-4250-80d4-befc484fbdb8",
+      "poster_url": "https://madogiwa.work/posters/69772454-bb5d-4250-80d4-befc484fbdb8",
+      "published_at": "2026-09-12T06:18:08.236Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-gyungyun-visual-kei-mv-alt"
+    },
+    {
+      "slug": "fukuchan-gyungyun-first-take-mv",
+      "title": "福ちゃん — ギュンギュン美男子レボリューション：First-Take MV",
+      "description": "福ちゃんが黒いロングコートとヘッドホン、マイクで歌う、First Take風の縦型ミュージックビデオ。冒頭の挨拶・間を含む全20クリップをSeedance 2.5 in CapCutで制作した完成版。",
+      "video_url": "https://madogiwa.work/media/6457dbb1-bade-41d7-9c54-767c3b08a152",
+      "poster_url": "https://madogiwa.work/posters/6457dbb1-bade-41d7-9c54-767c3b08a152",
+      "published_at": "2026-09-12T06:36:52.527Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-gyungyun-first-take-mv"
+    },
+    {
+      "slug": "fukuchan-yotan-interview",
+      "title": "福ちゃんとよーたん：窓際族AI面接",
+      "description": "よーたんが福ちゃんをオンライン面接。普通の志望動機からAI疑惑へ急展開するが、最後はまさかの採用。MiniMax H3のR2Vで制作した約50秒の二画面ライブアクション・コメディ。",
+      "video_url": "https://madogiwa.work/media/28d0e692-02ee-4a9f-8447-673fe37c39a3",
+      "poster_url": "https://madogiwa.work/posters/28d0e692-02ee-4a9f-8447-673fe37c39a3",
+      "published_at": "2026-09-13T23:53:58.400Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-yotan-interview"
+    },
+    {
+      "slug": "github-pr-ui-review",
+      "title": "GitHub PRの1ピクセルレビュー",
+      "description": "GitHubのPR画面いっぱいにXX画面のUI実装を表示。やめ太郎、福ちゃん、そば屋がPC前でLTGMを唱え、最後はビールを一口飲んだそば屋が1ピクセルのズレを見抜く約18秒のオフィスコメディ。",
+      "video_url": "https://madogiwa.work/media/4a36f647-315b-4a0a-bedd-cdf3eb679695",
+      "poster_url": "https://madogiwa.work/posters/4a36f647-315b-4a0a-bedd-cdf3eb679695",
+      "published_at": "2026-09-17T01:00:37.038Z",
+      "episode_url": "https://madogiwa.work/episodes/github-pr-ui-review"
+    },
+    {
+      "slug": "madogiwa-super-try-tanker",
+      "title": "窓際スーパーつらい — 爆走タンクローリー篇",
+      "description": "銀のビールタンクローリーをそば屋バイク軍団が追撃。バイクから飛びついたそば屋がタンクを破り、噴き出すビールを豪快に飲むCM。Wan 3.0本編15秒＋共通商品コール5秒、480p・20秒。「その渇きに、タンクで応えろ。」",
+      "video_url": "https://madogiwa.work/media/472c9198-fed7-4704-9d1a-127b5a823245",
+      "poster_url": "https://madogiwa.work/posters/472c9198-fed7-4704-9d1a-127b5a823245",
+      "published_at": "2026-09-18T10:37:42.067Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-tanker"
+    },
+    {
+      "slug": "sova",
+      "title": "ソヴァ",
+      "description": "街で暴れるたこさんを前に、やめ太郎はソヴァへ。搭乗席でも窓際だった。19時の残業版。",
+      "video_url": "https://madogiwa.work/media/c3ca9ad4-10fa-4f59-9377-9ff6f0dcc2e8",
+      "poster_url": "https://madogiwa.work/posters/c3ca9ad4-10fa-4f59-9377-9ff6f0dcc2e8",
+      "published_at": "2026-09-19T01:59:05.582Z",
+      "episode_url": "https://madogiwa.work/episodes/sova"
+    },
+    {
+      "slug": "hisoba-memory-review",
+      "title": "ヒ・そば・屋のコーディングチェック",
+      "description": "アクシデンチュアのコーディング試験を提出しようとするやめ太郎の自宅へ、ヒソバを名乗るそば屋が突然入室。「君の敗因はメモリの無駄遣い♠」と告げた男はパトカーで連行される。24秒・480p、♥♠入りRemotion字幕完成版。",
+      "video_url": "https://madogiwa.work/media/41e71b0b-9085-474e-925e-8f53dca7d49d",
+      "poster_url": "https://madogiwa.work/posters/41e71b0b-9085-474e-925e-8f53dca7d49d",
+      "published_at": "2026-09-20T00:05:56.512Z",
+      "episode_url": "https://madogiwa.work/episodes/hisoba-memory-review"
+    },
+    {
+      "slug": "tokyo-madogiwa-land",
+      "title": "東京マドギワランド",
+      "description": "福ちゃんが自撮り棒片手に東京マドギワランドを実況。浮遊する着ぐるみ、おかやまんの窓際トーク、そば屋軍団のパレードを巡り、窓際族TシャツのCMで締める34.8秒。",
+      "video_url": "https://madogiwa.work/media/f91e9dab-41a6-4870-a32e-e6ca4a67274c",
+      "poster_url": "https://madogiwa.work/posters/f91e9dab-41a6-4870-a32e-e6ca4a67274c",
+      "published_at": "2026-09-22T02:56:41.289Z",
+      "episode_url": "https://madogiwa.work/episodes/tokyo-madogiwa-land"
+    },
+    {
+      "slug": "beer-materialization",
+      "title": "ビールの具現化 — ビールの記憶",
+      "description": "そば屋がやめ太郎にビール具現化の修業を回想。観察・写生から、四つん這いで舐め、嗅ぎ回る奇妙な修業へ。Remotion + Three.jsによる53.7秒の3Dアニメ。",
+      "video_url": "https://madogiwa.work/media/6a9e632b-80e6-4eae-b199-15f26919605e",
+      "poster_url": "https://madogiwa.work/posters/6a9e632b-80e6-4eae-b199-15f26919605e",
+      "published_at": "2026-09-22T15:34:57.350Z",
+      "episode_url": "https://madogiwa.work/episodes/beer-materialization"
+    },
+    {
+      "slug": "oishii-yakisoba",
+      "title": "美味しい焼きそば",
+      "description": "オフィスで焼きそば屋台を営み、ビールを禁止されたそば屋。翌朝、空のジョッキを握る手の震えがオフィス全体を揺らし始める。やめ太郎の見立てと、とーくんのビール救援で騒動は収まるが……。30秒の窓際族コメディ。",
+      "video_url": "https://madogiwa.work/media/1ba7bdaf-9307-474d-a664-e67070a10599",
+      "poster_url": "https://madogiwa.work/posters/1ba7bdaf-9307-474d-a664-e67070a10599",
+      "published_at": "2026-09-23T09:06:21.418Z",
+      "episode_url": "https://madogiwa.work/episodes/oishii-yakisoba"
+    },
+    {
+      "slug": "madogiwa-tshirt-keynote-sobaya",
+      "title": "窓際族Tシャツ発表会 — そば屋",
+      "description": "窓際族。T。シャツ。3つの革命的な製品が、ひとつに。そば屋ひとりが登壇するiPhone発表会パロディ。窓際族イラストの切り抜き修正版。",
+      "video_url": "https://madogiwa.work/media/0ea3ead4-9e7a-428f-8f56-3e3127b4c5f4",
+      "poster_url": "https://madogiwa.work/posters/0ea3ead4-9e7a-428f-8f56-3e3127b4c5f4",
+      "published_at": "2026-09-23T09:18:11.865Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-keynote-sobaya"
+    },
+    {
+      "slug": "madogiwa-tshirt-keynote-nojobs",
+      "title": "ノージョブズ — 窓際族Tシャツ発表会",
+      "description": "無職やめ太郎がノージョブズとして登壇。窓際族、T、シャツの3つをひとつの革命的な製品として発表する基調講演パロディ。",
+      "video_url": "https://madogiwa.work/media/d997a3f8-257c-49fe-9526-5711ed937afe",
+      "poster_url": "https://madogiwa.work/posters/d997a3f8-257c-49fe-9526-5711ed937afe",
+      "published_at": "2026-09-23T09:30:25.051Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-keynote-nojobs"
+    },
+    {
+      "slug": "madogiwa-tshirt-runway",
+      "title": "窓際族Tシャツ — 無許可のデビュー",
+      "description": "本格的なファッションショーへ窓際族Tシャツ姿のそば屋が乱入。最前列の福ちゃんは「これは、流行るわね。」と評価するが、舞台裏では警察に連行される。Wan本編27秒＋商品エンドカード3秒の30秒CM。",
+      "video_url": "https://madogiwa.work/media/52757800-ce07-402c-8899-9e0c4fd48819",
+      "poster_url": "https://madogiwa.work/posters/52757800-ce07-402c-8899-9e0c4fd48819",
+      "published_at": "2026-09-24T05:12:19.822Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-runway"
+    },
+    {
+      "slug": "madogiwa-tshirt-beer-complete",
+      "title": "窓際族Tシャツ — ビールで完成",
+      "description": "真っ白なTシャツに向かうそば屋へ、走る福ちゃんとやめ太郎が衝突。2人がそば屋へ吹っ飛び、よろけたそば屋のビールがTシャツにかかる。ビールが一瞬で乾き、添付デザインそのものの窓際族Tシャツが完成する30秒CM。",
+      "video_url": "https://madogiwa.work/media/61dd7095-b554-46f1-b554-c32751b39604",
+      "poster_url": "https://madogiwa.work/posters/61dd7095-b554-46f1-b554-c32751b39604",
+      "published_at": "2026-09-24T05:56:14.780Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-beer-complete"
+    },
+    {
+      "slug": "sobaya-fun-soba-making",
+      "title": "そば屋の楽しいそば作り",
+      "description": "昼間のオフィスで堂々とそば作りを楽しむそば屋。薬味を買いに包丁を持ったままコンビニへ向かうと、店員と客が大騒ぎに。本人だけは昼休みの終わりを気にしている。約34.6秒のホラーコメディ。",
+      "video_url": "https://madogiwa.work/media/9a81e0fc-ac3d-4bb3-af30-4bfef3d0f307",
+      "poster_url": "https://madogiwa.work/posters/9a81e0fc-ac3d-4bb3-af30-4bfef3d0f307",
+      "published_at": "2026-09-25T12:47:16.107Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-fun-soba-making"
+    },
+    {
+      "slug": "madogiwaryoku-laboratory",
+      "title": "窓際力研究所",
+      "description": "研究施設に迷い込んだ福ちゃんとやめ太郎。ビールの培養液に浮かぶそば屋のクローンと、二人の規格外の窓際力を狙うたこさんに遭遇する。SFホラーコメディ。",
+      "video_url": "https://madogiwa.work/media/3791c8e8-00ac-418a-b0a6-f46163510006",
+      "poster_url": "https://madogiwa.work/posters/3791c8e8-00ac-418a-b0a6-f46163510006",
+      "published_at": "2026-09-26T01:46:57.353Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwaryoku-laboratory"
+    },
+    {
+      "slug": "last-train-police-taxi",
+      "title": "帰宅困難族",
+      "description": "飲み会で終電を逃したそば屋、やめ太郎、福ちゃん。タクシーを力技で止めた次の瞬間、３人はパトカーの後部座席へ。福ちゃんだけはタクシー気分で行き先を告げる。30秒コメディ。",
+      "video_url": "https://madogiwa.work/media/76d10a5d-f1f2-499b-a5ad-9db86c127f57",
+      "poster_url": "https://madogiwa.work/posters/76d10a5d-f1f2-499b-a5ad-9db86c127f57",
+      "published_at": "2026-09-26T05:59:40.460Z",
+      "episode_url": "https://madogiwa.work/episodes/last-train-police-taxi"
+    },
+    {
+      "slug": "madogiwa-tshirt-destruction-cm",
+      "title": "窓際族Tシャツ — 無能な窓際族大暴走",
+      "description": "上司の依頼を断るそば屋とやめ太郎。たこさんが窓際族Tシャツを紹介した直後、二人は「ワーイ！」とオフィスを駆け回って備品を壊し、最後は停車中のパトカーへ連行される約43秒のCM。",
+      "video_url": "https://madogiwa.work/media/863c8a46-c7c6-4be9-b42a-a3ce08a49b06",
+      "poster_url": "https://madogiwa.work/posters/863c8a46-c7c6-4be9-b42a-a3ce08a49b06",
+      "published_at": "2026-09-28T01:37:46.487Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-destruction-cm"
+    },
+    {
+      "slug": "sovangelion-endless-overtime",
+      "title": "ソヴァンゲリオン — 終わらない残業",
+      "description": "巨大なたこさんを止めるため、やめ太郎がソヴァに搭乗。使いづらい操作UI、勤怠入力、承認待ちに振り回されながら戦う196秒の3Dアクションコメディ。",
+      "video_url": "https://madogiwa.work/media/13429f76-74a4-4620-a6d5-87b02742f69b",
+      "poster_url": "https://madogiwa.work/posters/13429f76-74a4-4620-a6d5-87b02742f69b",
+      "published_at": "2026-09-29T12:23:51.622Z",
+      "episode_url": "https://madogiwa.work/episodes/sovangelion-endless-overtime"
+    },
+    {
+      "slug": "madogiwa-manner-class-question-1",
+      "title": "窓際マナー講座 — 第一問",
+      "description": "窓際族に仕事を依頼するときのマナーをめぐり、テレビ番組の司会者とパネリスト、福ちゃん、無職やめ太郎が議論する約100秒・全20章のスタジオコメディ。",
+      "video_url": "https://madogiwa.work/media/c43f7a0d-eeda-45af-a30a-a89c464882b2",
+      "poster_url": "https://madogiwa.work/posters/c43f7a0d-eeda-45af-a30a-a89c464882b2",
+      "published_at": "2026-09-30T07:41:19.810Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-manner-class-question-1"
+    },
+    {
+      "slug": "madogiwa-tribe-secret",
+      "title": "マドギワ族の秘密",
+      "description": "窓際族Tシャツをきっかけに、よーたんが語り始めた入族の秘密。窓際がジャングル化したオフィスで、三人を待っていたのはマドギワ族だった。49.3秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/817bb151-fbf6-49c4-91dd-79340f971ed1",
+      "poster_url": "https://madogiwa.work/posters/817bb151-fbf6-49c4-91dd-79340f971ed1",
+      "published_at": "2026-10-01T00:55:38.753Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-tribe-secret"
+    },
+    {
+      "slug": "yametaro-pakurareta",
+      "title": "やめ太郎「あー、パクられた！クソッ！」",
+      "description": "仕事中のはずのやめ太郎とたこさん。突然の「パクられた！」に、たこさんが事情を尋ねる24秒のオフィスコメディ。",
+      "video_url": "https://madogiwa.work/media/27b4a419-315b-4127-a80b-5ca1d5b6c949",
+      "poster_url": "https://madogiwa.work/posters/27b4a419-315b-4127-a80b-5ca1d5b6c949",
+      "published_at": "2026-10-02T07:56:45.979Z",
+      "episode_url": "https://madogiwa.work/episodes/yametaro-pakurareta"
+    },
+    {
+      "slug": "weekly-madogiwa-kit",
+      "title": "週刊 窓際を作る",
+      "description": "あなたの部屋を、憧れの窓際に。やめ太郎が実物大のアーロンチュアを組み立て、そば屋の仮面で窓際生活を楽しむ、チュアゴスティーニの30秒パロディCM。",
+      "video_url": "https://madogiwa.work/media/7adcebbc-09fc-4e15-bbc8-266c72a1c533",
+      "poster_url": "https://madogiwa.work/posters/7adcebbc-09fc-4e15-bbc8-266c72a1c533",
+      "published_at": "2026-10-03T01:10:10.428Z",
+      "episode_url": "https://madogiwa.work/episodes/weekly-madogiwa-kit"
+    }
+  ],
+  "skipped": [
+    "no-way-debug-trailer"
+  ]
+}

@@ -1,0 +1,1584 @@
+{
+  "media_root": "/Users/kenji.shimoju/Documents/private/Seedance_Madogiwa",
+  "runs": [
+    {
+      "run": "100_sobaya_prison_release_party",
+      "script_title": "Sobaya's Prison Release Party — Final Seedance 2.5 Bundle",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 70.45,
+          "size_mb": 29.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/100_sobaya_prison_release_party/final.mp4",
+          "mtime": 1790635108.5005767
+        },
+        {
+          "duration": 70.45,
+          "size_mb": 29.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/100_sobaya_prison_release_party/final_draft.mp4",
+          "mtime": 1790635108.4661834
+        }
+      ],
+      "chosen": "03_SCRIPTS/100_sobaya_prison_release_party/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-breaking-news-arrest",
+        "title": "速報 そば屋逮捕連行",
+        "score": 0.56
+      }
+    },
+    {
+      "run": "101_sobaya_prison_release_party_h3_r2v_ab",
+      "script_title": "Sobaya's Prison Release Party — H3 R2V audio + character-sheet A/B arm",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 81.07,
+          "size_mb": 24.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/101_sobaya_prison_release_party_h3_r2v_ab/final.mp4",
+          "mtime": 1790635668.8332484
+        },
+        {
+          "duration": 81.07,
+          "size_mb": 24.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/101_sobaya_prison_release_party_h3_r2v_ab/final_draft.mp4",
+          "mtime": 1790635668.8052564
+        }
+      ],
+      "chosen": "03_SCRIPTS/101_sobaya_prison_release_party_h3_r2v_ab/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-breaking-news-arrest",
+        "title": "速報 そば屋逮捕連行",
+        "score": 0.47
+      }
+    },
+    {
+      "run": "102_sobaya_prison_release_party_noimg_h3_bundle",
+      "script_title": "102 そば屋出所パーティー — 修正対象H3バンドル",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "102_sobaya_prison_release_party_noimg_revision",
+      "script_title": "102 no-image revision",
+      "status": "no_final_candidate",
+      "mp4_count": 4,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "12_sobaya_public_casual_interview",
+      "script_title": "Seedance: Sobaya's Public Casual Interview",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "13_takosan_window_side_summoning",
+      "script_title": "Seedance: Takosan Summons the Window-Side Engineers",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "14_rururu_super_dry_twist",
+      "script_title": "Video Script: \"Friday Rururu, One-Bottle Shock\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "15_rururu_deep_superdry_shout",
+      "script_title": "Video Script: \"Rururu Deep Voice Shock\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "16_sobaya_happoshu_demon_king_opening",
+      "script_title": "Game Opening Video: \"Sobaya, the Happoshu Demon King\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "17_sobaya_escape_opening",
+      "script_title": "Sobaya's Clock-Out Dash — Opening Cinematic",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "18_ichiban_kuji_all_cast_cm",
+      "script_title": "Video Commercial: \"Ichiban Kuji Madogiwa-zoku Monogatari — All-Cast Grand Launch\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "19_php_prompt_pun",
+      "script_title": "PHP: Papa's Hilarious Prompt",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "20_php_prompt_pun_display",
+      "script_title": "PHP: Papa's Hilarious Prompt",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "20_takosan_php_prompt_pun",
+      "script_title": "Short Video: \"PHP Means What?\"",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "21_takosan_php_prompt_pun",
+      "script_title": "Short Video: \"PHP Means What?\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "22_yumemin_php_prompt_pun",
+      "script_title": "PHP: Papa's Hilarious Prompt — Seedance 2.0 Production Pack",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "23_takosan_php_prompt_pun",
+      "script_title": "Short Video: \"PHP Means What?\"",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "24_yotan_sobaya_dress_code_interview",
+      "script_title": "Seedance: Yotan's Dress-Code Interview",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "25_yotan_sobaya_dress_code_interview",
+      "script_title": "Seedance: Yotan's Dress-Code Interview",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "26_kansha_no_bug_ichimankai",
+      "script_title": "感謝のバグ仕込み一万回 — Ten Thousand Bugs of Gratitude",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "26_yumemin_rescue",
+      "script_title": "Seedance: Yumemin Finds a Home",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "27_sobaya_proxy_work_news",
+      "script_title": "代理出社で実刑 — Seedance 2.5用30秒マスタープロンプト",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "27_yumemin_hundred_babies",
+      "script_title": "Seedance: Yumemin and One Hundred Babies",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "28_yametaro_ultimate_technique",
+      "script_title": "Yametaro's Ultimate Technique — \"It Broke Even Though I Did Nothing\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "29_yametaro_no_chapter_refs",
+      "script_title": "Experimental Seedance run — no chapter images",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "30_sobaya_gourmet",
+      "script_title": "Seedance 2.0: \"そば屋のグルメ\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "31_sobaya_gourmet_seedance_audio",
+      "script_title": "Seedance 2.0: \"そば屋のグルメ\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "32_debug_prayer_news_irodori",
+      "script_title": "Debug Prayer News — latest Seedance 2.0 / CapCut package",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "32_debug_prayer_news_irodori-gemini",
+      "script_title": "Debug Prayer News — text-only speech prompt package for Gemini-compatible video generation",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "33_island_secret_cm",
+      "script_title": "Seedance 2.0 CM: \"窓際族物語 1人１０人月の島のひみつ\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "34_sobaya_diner_beer_freeze",
+      "script_title": "Sobaya's Beer Freeze in a 1990s American Diner",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "35_yotan_tokun_vs_sobaya",
+      "script_title": "Yotan & Tokun vs. Sobaya — Action Movie Short",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "36_yotan_sobaya_outdoor_live_action",
+      "script_title": "Yotan vs. Sobaya — Outdoor Live-Action Battle Short",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "37_yotan_sobaya_big_note_guard",
+      "script_title": "Yotan vs. Sobaya — Outdoor Live-Action Battle Short: Big Note Guard Revision",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "38_yotan_tokun_sobaya_big_note_battle",
+      "script_title": "Yotan & Tokun vs. Sobaya — Outdoor Live-Action Battle Short: Big Note and Ukulele Battle",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "39_yotan_tokun_cemetery_horror",
+      "script_title": "Night Cemetery Beer Horror — Yotan and Tokun",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "40_yotan_tokun_cemetery_storyboards",
+      "script_title": "Night Cemetery Beer Horror — Yotan and Tokun",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "41_okayaman_watching_cm",
+      "script_title": "Watching You — 15-Second Movie CM",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "42_fukuchan_yametaro_engineer_pun",
+      "script_title": "Seedance 2.5: \"Fukuchan and Yametaro — Engineer Stereotypes\"",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 93.66,
+          "size_mb": 13.4,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/42_fukuchan_yametaro_engineer_pun/final_draft.mp4",
+          "mtime": 1787793402.4325442
+        }
+      ],
+      "chosen": "03_SCRIPTS/42_fukuchan_yametaro_engineer_pun/final_draft.mp4",
+      "slug": "fukuchan-yametaro-engineer-stereotypes",
+      "slug_guess": {
+        "slug": "fukuchan-yametaro-engineer-stereotypes",
+        "title": "福ちゃんとやめ太郎：エンジニアあるある",
+        "score": 0.82
+      }
+    },
+    {
+      "run": "43_no_way_debug_cm",
+      "script_title": "No Way Debug — 23-Second Movie Trailer CM",
+      "status": "no_final_candidate",
+      "mp4_count": 5,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "44_sobaya_shark_2_beer_horror_cm",
+      "script_title": "Soba Shark 2 — Beer Rule CM",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "45_fukuchan_yametaro_estimates",
+      "script_title": "Fukuchan and Yametaro — Estimate Comedy Routine",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 57.7,
+          "size_mb": 7.7,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/45_fukuchan_yametaro_estimates/final_draft.mp4",
+          "mtime": 1787793403.6544926
+        },
+        {
+          "duration": 57.7,
+          "size_mb": 7.7,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/45_fukuchan_yametaro_estimates/final.mp4",
+          "mtime": 1787793403.6357057
+        }
+      ],
+      "chosen": "03_SCRIPTS/45_fukuchan_yametaro_estimates/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "fukuchan-yametaro-engineer-stereotypes",
+        "title": "福ちゃんとやめ太郎：エンジニアあるある",
+        "score": 0.74
+      }
+    },
+    {
+      "run": "46_fukuchan_manga_motion",
+      "script_title": "Ordinary Company Employee — Motion Comic from the Supplied Manga Pages",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "47_fukuchan_manga_motion_h3",
+      "script_title": "Ordinary Company Employee — MiniMax H3 Motion Comic from the Supplied Manga Pages",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "48_yametaro_death_march_venue",
+      "script_title": "Yametaro — Death March Venue Wake-up",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "48_yametaro_death_march_venue_h3",
+      "script_title": "Yametaro — Death March Venue Wake-up",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "49_takosan_chapter_beer",
+      "script_title": "TAKOSAN: Chapter Beer",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "50_sobayahazard_horror_cm",
+      "script_title": "SOBAYAHAZARD — Horror Game Commercial",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 17.03,
+          "size_mb": 3.3,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/50_sobayahazard_horror_cm/final.mp4",
+          "mtime": 1787793406.2072146
+        }
+      ],
+      "chosen": "03_SCRIPTS/50_sobayahazard_horror_cm/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobayahazard-game-cm",
+        "title": "そば屋ハザード ゲームCM",
+        "score": 0.76
+      }
+    },
+    {
+      "run": "51_sobayahazard_door_opening_h3",
+      "script_title": "SOBAYAHAZARD — Chapter 1: The Suspicious Izakaya Door",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "52_sobayahazard_underground_staircase_h3",
+      "script_title": "SOBAYAHAZARD — Chapter 1 and Underground Continuation: The Staircase and Sobaya's Hideout",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 11.28,
+          "size_mb": 2.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/52_sobayahazard_underground_staircase_h3/final.mp4",
+          "mtime": 1787793406.559827
+        }
+      ],
+      "chosen": "03_SCRIPTS/52_sobayahazard_underground_staircase_h3/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobayahazard-game-cm",
+        "title": "そば屋ハザード ゲームCM",
+        "score": 0.6
+      }
+    },
+    {
+      "run": "53_sobayahazard_dog_sobaya_attack_h3",
+      "script_title": "SOBAYAHAZARD — Chapters 5–8: The Empty Cafeteria and Dog-Sobaya Attack",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 15.03,
+          "size_mb": 3.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/53_sobayahazard_dog_sobaya_attack_h3/final.mp4",
+          "mtime": 1787793406.7475343
+        }
+      ],
+      "chosen": "03_SCRIPTS/53_sobayahazard_dog_sobaya_attack_h3/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobayahazard-game-cm",
+        "title": "そば屋ハザード ゲームCM",
+        "score": 0.6
+      }
+    },
+    {
+      "run": "54_sobayahazard_return_street_horde_h3",
+      "script_title": "SOBAYAHAZARD — Chapters 9–12: Return to the Street",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 18.95,
+          "size_mb": 4.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/54_sobayahazard_return_street_horde_h3/final.mp4",
+          "mtime": 1787793406.9536572
+        }
+      ],
+      "chosen": "03_SCRIPTS/54_sobayahazard_return_street_horde_h3/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-hazard-trailer",
+        "title": "そば屋ハザード",
+        "score": 0.61
+      }
+    },
+    {
+      "run": "55_okayaman_watching_movie_cm",
+      "script_title": "Movie CM — \"見てるぞ！\"",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 39.41,
+          "size_mb": 4.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/55_okayaman_watching_movie_cm/final_draft.mp4",
+          "mtime": 1787793407.436884
+        },
+        {
+          "duration": 39.41,
+          "size_mb": 4.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/55_okayaman_watching_movie_cm/final.mp4",
+          "mtime": 1787793407.421212
+        }
+      ],
+      "chosen": "03_SCRIPTS/55_okayaman_watching_movie_cm/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "madogiwa-tshirt-beer-complete",
+        "title": "窓際族Tシャツ — ビールで完成",
+        "score": 0.44
+      }
+    },
+    {
+      "run": "56_sobayahazard_single_take_cm",
+      "script_title": "SOBAYAHAZARD — Single-Video CM Assembly Pack",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "57_time_stop_beer_mug_battle",
+      "script_title": "Time Stop, Empty Beer Mug, and the Bugged Counterattack",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "58_sobaya_ai_pull_request",
+      "script_title": "Seedance 2.5: \"Sobaya Delegates the Pull Request\"",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 38.95,
+          "size_mb": 6.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/58_sobaya_ai_pull_request/final_draft.mp4",
+          "mtime": 1787793408.6186066
+        }
+      ],
+      "chosen": "03_SCRIPTS/58_sobaya_ai_pull_request/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-guardian-declaration",
+        "title": "そば屋の守護宣言",
+        "score": 0.53
+      }
+    },
+    {
+      "run": "59_windowseat_puyo_game",
+      "script_title": "Falling-Face Puzzle Game CM — \"(そば屋の腹は)ぶよぶよ！\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "60_windowseat_puyo_game_arrival",
+      "script_title": "Windowseat Puyo-Style Game CM — Arrival Revision",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 26.12,
+          "size_mb": 6.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/60_windowseat_puyo_game_arrival/final_draft.mp4",
+          "mtime": 1787793409.1039977
+        }
+      ],
+      "chosen": "03_SCRIPTS/60_windowseat_puyo_game_arrival/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "buyobuyo-puzzle-arrival",
+        "title": "新作パズル ぶよぶよ 到着編",
+        "score": 0.55
+      }
+    },
+    {
+      "run": "61_sobaya_south_gate_quiz_poster",
+      "script_title": "South Gate Quiz Poster — Sobaya Key Visual",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "62_sobaya_quiz_show_eureka",
+      "script_title": "Sobaya Quiz Show Eureka — Seedance Video Run",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "63_sobaya_quiz_show_fresh",
+      "script_title": "Sobaya Quiz Show — Fresh Seedance 2.5 Run",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "64_sobaya_quiz_show_canonical",
+      "script_title": "Sobaya Quiz Show — Canonical Character Run",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "65_sobaya_quiz_show_vertical",
+      "script_title": "Sobaya Quiz Show — Vertical 9:16 Seedance Run",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "66_beer_only_engine_press_conference",
+      "script_title": "Beer-Only Dream Engine — Press Conference",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "67_yumemi_office_tokusatsu",
+      "script_title": "Yumemi Office Tokusatsu — Wan 3.0 Production Bundle",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "68_beer_only_engine_press_conference_identity_repair",
+      "script_title": "Beer-Only Dream Engine — Press Conference",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "69_yumemi_office_tokusatsu_origin_rebuild",
+      "script_title": "Yumemi Office Tokusatsu — Origin-Verified Wan 3.0 Production Bundle",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "70_beer_only_engine_press_conference_banzai_mechanism",
+      "script_title": "Beer-Only Dream Engine — Press Conference",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "71_beer_only_engine_press_conference_engine_scale_repair",
+      "script_title": "Beer-Only Dream Engine — Press Conference",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "72_beer_only_engine_press_conference_mechanism_geometry_repair",
+      "script_title": "Beer-Only Dream Engine — Press Conference",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 59.82,
+          "size_mb": 13.4,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/72_beer_only_engine_press_conference_mechanism_geometry_repair/final_draft.mp4",
+          "mtime": 1787805156.2193706
+        }
+      ],
+      "chosen": "03_SCRIPTS/72_beer_only_engine_press_conference_mechanism_geometry_repair/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "balcony-bar-construction-timelapse",
+        "title": "窓際酒場 建築タイムラプス",
+        "score": 0.39
+      }
+    },
+    {
+      "run": "72_sobaya_felony_news",
+      "script_title": "Breaking News: Sobaya Receives a Prison Sentence — Seedance Run",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "73_sobaya_breaking_news_arrest",
+      "script_title": "Breaking News: Sobaya Arrest Escort — Seedance 2.5 / CapCut",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 23.15,
+          "size_mb": 7.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/73_sobaya_breaking_news_arrest/final_tight.mp4",
+          "mtime": 1787797316.2345438
+        },
+        {
+          "duration": 31.06,
+          "size_mb": 7.4,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/73_sobaya_breaking_news_arrest/final.mp4",
+          "mtime": 1787797012.1152437
+        },
+        {
+          "duration": 31.03,
+          "size_mb": 7.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/73_sobaya_breaking_news_arrest/final_draft.mp4",
+          "mtime": 1787797011.5075445
+        }
+      ],
+      "chosen": "03_SCRIPTS/73_sobaya_breaking_news_arrest/final_tight.mp4",
+      "slug": "sobaya-breaking-news-arrest",
+      "slug_guess": {
+        "slug": "sobaya-breaking-news-arrest",
+        "title": "速報 そば屋逮捕連行",
+        "score": 1.0
+      }
+    },
+    {
+      "run": "74_yametaro_ultra_dry_home_shopping",
+      "script_title": "Yametaro's Ultra Dry Home Shopping",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 91.34,
+          "size_mb": 24.3,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/74_yametaro_ultra_dry_home_shopping/final.mp4",
+          "mtime": 1787819285.9748716
+        },
+        {
+          "duration": 91.33,
+          "size_mb": 23.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/74_yametaro_ultra_dry_home_shopping/final_draft.mp4",
+          "mtime": 1787819284.5205853
+        }
+      ],
+      "chosen": "03_SCRIPTS/74_yametaro_ultra_dry_home_shopping/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "yametaro-pakurareta",
+        "title": "やめ太郎「あー、パクられた！クソッ！」",
+        "score": 0.55
+      }
+    },
+    {
+      "run": "75_sobaya_desert_mega_beer",
+      "script_title": "Sobaya in the Desert — Mega Nama 100 Fists",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "76_sobaya_desert_mega_beer",
+      "script_title": "Sobaya in the Desert — Mega Nama 100 Fists",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 24.17,
+          "size_mb": 21.4,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/76_sobaya_desert_mega_beer/final_remotion_title.mp4",
+          "mtime": 1788149746.5398905
+        },
+        {
+          "duration": 24.16,
+          "size_mb": 9.7,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/76_sobaya_desert_mega_beer/final_draft.mp4",
+          "mtime": 1788148546.679485
+        }
+      ],
+      "chosen": "03_SCRIPTS/76_sobaya_desert_mega_beer/final_remotion_title.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-never-drops-beer",
+        "title": "そば屋：ビールだけは落とさない",
+        "score": 0.7
+      }
+    },
+    {
+      "run": "77_sobaya_yametaro_dismissal_notice",
+      "script_title": "Sobaya vs. Yametaro — Dismissal Notice",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 34.67,
+          "size_mb": 12.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/77_sobaya_yametaro_dismissal_notice/final.mp4",
+          "mtime": 1788500404.169967
+        }
+      ],
+      "chosen": "03_SCRIPTS/77_sobaya_yametaro_dismissal_notice/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-hazard-trailer",
+        "title": "そば屋ハザード",
+        "score": 0.53
+      }
+    },
+    {
+      "run": "78_fukuchan_rejection_officer",
+      "script_title": "Fukuchan Becomes the Rejection Officer",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 49.04,
+          "size_mb": 10.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/78_fukuchan_rejection_officer/final.mp4",
+          "mtime": 1788757406.0401363
+        }
+      ],
+      "chosen": "03_SCRIPTS/78_fukuchan_rejection_officer/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "fukuchan-yotan-interview",
+        "title": "福ちゃんとよーたん：窓際族AI面接",
+        "score": 0.6
+      }
+    },
+    {
+      "run": "79_fukuchan_gyungyun_first_take_mv",
+      "script_title": "Fukuchan — Gyungyun Bishoujo Revolution: First-Take Music Video",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 246.42,
+          "size_mb": 64.1,
+          "resolution": "768x1344",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/79_fukuchan_gyungyun_first_take_mv/final.mp4",
+          "mtime": 1788910387.511988
+        }
+      ],
+      "chosen": "03_SCRIPTS/79_fukuchan_gyungyun_first_take_mv/final.mp4",
+      "slug": "fukuchan-gyungyun-first-take-mv",
+      "slug_guess": {
+        "slug": "fukuchan-gyungyun-first-take-mv",
+        "title": "福ちゃん — ギュンギュン美男子レボリューション：First-Take MV",
+        "score": 1.0
+      }
+    },
+    {
+      "run": "80_fukuchan_gyungyun_gold_dance_mv",
+      "script_title": "Fukuchan — Gyungyun Beautiful-Man Revolution: Gold-Sparkle Dance MV",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "80s_fukuchan_gold_dance_singleframe",
+      "script_title": "福ちゃん — ギュンギュン美男子レボリューション: 金ピカ・ダンスMV（単一キーフレーム検証 / 80s）",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "81_fukuchan_gyungyun_visual_kei_mv",
+      "script_title": "福ちゃん — ギュンギュン美男子レボリューション: ビジュアル系バンドMV",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "82_fukuchan_gyungyun_visual_kei_mv_alt",
+      "script_title": "Fukuchan — Gyungyun Bishoujo Revolution: Visual-Kei Alternate Music Video",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "83_fukuchan_yotan_interview",
+      "script_title": "Fukuchan and Yotan: The Window-Side Interview",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 50.2,
+          "size_mb": 13.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/83_fukuchan_yotan_interview/final_draft.mp4",
+          "mtime": 1789343518.1572845
+        }
+      ],
+      "chosen": "03_SCRIPTS/83_fukuchan_yotan_interview/final_draft.mp4",
+      "slug": "fukuchan-yotan-interview",
+      "slug_guess": {
+        "slug": "fukuchan-yotan-interview",
+        "title": "福ちゃんとよーたん：窓際族AI面接",
+        "score": 1.0
+      }
+    },
+    {
+      "run": "84_droidkaigi_iosdc_after_talks_night_2026",
+      "script_title": "DroidKaigi & iOSDC After Talks Night 2026: Mobile Hiring After Talk",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 52.82,
+          "size_mb": 9.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/84_droidkaigi_iosdc_after_talks_night_2026/final_draft.mp4",
+          "mtime": 1789457238.5187306
+        }
+      ],
+      "chosen": "03_SCRIPTS/84_droidkaigi_iosdc_after_talks_night_2026/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "madogiwa-manner-class-question-1",
+        "title": "窓際マナー講座 — 第一問",
+        "score": 0.39
+      }
+    },
+    {
+      "run": "85_droidkaigi_iosdc_after_death_game",
+      "script_title": "DroidKaigi and iOSDC After-Event: The Monitor Game",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 34.49,
+          "size_mb": 6.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/85_droidkaigi_iosdc_after_death_game/final_draft.mp4",
+          "mtime": 1789461595.9970639
+        }
+      ],
+      "chosen": "03_SCRIPTS/85_droidkaigi_iosdc_after_death_game/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "madogiwa-tshirt-beer-complete",
+        "title": "窓際族Tシャツ — ビールで完成",
+        "score": 0.42
+      }
+    },
+    {
+      "run": "86_op_theme_anime_opening",
+      "script_title": "Madogiwa-zoku Monogatari — Anime Opening Movie",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 65.83,
+          "size_mb": 67.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/86_op_theme_anime_opening/86_op_theme_anime_opening_final_titled.mp4",
+          "mtime": 1789529217.4368892
+        },
+        {
+          "duration": 65.9,
+          "size_mb": 45.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/86_op_theme_anime_opening/86_op_theme_anime_opening_final_retimed.mp4",
+          "mtime": 1789528743.9123285
+        },
+        {
+          "duration": 65.83,
+          "size_mb": 25.3,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/86_op_theme_anime_opening/86_op_theme_anime_opening_final.mp4",
+          "mtime": 1789527681.1357257
+        }
+      ],
+      "chosen": "03_SCRIPTS/86_op_theme_anime_opening/86_op_theme_anime_opening_final_titled.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "gyun-gyun-quest-opening",
+        "title": "ぎゅんぎゅんクエスト — オープニング",
+        "score": 0.44
+      }
+    },
+    {
+      "run": "87_yametaro_yumemi_application",
+      "script_title": "Yametaro and the Yumemi Village Application",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 52.83,
+          "size_mb": 11.3,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/87_yametaro_yumemi_application/final_draft.mp4",
+          "mtime": 1789547320.1723127
+        }
+      ],
+      "chosen": "03_SCRIPTS/87_yametaro_yumemi_application/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "yametaro-pakurareta",
+        "title": "やめ太郎「あー、パクられた！クソッ！」",
+        "score": 0.52
+      }
+    },
+    {
+      "run": "88_github_pr_ui_review",
+      "script_title": "GitHub PR UI Review — LTGM Comedy Short",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 18.07,
+          "size_mb": 2.6,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/88_github_pr_ui_review/final_draft.mp4",
+          "mtime": 1789603563.5434203
+        }
+      ],
+      "chosen": "03_SCRIPTS/88_github_pr_ui_review/final_draft.mp4",
+      "slug": "github-pr-ui-review",
+      "slug_guess": {
+        "slug": "github-pr-ui-review",
+        "title": "GitHub PRの1ピクセルレビュー",
+        "score": 1.0
+      }
+    },
+    {
+      "run": "89_sobaya_panel_otarageshi",
+      "script_title": "Otarageshi of the Window-Side Panel — Sobaya Smoke Finale",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 29.17,
+          "size_mb": 16.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/89_sobaya_panel_otarageshi/final_smooth.mp4",
+          "mtime": 1789615885.0149093
+        },
+        {
+          "duration": 32.87,
+          "size_mb": 10.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/89_sobaya_panel_otarageshi/final_draft.mp4",
+          "mtime": 1789615121.2195854
+        }
+      ],
+      "chosen": "03_SCRIPTS/89_sobaya_panel_otarageshi/final_smooth.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-guardian-declaration",
+        "title": "そば屋の守護宣言",
+        "score": 0.6
+      }
+    },
+    {
+      "run": "90_sobaya_madogiwa_beer_tanker_spill",
+      "script_title": "Sobaya and the MADOGIWA Super Tsurai Beer Tanker",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "91_sobaya_madogiwa_tanker_fixed_side",
+      "script_title": "Sobaya and the MADOGIWA Super Tsurai Beer Tanker",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 39.45,
+          "size_mb": 8.7,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/91_sobaya_madogiwa_tanker_fixed_side/final_draft.mp4",
+          "mtime": 1789717675.3288438
+        }
+      ],
+      "chosen": "03_SCRIPTS/91_sobaya_madogiwa_tanker_fixed_side/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "tokyo-madogiwa-land",
+        "title": "東京マドギワランド",
+        "score": 0.58
+      }
+    },
+    {
+      "run": "92_madogiwa_tshirt_cm",
+      "script_title": "Madogiwa T-shirt CM — \"Beer Completes It\"",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "93_madogiwa_tshirt_cm_revised",
+      "script_title": "Madogiwa T-shirt CM — Revised Six-Beat Story",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 30.32,
+          "size_mb": 13.4,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/93_madogiwa_tshirt_cm_revised/madogiwa_tshirt_cm_revised_final.mp4",
+          "mtime": 1790229109.4100506
+        }
+      ],
+      "chosen": "03_SCRIPTS/93_madogiwa_tshirt_cm_revised/madogiwa_tshirt_cm_revised_final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "madogiwa-tshirt-beer-complete",
+        "title": "窓際族Tシャツ — ビールで完成",
+        "score": 0.73
+      }
+    },
+    {
+      "run": "94_sobaya_last_hope_beer_tshirt_cm",
+      "script_title": "The Last Hope Beer — Madogiwa T-Shirt Commercial",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 50.67,
+          "size_mb": 20.0,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/94_sobaya_last_hope_beer_tshirt_cm/final_draft.mp4",
+          "mtime": 1790236005.1807928
+        }
+      ],
+      "chosen": "03_SCRIPTS/94_sobaya_last_hope_beer_tshirt_cm/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-never-drops-beer",
+        "title": "そば屋：ビールだけは落とさない",
+        "score": 0.56
+      }
+    },
+    {
+      "run": "95_madogiwa_tshirt_destruction_cm",
+      "script_title": "Madogiwa T-shirt Destruction CM — Final Seedance / CapCut bundle",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 53.54,
+          "size_mb": 26.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/95_madogiwa_tshirt_destruction_cm/final.mp4",
+          "mtime": 1790290736.7047112
+        },
+        {
+          "duration": 53.53,
+          "size_mb": 18.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/95_madogiwa_tshirt_destruction_cm/final_draft.mp4",
+          "mtime": 1790290687.3933892
+        }
+      ],
+      "chosen": "03_SCRIPTS/95_madogiwa_tshirt_destruction_cm/final.mp4",
+      "slug": "madogiwa-tshirt-destruction-cm",
+      "slug_guess": {
+        "slug": "madogiwa-tshirt-destruction-cm",
+        "title": "窓際族Tシャツ — 無能な窓際族大暴走",
+        "score": 1.0
+      }
+    },
+    {
+      "run": "96_sobaya_mug_mystery",
+      "script_title": "Detective Yotan: The Missing Mug Mystery",
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 44.83,
+          "size_mb": 15.5,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/96_sobaya_mug_mystery/final_draft.mp4",
+          "mtime": 1790290701.2642558
+        }
+      ],
+      "chosen": "03_SCRIPTS/96_sobaya_mug_mystery/final_draft.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobaya-beer-battery",
+        "title": "そば屋ビールバッテリー",
+        "score": 0.65
+      }
+    },
+    {
+      "run": "97_yametaro_sword_master_final",
+      "script_title": "Yametaro the Sword Master — Final Episode (comic-to-video adaptation)",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 46.75,
+          "size_mb": 29.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/97_yametaro_sword_master_final/final.mp4",
+          "mtime": 1790307132.6979032
+        },
+        {
+          "duration": 46.74,
+          "size_mb": 19.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/97_yametaro_sword_master_final/final_draft.mp4",
+          "mtime": 1790307047.421687
+        }
+      ],
+      "chosen": "03_SCRIPTS/97_yametaro_sword_master_final/final.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "yametaro-pakurareta",
+        "title": "やめ太郎「あー、パクられた！クソッ！」",
+        "score": 0.57
+      }
+    },
+    {
+      "run": "98_madogiwa_tshirt_clip5_i2v",
+      "script_title": "窓際族TシャツCM — clip5 H3/I2V rerun",
+      "status": "no_final_candidate",
+      "mp4_count": 1,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "98_madogiwa_tshirt_clip5_only",
+      "script_title": "窓際族TシャツCM — clip5 H3-only rerun",
+      "status": "no_final_candidate",
+      "mp4_count": 0,
+      "candidates": [],
+      "chosen": null,
+      "slug": null
+    },
+    {
+      "run": "98_madogiwa_tshirt_targeted_fixes",
+      "script_title": "窓際族Tシャツ破壊CM — 指摘チャプター差し替え用パッチ",
+      "status": "multiple_candidates",
+      "candidates": [
+        {
+          "duration": 43.08,
+          "size_mb": 21.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed_no_ch11_ch5_i2v_trimmed_ch3_ch5_ch8.mp4",
+          "mtime": 1790558958.5108154
+        },
+        {
+          "duration": 44.13,
+          "size_mb": 21.9,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed_no_ch11_ch5_i2v_trimmed_ch3_ch5.mp4",
+          "mtime": 1790558414.7137797
+        },
+        {
+          "duration": 45.88,
+          "size_mb": 22.3,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed_no_ch11_ch5_i2v_trimmed_ch3.mp4",
+          "mtime": 1790558087.9644918
+        },
+        {
+          "duration": 48.38,
+          "size_mb": 22.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed_no_ch11_ch5_i2v.mp4",
+          "mtime": 1790557512.4055512
+        },
+        {
+          "duration": 48.38,
+          "size_mb": 23.2,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed_no_ch11.mp4",
+          "mtime": 1790467933.4198287
+        },
+        {
+          "duration": 53.55,
+          "size_mb": 27.4,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed.mp4",
+          "mtime": 1790311954.9732363
+        }
+      ],
+      "chosen": "03_SCRIPTS/98_madogiwa_tshirt_targeted_fixes/final_madogiwa_tshirt_destruction_fixed_no_ch11_ch5_i2v_trimmed_ch3_ch5_ch8.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "madogiwa-tshirt-keynote-nojobs",
+        "title": "ノージョブズ — 窓際族Tシャツ発表会",
+        "score": 0.7
+      }
+    },
+    {
+      "run": "99_madogiwa_tshirt_clip9_clip10_audio_fix",
+      "script_title": null,
+      "status": "ok",
+      "candidates": [
+        {
+          "duration": 38.92,
+          "size_mb": 17.1,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/99_madogiwa_tshirt_clip9_clip10_audio_fix/final_madogiwa_tshirt_destruction_audio_fixed.mp4",
+          "mtime": 1790561203.7238941
+        }
+      ],
+      "chosen": "03_SCRIPTS/99_madogiwa_tshirt_clip9_clip10_audio_fix/final_madogiwa_tshirt_destruction_audio_fixed.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "madogiwa-tshirt-destruction-cm",
+        "title": "窓際族Tシャツ — 無能な窓際族大暴走",
+        "score": 0.59
+      }
+    },
+    {
+      "run": "09_professional_morning_takosan_15s",
+      "script_title": null,
+      "status": "standalone_file",
+      "candidates": [
+        {
+          "duration": 15.0,
+          "size_mb": 5.6,
+          "resolution": "1920x1080",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/09_professional_morning_takosan_15s.mp4",
+          "mtime": 1784275727.6415055
+        }
+      ],
+      "chosen": "03_SCRIPTS/09_professional_morning_takosan_15s.mp4",
+      "slug": "professional-morning-takosan",
+      "slug_guess": {
+        "slug": "professional-morning-takosan",
+        "title": "プロフェッショナルの朝は、遅い。",
+        "score": 0.93
+      }
+    },
+    {
+      "run": "52-54_sobayahazard_combined",
+      "script_title": null,
+      "status": "standalone_file",
+      "candidates": [
+        {
+          "duration": 45.26,
+          "size_mb": 9.8,
+          "resolution": "1344x768",
+          "video_codec": "h264",
+          "has_audio": true,
+          "file": "03_SCRIPTS/52-54_sobayahazard_combined.mp4",
+          "mtime": 1787793406.4720173
+        }
+      ],
+      "chosen": "03_SCRIPTS/52-54_sobayahazard_combined.mp4",
+      "slug": null,
+      "slug_guess": {
+        "slug": "sobayahazard-game-cm",
+        "title": "そば屋ハザード ゲームCM",
+        "score": 0.68
+      }
+    }
+  ]
+}
