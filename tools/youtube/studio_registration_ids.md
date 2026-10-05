@@ -12,7 +12,7 @@
 | 55_okayaman_watching_movie_cm | `okayaman-watching-movie-cm` | `653730ea-856b-4467-b98b-59a5d78be9a7` | ✅ | ✅ 63件 | ⬜ |
 | 58_sobaya_ai_pull_request | `sobaya-ai-pull-request` | `6b6ce7cd-9df2-4a3d-a528-b6d4847f7291` | ✅ | ✅ 40件 | ⬜ |
 | 72_beer_only_engine_press_conference | `beer-only-engine-press-conference` | `e3e62cce-7dbd-43d0-b40a-a1b937fcd5f7` | ✅ | ✅ 49件 | ⬜ |
-| 74_yametaro_ultra_dry_home_shopping | `yametaro-ultra-dry-home-shopping` | `66a2f0df-d697-408d-969c-1c9ed7f4e64d` | ✅ | ⬜ | ⬜ |
+| 74_yametaro_ultra_dry_home_shopping | `yametaro-ultra-dry-home-shopping` | `66a2f0df-d697-408d-969c-1c9ed7f4e64d` | ✅ | ✅ 69件 | ⬜ |
 | 76_sobaya_desert_mega_beer | `sobaya-desert-mega-beer` | `c0592de7-8df0-4be9-9034-cc229b0bcfbb` | ✅ | ⬜ | ⬜ |
 | 77_sobaya_yametaro_dismissal_notice | `sobaya-yametaro-dismissal-notice` | `a2dcfaf3-6abb-4ac4-ba1b-79c55684db66` | ✅ | ⬜ | ⬜ |
 | 78_fukuchan_rejection_officer | `fukuchan-rejection-officer` | `600e95ef-8b71-4597-9d49-f7e4d490d448` | ✅ | ⬜ | ⬜ |
