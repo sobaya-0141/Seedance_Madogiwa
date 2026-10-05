@@ -17,7 +17,7 @@
 | 77_sobaya_yametaro_dismissal_notice | `sobaya-yametaro-dismissal-notice` | `a2dcfaf3-6abb-4ac4-ba1b-79c55684db66` | ✅ | ✅ 39件 | ⬜ |
 | 78_fukuchan_rejection_officer | `fukuchan-rejection-officer` | `600e95ef-8b71-4597-9d49-f7e4d490d448` | ✅ | ✅ 29件 | ⬜ |
 | 84_droidkaigi_iosdc_after_talks_night_2026 | `droidkaigi-iosdc-after-talks-night` | `71c81d24-7c45-4f4c-9d05-48c5aa90879f` | ✅ | ✅ 43件 | ⬜ |
-| 85_droidkaigi_iosdc_after_death_game | `droidkaigi-iosdc-after-monitor-game` | `5319a1fa-289d-4dc8-af16-c2d508977a71` | ✅ | ⬜ | ⬜ |
+| 85_droidkaigi_iosdc_after_death_game | `droidkaigi-iosdc-after-monitor-game` | `5319a1fa-289d-4dc8-af16-c2d508977a71` | ✅ | ✅ 32件 | ⬜ |
 | 87_yametaro_yumemi_application | `yametaro-yumemi-application` | `538c5dfa-bb60-49d4-9937-fc47d68fe16f` | ✅ | ⬜ | ⬜ |
 | 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ⬜ | ⬜ |
 | 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ⬜ | ⬜ |
@@ -28,6 +28,19 @@
 | 94_sobaya_last_hope_beer_tshirt_cm | `madogiwa-tshirt-beer-complete` v4 | `dea7dec1-255c-42e4-95e9-687e90134864` | ✅ | ⬜ | ⬜ |
 | 95_madogiwa_tshirt_destruction_cm | `madogiwa-tshirt-destruction-cm` v3 | `38f5bc4d-253c-4c55-92a7-b508ea3d2e83` | ✅ | ⬜ | ⬜ |
 | 99_madogiwa_tshirt_clip9_clip10_audio_fix | `madogiwa-tshirt-destruction-cm` v4 | `3911a138-e061-4287-b114-89c6319d703a` | ✅ | ⬜ | ⬜ |
+
+## 既知の不整合（2026-10-06）
+
+85番（`droidkaigi-iosdc-after-monitor-game`）の入力素材に、`upload_pending` のまま残った
+**17行のゴミ**がある。アップロードURLの1時間期限が切れた状態で再発行したため、
+同じファイル名の行が二重に作られた。実体のある32件は別途 `ready` で登録済みで、
+公開ページの表示には影響しない。
+
+入力素材にはMCPの削除・アーカイブ用ツールが無いため、この17行は管理画面から手で消すか、
+Studio側に削除APIを足す必要がある。残骸の `assetId` は `get_episode` で
+`status: "upload_pending"` を拾えば特定できる。
+
+**再発防止**: チケット発行とPUTは必ず同じ作業内で連続させ、1回の発行数は8件程度に抑える。
 
 ## 残作業の手順
 
