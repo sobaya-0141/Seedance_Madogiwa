@@ -86,3 +86,18 @@ python3 tools/youtube/build_inventory.py --media-root ~/Documents/private/Seedan
 
 `INVENTORY.md` に、ランごとの完成版候補（長さ・解像度・音声の有無）と、
 候補が複数あって人間の判断が要るランが出る。
+
+## 手動で投稿する場合
+
+OAuthの用意が間に合わないときは、動画と説明文を書き出して YouTube Studio から手で上げる。
+
+```bash
+python3 tools/youtube/export_manual.py --out ~/Documents/madogiwa_youtube
+```
+
+指定フォルダに次が出る。
+
+- `NN_<slug>.mp4` — 公開日の古い順に連番を振った動画（Studioへドラッグする）
+- `NN_<slug>.jpg` — 同名のポスター（サムネイルに指定する）
+- `UPLOAD_SHEET.md` — 貼り付け用のタイトルと説明文
+- `sheet.json` — 同じ内容の機械可読版
