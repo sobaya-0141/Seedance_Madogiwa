@@ -18,7 +18,7 @@
 | 78_fukuchan_rejection_officer | `fukuchan-rejection-officer` | `600e95ef-8b71-4597-9d49-f7e4d490d448` | ✅ | ✅ 29件 | ⬜ |
 | 84_droidkaigi_iosdc_after_talks_night_2026 | `droidkaigi-iosdc-after-talks-night` | `71c81d24-7c45-4f4c-9d05-48c5aa90879f` | ✅ | ✅ 43件 | ⬜ |
 | 85_droidkaigi_iosdc_after_death_game | `droidkaigi-iosdc-after-monitor-game` | `5319a1fa-289d-4dc8-af16-c2d508977a71` | ✅ | ✅ 32件 | ⬜ |
-| 87_yametaro_yumemi_application | `yametaro-yumemi-application` | `538c5dfa-bb60-49d4-9937-fc47d68fe16f` | ✅ | ⬜ | ⬜ |
+| 87_yametaro_yumemi_application | `yametaro-yumemi-application` | `538c5dfa-bb60-49d4-9937-fc47d68fe16f` | ✅ | ✅ 43件 | ⬜ |
 | 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ⬜ | ⬜ |
 | 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ⬜ | ⬜ |
 | 97_yametaro_sword_master_final | `yametaro-sword-master-final` | `2e1cc059-2a4b-41c5-904e-4c4eb5ec94e3` | ✅ | ⬜ | ⬜ |
