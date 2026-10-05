@@ -410,8 +410,8 @@
       "slug": "madogiwa-super-try-tanker",
       "title": "窓際スーパーつらい — 爆走タンクローリー篇",
       "description": "銀のビールタンクローリーをそば屋バイク軍団が追撃。バイクから飛びついたそば屋がタンクを破り、噴き出すビールを豪快に飲むCM。Wan 3.0本編15秒＋共通商品コール5秒、480p・20秒。「その渇きに、タンクで応えろ。」",
-      "video_url": "https://madogiwa.work/media/472c9198-fed7-4704-9d1a-127b5a823245",
-      "poster_url": "https://madogiwa.work/posters/472c9198-fed7-4704-9d1a-127b5a823245",
+      "video_url": "https://madogiwa.work/media/6dc0e984-4dc4-46f4-9772-283324a665fb",
+      "poster_url": "https://madogiwa.work/posters/6dc0e984-4dc4-46f4-9772-283324a665fb",
       "published_at": "2026-09-18T10:37:42.067Z",
       "episode_url": "https://madogiwa.work/episodes/madogiwa-super-try-tanker"
     },
@@ -491,8 +491,8 @@
       "slug": "madogiwa-tshirt-beer-complete",
       "title": "窓際族Tシャツ — ビールで完成",
       "description": "真っ白なTシャツに向かうそば屋へ、走る福ちゃんとやめ太郎が衝突。2人がそば屋へ吹っ飛び、よろけたそば屋のビールがTシャツにかかる。ビールが一瞬で乾き、添付デザインそのものの窓際族Tシャツが完成する30秒CM。",
-      "video_url": "https://madogiwa.work/media/61dd7095-b554-46f1-b554-c32751b39604",
-      "poster_url": "https://madogiwa.work/posters/61dd7095-b554-46f1-b554-c32751b39604",
+      "video_url": "https://madogiwa.work/media/5ae65974-20f0-4447-bc3f-6fbbcea15518",
+      "poster_url": "https://madogiwa.work/posters/5ae65974-20f0-4447-bc3f-6fbbcea15518",
       "published_at": "2026-09-24T05:56:14.780Z",
       "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-beer-complete"
     },
@@ -527,8 +527,8 @@
       "slug": "madogiwa-tshirt-destruction-cm",
       "title": "窓際族Tシャツ — 無能な窓際族大暴走",
       "description": "上司の依頼を断るそば屋とやめ太郎。たこさんが窓際族Tシャツを紹介した直後、二人は「ワーイ！」とオフィスを駆け回って備品を壊し、最後は停車中のパトカーへ連行される約43秒のCM。",
-      "video_url": "https://madogiwa.work/media/863c8a46-c7c6-4be9-b42a-a3ce08a49b06",
-      "poster_url": "https://madogiwa.work/posters/863c8a46-c7c6-4be9-b42a-a3ce08a49b06",
+      "video_url": "https://madogiwa.work/media/51b1576e-da30-4854-a92b-1e66fcc54cb4",
+      "poster_url": "https://madogiwa.work/posters/51b1576e-da30-4854-a92b-1e66fcc54cb4",
       "published_at": "2026-09-28T01:37:46.487Z",
       "episode_url": "https://madogiwa.work/episodes/madogiwa-tshirt-destruction-cm"
     },
@@ -576,6 +576,159 @@
       "poster_url": "https://madogiwa.work/posters/7adcebbc-09fc-4e15-bbc8-266c72a1c533",
       "published_at": "2026-10-03T01:10:10.428Z",
       "episode_url": "https://madogiwa.work/episodes/weekly-madogiwa-kit"
+    },
+    {
+      "slug": "madogiwa-zoku-monogatari-anime-opening",
+      "title": "窓際族物語 — アニメオープニング",
+      "description": "窓際族物語の8人が登場する65.92秒のアニメオープニング。明るい昼の世界を舞台に、走る・踊る・演奏する・ビールを飲む・ harmless glitch演出を織り交ぜ、最後は全員が笑顔で集合する音楽映像。",
+      "video_url": "https://madogiwa.work/media/fd31d5bc-bad7-4c35-aa0d-49164128fb58",
+      "poster_url": "https://madogiwa.work/posters/fd31d5bc-bad7-4c35-aa0d-49164128fb58",
+      "published_at": "2026-10-05T01:51:11.570Z",
+      "episode_url": "https://madogiwa.work/episodes/madogiwa-zoku-monogatari-anime-opening"
+    },
+    {
+      "slug": "fukuchan-yametaro-estimates",
+      "title": "福ちゃんとやめ太郎：膨らむ見積もり",
+      "description": "明るいオフィスで、福ちゃんとやめ太郎がエンジニアの見積もりについて掛け合う。話すたびに工数が膨らんでいく約58秒の漫才コメディ。",
+      "video_url": "https://madogiwa.work/media/69e9213d-9faa-495a-8b5f-680ab08f224d",
+      "poster_url": "https://madogiwa.work/posters/69e9213d-9faa-495a-8b5f-680ab08f224d",
+      "published_at": "2026-10-05T04:56:32.162Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-yametaro-estimates"
+    },
+    {
+      "slug": "sobayahazard-underground-continuation",
+      "title": "そば屋ハザード — 地下からの脱出",
+      "description": "福ちゃんが居酒屋の扉を開けて地下の長い階段を降り、無人の大食堂で犬の体にそば屋の仮面を持つ怪物に襲われる。階段を駆け上がって外へ出ると、夜の街はビールを持たないそば屋の群れで埋まっていた約45秒の続編CM。",
+      "video_url": "https://madogiwa.work/media/2059100d-be8f-4578-974f-f5ce09a6aa7e",
+      "poster_url": "https://madogiwa.work/posters/2059100d-be8f-4578-974f-f5ce09a6aa7e",
+      "published_at": "2026-10-05T05:08:20.377Z",
+      "episode_url": "https://madogiwa.work/episodes/sobayahazard-underground-continuation"
+    },
+    {
+      "slug": "okayaman-watching-movie-cm",
+      "title": "映画「見てるぞ！」CM",
+      "description": "終業後のオフィス。仕事をせずビールを飲むそば屋の前で、電源の落ちたディスプレイが勝手に点きリモートのおかやまんが映る。そば屋は画面に引き込まれ、やがてジョッキを持ったまま黒い画面から這い出てくる約39秒のホラー調コメディCM。",
+      "video_url": "https://madogiwa.work/media/1b34b18d-2a40-4e81-bc24-a185353ea255",
+      "poster_url": "https://madogiwa.work/posters/1b34b18d-2a40-4e81-bc24-a185353ea255",
+      "published_at": "2026-10-05T05:09:06.846Z",
+      "episode_url": "https://madogiwa.work/episodes/okayaman-watching-movie-cm"
+    },
+    {
+      "slug": "sobaya-ai-pull-request",
+      "title": "そば屋、AIにプルリクを任せる",
+      "description": "在宅勤務のそば屋がビール片手にAIへ実装を丸投げし、プルリクエストまで作らせる。本文に残った一文を福ちゃんとやめ太郎に見つかり、二人は「平常運転や〜」と締める約39秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/d474fcb6-c758-4a2e-9afe-bb991b729202",
+      "poster_url": "https://madogiwa.work/posters/d474fcb6-c758-4a2e-9afe-bb991b729202",
+      "published_at": "2026-10-05T05:09:10.024Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-ai-pull-request"
+    },
+    {
+      "slug": "beer-only-engine-press-conference",
+      "title": "ビール専用エンジン発表会",
+      "description": "白衣の福ちゃんが透明な単気筒エンジンを公開する。シリンダーの中ではそば屋がピストンとクランクシャフトに挟まれて立ち、チューブで届くビールだけで動力を生む約60秒の発表会コメディ。",
+      "video_url": "https://madogiwa.work/media/0b4fd9a1-2a80-4715-a9fa-423a6ed27f01",
+      "poster_url": "https://madogiwa.work/posters/0b4fd9a1-2a80-4715-a9fa-423a6ed27f01",
+      "published_at": "2026-10-05T05:09:12.993Z",
+      "episode_url": "https://madogiwa.work/episodes/beer-only-engine-press-conference"
+    },
+    {
+      "slug": "yametaro-ultra-dry-home-shopping",
+      "title": "やめ太郎のウルトラドライ通販",
+      "description": "リビングのテレビから始まる通販番組。やめ太郎が架空のビール「ウルトラドライ」を紹介し、畑で収穫される缶までを売り込む約91秒のCM。",
+      "video_url": "https://madogiwa.work/media/85af1e8a-4703-455b-a887-afa13847a53e",
+      "poster_url": "https://madogiwa.work/posters/85af1e8a-4703-455b-a887-afa13847a53e",
+      "published_at": "2026-10-05T05:09:15.437Z",
+      "episode_url": "https://madogiwa.work/episodes/yametaro-ultra-dry-home-shopping"
+    },
+    {
+      "slug": "sobaya-desert-mega-beer",
+      "title": "砂漠のそば屋 — メガ生百拳",
+      "description": "真昼の砂漠。白い布をかぶったそば屋がジョッキを狙う野盗の群れに囲まれ、仮面を見せて技を名乗り、ジョッキによる高速の体術で蹴散らす約24秒のアクションコメディ。",
+      "video_url": "https://madogiwa.work/media/97d2b1dc-795f-4f28-bdb3-4d3d171fbd56",
+      "poster_url": "https://madogiwa.work/posters/97d2b1dc-795f-4f28-bdb3-4d3d171fbd56",
+      "published_at": "2026-10-05T05:09:18.124Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-desert-mega-beer"
+    },
+    {
+      "slug": "sobaya-yametaro-dismissal-notice",
+      "title": "そば屋 vs やめ太郎 — 解雇通知",
+      "description": "岩場の闘技場でそば屋とやめ太郎が対峙する。そば屋が口から解雇通知を撃ち出し、煙の中からファンタジー戦士姿のやめ太郎が現れてジョッキを斬る約35秒のアクションコメディ。",
+      "video_url": "https://madogiwa.work/media/d175bf09-93ea-4a90-b12a-de9c5b092207",
+      "poster_url": "https://madogiwa.work/posters/d175bf09-93ea-4a90-b12a-de9c5b092207",
+      "published_at": "2026-10-05T05:09:20.997Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-yametaro-dismissal-notice"
+    },
+    {
+      "slug": "fukuchan-rejection-officer",
+      "title": "福ちゃん、お祈り担当になる",
+      "description": "お祈り担当に任命されて喜ぶ福ちゃんが応募書類を郵送すると、課長が過剰な手順で封筒を処分していく約49秒のオフィスコメディ。",
+      "video_url": "https://madogiwa.work/media/308d4af1-a6d5-4aa8-809c-11cbf94bae73",
+      "poster_url": "https://madogiwa.work/posters/308d4af1-a6d5-4aa8-809c-11cbf94bae73",
+      "published_at": "2026-10-05T05:09:23.673Z",
+      "episode_url": "https://madogiwa.work/episodes/fukuchan-rejection-officer"
+    },
+    {
+      "slug": "droidkaigi-iosdc-after-talks-night",
+      "title": "DroidKaigi & iOSDC アフタートークナイト",
+      "description": "カンファレンスのステージで、福ちゃんとやめ太郎がリモート登壇の窓際王おかやまんにモバイル採用について尋ね、最後によーたんが訂正を入れる約53秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/855bff57-755b-4c79-97d4-1765bf8df39a",
+      "poster_url": "https://madogiwa.work/posters/855bff57-755b-4c79-97d4-1765bf8df39a",
+      "published_at": "2026-10-05T05:09:26.450Z",
+      "episode_url": "https://madogiwa.work/episodes/droidkaigi-iosdc-after-talks-night"
+    },
+    {
+      "slug": "droidkaigi-iosdc-after-monitor-game",
+      "title": "アフターイベント — モニターゲーム",
+      "description": "DroidKaigiとiOSDCのアフターイベント会場。大きなモニター越しにおかやまんが現れ、最後は無人の空間に並ぶ大量のモニターが同じそば屋を映す約35秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/a2228a32-21b4-49a8-a5e9-7c9c04a93b0e",
+      "poster_url": "https://madogiwa.work/posters/a2228a32-21b4-49a8-a5e9-7c9c04a93b0e",
+      "published_at": "2026-10-05T05:09:28.688Z",
+      "episode_url": "https://madogiwa.work/episodes/droidkaigi-iosdc-after-monitor-game"
+    },
+    {
+      "slug": "yametaro-yumemi-application",
+      "title": "やめ太郎と、ゆめみ村の応募方法",
+      "description": "イベント会場でやめ太郎が、学生に「ゆめみ村」への不条理な応募手順を伝える。指示どおりに動いた学生が通された面接室には、仮面のそば屋が座っていた約53秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/ffa72968-d30b-4d9b-972a-1d533a5764a6",
+      "poster_url": "https://madogiwa.work/posters/ffa72968-d30b-4d9b-972a-1d533a5764a6",
+      "published_at": "2026-10-05T05:12:00.151Z",
+      "episode_url": "https://madogiwa.work/episodes/yametaro-yumemi-application"
+    },
+    {
+      "slug": "sobaya-panel-otarageshi",
+      "title": "窓際パネルのお焚き上げ",
+      "description": "神社に立てられた窓際族のパネルが少しずつ切り分けられ、火にくべられる。立ちのぼる煙がそば屋の顔を結び、やがてほどけて散っていく約29秒の無言の短編。",
+      "video_url": "https://madogiwa.work/media/5ba0e98c-fadc-4735-9ea6-cc9dcb596aa6",
+      "poster_url": "https://madogiwa.work/posters/5ba0e98c-fadc-4735-9ea6-cc9dcb596aa6",
+      "published_at": "2026-10-05T05:12:03.434Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-panel-otarageshi"
+    },
+    {
+      "slug": "sobaya-mug-mystery",
+      "title": "探偵よーたん：消えたジョッキ",
+      "description": "赤坂オフィスの窓際立ち飲みスペースで起きたジョッキの紛失事件。疑い、言い訳、転がるジョッキ、英雄的な勘違いを経て、たこさんが体を張って落とす約45秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/47e3f7b2-e330-4a4b-a100-6bbb18df4b18",
+      "poster_url": "https://madogiwa.work/posters/47e3f7b2-e330-4a4b-a100-6bbb18df4b18",
+      "published_at": "2026-10-05T05:12:06.781Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-mug-mystery"
+    },
+    {
+      "slug": "yametaro-sword-master-final",
+      "title": "剣聖やめ太郎 — 最終話",
+      "description": "漫画2ページを映像化したアクションコメディ。やめ太郎がとーくんの挑発を受け、よーたんのランキング宣告を経て最後の一太刀に至る約47秒。",
+      "video_url": "https://madogiwa.work/media/de5bd9cc-26cb-48cb-87bb-32ac78105ba6",
+      "poster_url": "https://madogiwa.work/posters/de5bd9cc-26cb-48cb-87bb-32ac78105ba6",
+      "published_at": "2026-10-05T05:12:09.251Z",
+      "episode_url": "https://madogiwa.work/episodes/yametaro-sword-master-final"
+    },
+    {
+      "slug": "sobaya-prison-release-party",
+      "title": "そば屋の出所祝い",
+      "description": "刑務所を出たそば屋を福ちゃんが迎え、出所祝いの席へ連れていく。クラフトビールのサプライズはスーパードライしか飲まないそば屋に空振りし、煙のギャグを挟んで最後は5人の警官がパトカーへ連れ戻す約70秒のコメディ。",
+      "video_url": "https://madogiwa.work/media/7555afc1-94e3-47f6-ae6d-92a1c2befb29",
+      "poster_url": "https://madogiwa.work/posters/7555afc1-94e3-47f6-ae6d-92a1c2befb29",
+      "published_at": "2026-10-05T05:12:13.068Z",
+      "episode_url": "https://madogiwa.work/episodes/sobaya-prison-release-party"
     }
   ],
   "skipped": [
