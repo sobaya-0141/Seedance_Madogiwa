@@ -20,7 +20,7 @@
 | 85_droidkaigi_iosdc_after_death_game | `droidkaigi-iosdc-after-monitor-game` | `5319a1fa-289d-4dc8-af16-c2d508977a71` | ✅ | ✅ 32件 | ⬜ |
 | 87_yametaro_yumemi_application | `yametaro-yumemi-application` | `538c5dfa-bb60-49d4-9937-fc47d68fe16f` | ✅ | ✅ 43件 | ⬜ |
 | 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ✅ 27件 | ⬜ |
-| 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ⬜ | ⬜ |
+| 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ✅ 46件 | ⬜ |
 | 97_yametaro_sword_master_final | `yametaro-sword-master-final` | `2e1cc059-2a4b-41c5-904e-4c4eb5ec94e3` | ✅ | ⬜ | ⬜ |
 | 100_sobaya_prison_release_party | `sobaya-prison-release-party` v1 | `8f5b30fc-ed0f-4614-9bba-8511ba3fc931` | ✅ | ⬜ | ⬜ |
 | 101_sobaya_prison_release_party_h3_r2v_ab | `sobaya-prison-release-party` v2 | `6167fba6-7b86-4e97-a028-cddf9e81417e` | ✅ | ⬜ | ⬜ |
