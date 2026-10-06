@@ -22,7 +22,7 @@
 | 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ✅ 27件 | ⬜ |
 | 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ✅ 46件 | ⬜ |
 | 97_yametaro_sword_master_final | `yametaro-sword-master-final` | `2e1cc059-2a4b-41c5-904e-4c4eb5ec94e3` | ✅ | ✅ 40件 | ⬜ |
-| 100_sobaya_prison_release_party | `sobaya-prison-release-party` v1 | `8f5b30fc-ed0f-4614-9bba-8511ba3fc931` | ✅ | ⬜ | ⬜ |
+| 100_sobaya_prison_release_party | `sobaya-prison-release-party` v1 | `8f5b30fc-ed0f-4614-9bba-8511ba3fc931` | ✅ | ✅ 50件 | ⬜ |
 | 101_sobaya_prison_release_party_h3_r2v_ab | `sobaya-prison-release-party` v2 | `6167fba6-7b86-4e97-a028-cddf9e81417e` | ✅ | ⬜ | ⬜ |
 | 91_sobaya_madogiwa_tanker_fixed_side | `madogiwa-super-try-tanker` v3 | `b66f6494-26c5-4d8f-974c-7e18bbcfb10c` | ✅ | ⬜ | ⬜ |
 | 94_sobaya_last_hope_beer_tshirt_cm | `madogiwa-tshirt-beer-complete` v4 | `dea7dec1-255c-42e4-95e9-687e90134864` | ✅ | ⬜ | ⬜ |
