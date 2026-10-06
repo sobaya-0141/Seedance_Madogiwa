@@ -159,7 +159,7 @@ export const CHARACTERS: readonly BattleCharacter[] = [
   },
   {
     id: "fukuchan",
-    name: "福ちゃん",
+    name: "福ギュン",
     title: "天然デバッファー",
     blurb: "天然のギュンギュンで相手を惑わせ、重いノートPCで殴る。",
     color: "#ff5a8a",

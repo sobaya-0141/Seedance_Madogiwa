@@ -114,7 +114,7 @@ export const CHARACTERS: CharacterCatalogEntry[] = [
   },
   {
     id: "fukuchan",
-    name: "福ちゃん",
+    name: "福ギュン",
     englishName: "FUKUCHAN",
     role: "SPONSOR TYPE",
     referenceImage: "/characters/fukuchan.jpg",

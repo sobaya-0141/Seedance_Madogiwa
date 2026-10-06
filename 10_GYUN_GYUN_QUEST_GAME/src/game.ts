@@ -14,7 +14,7 @@ const MAPS: Record<MapId, MapDefinition> = {
   castle: {
     id: "castle",
     name: "ギュンギュン城",
-    hint: "福ちゃん王に話しかけよう",
+    hint: "福ギュン王に話しかけよう",
     start: { x: 5, y: 5 },
     tiles: [
       "###########",
@@ -275,7 +275,7 @@ export class GyunGyunQuest {
       this.hasFunds = true;
       this.money = 500;
       this.renderDialog(
-        "ギュンギュン王・福ちゃん",
+        "ギュンギュン王・福ギュン",
         "たこさん！ 魔王そば屋の怒りを鎮めて、世界をギュンジョイにしておくれ！ 旅の資金500円を授けよう。ギュンギュン！",
         () => {
           this.phase = "map";
@@ -284,7 +284,7 @@ export class GyunGyunQuest {
         "characters/fukuchan.jpg",
       );
     } else {
-      this.renderDialog("福ちゃん", "最高の一杯が世界を救うはず。道具屋でよーく選ぶんだよ。ギュンギュン！", () => {
+      this.renderDialog("福ギュン", "最高の一杯が世界を救うはず。道具屋でよーく選ぶんだよ。ギュンギュン！", () => {
         this.phase = "map";
         this.render();
       }, "characters/fukuchan.jpg");
