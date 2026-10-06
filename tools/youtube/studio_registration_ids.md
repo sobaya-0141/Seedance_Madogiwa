@@ -8,18 +8,18 @@
 | ラン | slug（またはバージョン追加先） | generationId | 動画 | 入力素材 | プロンプト本文 |
 |---|---|---|---|---|---|
 | 45_fukuchan_yametaro_estimates | `fukuchan-yametaro-estimates` | `b5698a78-5fda-45c1-9936-ac5db3124e2e` | ✅ | ✅ 41件 | ⬜ |
-| 52-54_sobayahazard_combined | `sobayahazard-underground-continuation` | `9510c870-e346-4e52-be17-6a871a1e79f3` | ✅ | ✅ 34件 | ⬜ |
-| 55_okayaman_watching_movie_cm | `okayaman-watching-movie-cm` | `653730ea-856b-4467-b98b-59a5d78be9a7` | ✅ | ✅ 63件 | ⬜ |
-| 58_sobaya_ai_pull_request | `sobaya-ai-pull-request` | `6b6ce7cd-9df2-4a3d-a528-b6d4847f7291` | ✅ | ✅ 40件 | ⬜ |
+| 52-54_sobayahazard_combined | `sobayahazard-underground-continuation` | `9510c870-e346-4e52-be17-6a871a1e79f3` | ✅ | ✅ 34件 |✅ |
+| 55_okayaman_watching_movie_cm | `okayaman-watching-movie-cm` | `653730ea-856b-4467-b98b-59a5d78be9a7` | ✅ | ✅ 63件 |✅ |
+| 58_sobaya_ai_pull_request | `sobaya-ai-pull-request` | `6b6ce7cd-9df2-4a3d-a528-b6d4847f7291` | ✅ | ✅ 40件 |✅ |
 | 72_beer_only_engine_press_conference | `beer-only-engine-press-conference` | `e3e62cce-7dbd-43d0-b40a-a1b937fcd5f7` | ✅ | ✅ 49件 | ⬜ |
 | 74_yametaro_ultra_dry_home_shopping | `yametaro-ultra-dry-home-shopping` | `66a2f0df-d697-408d-969c-1c9ed7f4e64d` | ✅ | ✅ 69件 | ⬜ |
-| 76_sobaya_desert_mega_beer | `sobaya-desert-mega-beer` | `c0592de7-8df0-4be9-9034-cc229b0bcfbb` | ✅ | ✅ 22件 | ⬜ |
-| 77_sobaya_yametaro_dismissal_notice | `sobaya-yametaro-dismissal-notice` | `a2dcfaf3-6abb-4ac4-ba1b-79c55684db66` | ✅ | ✅ 39件 | ⬜ |
+| 76_sobaya_desert_mega_beer | `sobaya-desert-mega-beer` | `c0592de7-8df0-4be9-9034-cc229b0bcfbb` | ✅ | ✅ 22件 |✅ |
+| 77_sobaya_yametaro_dismissal_notice | `sobaya-yametaro-dismissal-notice` | `a2dcfaf3-6abb-4ac4-ba1b-79c55684db66` | ✅ | ✅ 39件 |✅ |
 | 78_fukuchan_rejection_officer | `fukuchan-rejection-officer` | `600e95ef-8b71-4597-9d49-f7e4d490d448` | ✅ | ✅ 29件 | ⬜ |
 | 84_droidkaigi_iosdc_after_talks_night_2026 | `droidkaigi-iosdc-after-talks-night` | `71c81d24-7c45-4f4c-9d05-48c5aa90879f` | ✅ | ✅ 43件 | ⬜ |
 | 85_droidkaigi_iosdc_after_death_game | `droidkaigi-iosdc-after-monitor-game` | `5319a1fa-289d-4dc8-af16-c2d508977a71` | ✅ | ✅ 32件 | ⬜ |
 | 87_yametaro_yumemi_application | `yametaro-yumemi-application` | `538c5dfa-bb60-49d4-9937-fc47d68fe16f` | ✅ | ✅ 43件 | ⬜ |
-| 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ✅ 27件 | ⬜ |
+| 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ✅ 27件 |✅ |
 | 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ✅ 46件 | ⬜ |
 | 97_yametaro_sword_master_final | `yametaro-sword-master-final` | `2e1cc059-2a4b-41c5-904e-4c4eb5ec94e3` | ✅ | ✅ 40件 | ⬜ |
 | 100_sobaya_prison_release_party | `sobaya-prison-release-party` v1 | `8f5b30fc-ed0f-4614-9bba-8511ba3fc931` | ✅ | ✅ 50件 | ⬜ |
