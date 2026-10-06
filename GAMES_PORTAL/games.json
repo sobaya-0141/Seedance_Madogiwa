@@ -56,7 +56,7 @@
       "id": "gyun-gyun-quest",
       "title": "ギュンギュン・クエスト",
       "subtitle": "魔王そば屋と最高の一杯",
-      "description": "福ちゃん王にもらった500円で最高の一杯を選び、平原と洞窟を越えて魔王そば屋へ届ける、ファミコンRPG風2Dアドベンチャー。",
+      "description": "福ギュン王にもらった500円で最高の一杯を選び、平原と洞窟を越えて魔王そば屋へ届ける、ファミコンRPG風2Dアドベンチャー。",
       "sourceDir": "10_GYUN_GYUN_QUEST_GAME",
       "buildScript": "build",
       "distDir": "dist",

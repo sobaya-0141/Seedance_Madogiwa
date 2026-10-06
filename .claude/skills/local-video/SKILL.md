@@ -27,7 +27,7 @@ description: 窓際族物語の動画をクラウドを使わずフルローカ�
 
 - **ステップ0（出力ディレクトリ・参照同梱）**: ラン専用ディレクトリ`03_SCRIPTS/<NN>_<slug>/`の命名、キャラクターシート等を物理ファイルとして同梱、basename参照、正典非改変 — すべて同一。
 - **ステップ1（台本作成）**: Story Formula・禁止事項、Prop state ledger、物理整合性ルール、Scene ledger（場所・時間帯の通し台帳）と場面転換の整合性ルール（昼夜ジャンプ防止）、カメラワーク設計ルール（`## Camera plan`＝全チャプターのショットリスト・単調防止・クリップ内ムーブのキーフレーム焼き込みと振幅上限・CUTの作法）、Fixture layout（機構小物）、画風固定ルール（`## Style block`・全プロンプトへの逐語埋め込み）、キャラクター人数の固定（増殖防止）、話者分離（1生成単位1話者）、リップシンク精度（尺≒発話長＋約1秒）、言語ルール（script.mdは英語、セリフのみ日本語）、話者バインディング — すべて同一。「クリップ」を本スキルでは「チャプター」と読み替える。
-- **ステップ2（セリフ音声）**: 配役の正典は`02_CHARACTERS/VOICE_CAST.md`。Irodori-TTSボイスクローン（そば屋・福ちゃん・やめたろう・おかやまん・よーたん）とVOICEVOX、そば屋のモンスターボイス加工、無音トリム、Dialogue audio表、VOICEVOXクレジット義務 — すべて同一。**スクリプトもseedance同梱のものをそのまま使う**（`irodori_speak.sh` / `voicevox_speak.sh` / `sobaya_monsterize.sh`）。
+- **ステップ2（セリフ音声）**: 配役の正典は`02_CHARACTERS/VOICE_CAST.md`。Irodori-TTSボイスクローン（そば屋・福ギュン・やめたろう・おかやまん・よーたん）とVOICEVOX、そば屋のモンスターボイス加工、無音トリム、Dialogue audio表、VOICEVOXクレジット義務 — すべて同一。**スクリプトもseedance同梱のものをそのまま使う**（`irodori_speak.sh` / `voicevox_speak.sh` / `sobaya_monsterize.sh`）。
 
 キーフレーム生成の技法（draw-things-cli固有）は本ファイルのステップ5に完結して書いてある（seedance側がCodex生成のままのバージョンでも本スキル単独で動くようにするため）。
 
@@ -353,7 +353,7 @@ EOF
 - 同一キャラが5枚以上続くチェーンでは、崩れる前でも数フレームおきにシートを再投入する。
 - **NG要素は毎フレーム明文で固定する**（正しい形＋否定形のセット。例: "he keeps SMALL ROUND white-rimmed glasses — NOT rectangular, NOT thick dark-rimmed"）。「形が変わる」だけでなく「丸ごと消える」ドリフトも起きるため、存在自体も守る（"he is ALWAYS WEARING his round glasses ... the glasses do NOT disappear"）。
 - **ラン途中の新キャラ登場は、シートを連結せず必ず「文章指定」にする（実測で失敗済み・違反禁止）。** 前フレーム単体を種に、各キャラ設定mdの「プロンプト用同定句（英語）」＋"Draw <name> in EXACTLY the same rendering style as the rest of the input image"で指定する。キーフレーム上の似姿は多少甘くてよい（動画側の同一性はH3へ渡すシートで担保する。優先すべきは画風の統一と構図）。
-  - **実際の失敗例（2026-08）**: 実写写真シートの福ちゃんをチビ絵チェーンの`ch5_end`でシート連結して登場させたところ、モデルが矛盾を「福ちゃんもチビにする」ことで解消し、**やめ太郎と同じ頭身・同じ丸メガネ・同じ頬紅のチビ人形**になった上、身長差も消えて（本来はやめ太郎の全身が腰まで）、やめ太郎側に福ちゃんのネームストラップまで移った。下流9枚を作り直すことになった。
+  - **実際の失敗例（2026-08）**: 実写写真シートの福ギュンをチビ絵チェーンの`ch5_end`でシート連結して登場させたところ、モデルが矛盾を「福ギュンもチビにする」ことで解消し、**やめ太郎と同じ頭身・同じ丸メガネ・同じ頬紅のチビ人形**になった上、身長差も消えて（本来はやめ太郎の全身が腰まで）、やめ太郎側に福ギュンのネームストラップまで移った。下流9枚を作り直すことになった。
   - 人間キャラを文章指定するときは**頭身とスケールを毎フレーム明文で固定する**: "an ADULT MAN WITH NORMAL HUMAN PROPORTIONS, normal-sized head (~1/7 of his height), NOT a chibi character, NOT a toy figure" ＋ "MUCH TALLER than <chibi char>: the whole of <chibi char> only reaches his hip"。
   - **キャラ間の衣装汚染も否定形で止める**: "<chibi char> wears NO lanyard, NO name tag and NO jacket — only his <canonical outfit>"。
 - セリフのあるチャプターのキーフレームは**話者の口を開け、非話者の口を閉じて**描く（リップシンク取り違え防止の最強シグナル）。

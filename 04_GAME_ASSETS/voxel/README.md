@@ -21,7 +21,7 @@
 | たこさん | `models/takosan.glb` | 両腕＋触手6本（`VoxelRig_Locomotion_00`〜`05`） | 06 |
 | とーくん | `models/tokun.glb` | 二足 | 06 |
 | よーたん | `models/yotan.glb` | 二足 | 06 |
-| ふくちゃん | `models/fukuchan.glb` | 二足 | 06 |
+| 福ギュン | `models/fukuchan.glb` | 二足 | 06 |
 | 無職やめ太郎 | `models/yametaro.glb` | 二足 | 06 |
 | おかやまん | `models/okayaman.glb` | 二足 | 06 |
 | ゆめみん | `models/yumemin.glb` | 二足 | 06 |

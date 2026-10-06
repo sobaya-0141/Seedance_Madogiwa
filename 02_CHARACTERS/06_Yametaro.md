@@ -15,10 +15,10 @@ NG変更: キャラクターデザイン。
 3. **小さな丸い白フチのメガネ**（黒フチ・角型・サングラス化は不合格。消失も不合格）。
 4. **桜色の頬紅**が左右の頬に1つずつ。目は小さな点。**小さな丸い耳**が頭の横に出ている。
 5. **薄紫（ラベンダー）の柄入り開襟シャツ**＋**黒いズボン**。他キャラのストラップ・名札・上着が移っていたら不合格。
-6. 人間キャラと並ぶときは**相手の腰までの背丈**（身長差が消えていたら不合格）。
+6. 人間キャラと並ぶときは**相手の腰までの背丈**（身長差が消えていたら不合格。シートに身長比較パネルは無いので`height_lineup.png`で照合する）。
 
 画像ファイル：Yametaro.jpg
-キャラクターシート：Yametaro_sheet.png（多面図モデルシート: 三面図＋NG要素クローズアップ＋表情/アクション差分＋身長比較＋カラーパレット。Seedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
+キャラクターシート：Yametaro_sheet.png（3Dチビ人形モデルシート: 四面図（正面・3/4・側面・背面）＋口形差分6点（REST/A/I/U/E/O）。Seedance/CapCutの参照画像とキーフレーム生成の第一参照に使い、口形差分はリップシンクの参照にも使える）
 プロンプト用同定句（英語）：Yametaro — the tiny chibi cartoon middle-aged man with an oversized head, black bowl-cut hair, small round white glasses, pink blush cheeks and a purple shirt (much shorter than every human character)
 声ファイル：Yametaro_voice.wav（本人の声サンプル7秒。YouTube pXtc-nwr-sc 3:46〜3:53の単独発話。Irodori-TTSのボイスクローン参照音声。配役の正典は`VOICE_CAST.md`）
 ボクセルモデル：`04_GAME_ASSETS/voxel/models/yametaro.glb`（二足リグ。再生成は`04_GAME_ASSETS/voxel/tools/build_yametaro_voxel_model.py`）

@@ -1,6 +1,6 @@
 """Deterministic pixel-art albedo textures for the 5 non-imagegen characters.
 
-とーくん・よーたん・ふくちゃん・おかやまん・ゆめみんの顔・服・画面アルベドを
+とーくん・よーたん・福ギュン・おかやまん・ゆめみんの顔・服・画面アルベドを
 64x64のドット絵として描き、NEAREST拡大で1024pxのアルベドPNGに出力する。
 imagegenが使えない環境でも再生成できるよう、全テクスチャをコードで決定論的に
 生成する。識別ロックは 02_CHARACTERS/*.md と旧generate_voxels.pyの正準カラーに従う。
