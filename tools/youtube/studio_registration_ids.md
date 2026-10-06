@@ -27,7 +27,7 @@
 | 91_sobaya_madogiwa_tanker_fixed_side | `madogiwa-super-try-tanker` v3 | `b66f6494-26c5-4d8f-974c-7e18bbcfb10c` | ✅ | ✅ 35件 | ⬜ |
 | 94_sobaya_last_hope_beer_tshirt_cm | `madogiwa-tshirt-beer-complete` v4 | `dea7dec1-255c-42e4-95e9-687e90134864` | ✅ | ✅ 34件 | ⬜ |
 | 95_madogiwa_tshirt_destruction_cm | `madogiwa-tshirt-destruction-cm` v3 | `38f5bc4d-253c-4c55-92a7-b508ea3d2e83` | ✅ | ✅ 43件 | ⬜ |
-| 99_madogiwa_tshirt_clip9_clip10_audio_fix | `madogiwa-tshirt-destruction-cm` v4 | `3911a138-e061-4287-b114-89c6319d703a` | ✅ | ⬜ | ⬜ |
+| 99_madogiwa_tshirt_clip9_clip10_audio_fix | `madogiwa-tshirt-destruction-cm` v4 | `3911a138-e061-4287-b114-89c6319d703a` | ✅ | ✅ 5件 | — |
 
 ## 既知の不整合（2026-10-06）
 
@@ -41,6 +41,13 @@ Studio側に削除APIを足す必要がある。残骸の `assetId` は `get_epi
 `status: "upload_pending"` を拾えば特定できる。
 
 **再発防止**: チケット発行とPUTは必ず同じ作業内で連続させ、1回の発行数は8件程度に抑える。
+
+### 99番だけ素材構成が違う理由
+
+99番は動画生成を伴わないポストプロダクションのランで、clip9/clip10の音声だけを差し替えて
+ffmpegで再結合している。キャラクターシートもキーフレームも章プロンプトも存在しないため、
+入力素材は再収録した「わーい」2本、組み上げた音声トラック2本、concatリスト1本の計5件。
+プロンプトが無いので `upsert_prompt` の対象外とする。
 
 ## 残作業の手順
 
