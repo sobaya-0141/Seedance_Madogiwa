@@ -1,18 +1,18 @@
 # Studio登録の進捗とID（再開用）
 
-2026-10-05 に登録した21件のgenerationId。残っている作業（入力素材のアップロード、
-`upsert_prompt` によるプロンプト本文の登録）はこのIDを使って再開できる。
+2026-10-05 に登録した21件のgenerationId。動画・入力素材・プロンプト本文のすべてが
+2026-10-06 に完了した。残っているのは85番の `upload_pending` 17行の手動削除だけ。
 
 状態の凡例: ✅=完了 / 🔸=途中 / ⬜=未
 
 | ラン | slug（またはバージョン追加先） | generationId | 動画 | 入力素材 | プロンプト本文 |
 |---|---|---|---|---|---|
-| 45_fukuchan_yametaro_estimates | `fukuchan-yametaro-estimates` | `b5698a78-5fda-45c1-9936-ac5db3124e2e` | ✅ | ✅ 41件 | ⬜ |
+| 45_fukuchan_yametaro_estimates | `fukuchan-yametaro-estimates` | `b5698a78-5fda-45c1-9936-ac5db3124e2e` | ✅ | ✅ 41件 |✅ |
 | 52-54_sobayahazard_combined | `sobayahazard-underground-continuation` | `9510c870-e346-4e52-be17-6a871a1e79f3` | ✅ | ✅ 34件 |✅ |
 | 55_okayaman_watching_movie_cm | `okayaman-watching-movie-cm` | `653730ea-856b-4467-b98b-59a5d78be9a7` | ✅ | ✅ 63件 |✅ |
 | 58_sobaya_ai_pull_request | `sobaya-ai-pull-request` | `6b6ce7cd-9df2-4a3d-a528-b6d4847f7291` | ✅ | ✅ 40件 |✅ |
-| 72_beer_only_engine_press_conference | `beer-only-engine-press-conference` | `e3e62cce-7dbd-43d0-b40a-a1b937fcd5f7` | ✅ | ✅ 49件 | ⬜ |
-| 74_yametaro_ultra_dry_home_shopping | `yametaro-ultra-dry-home-shopping` | `66a2f0df-d697-408d-969c-1c9ed7f4e64d` | ✅ | ✅ 69件 | ⬜ |
+| 72_beer_only_engine_press_conference | `beer-only-engine-press-conference` | `e3e62cce-7dbd-43d0-b40a-a1b937fcd5f7` | ✅ | ✅ 49件 |✅ |
+| 74_yametaro_ultra_dry_home_shopping | `yametaro-ultra-dry-home-shopping` | `66a2f0df-d697-408d-969c-1c9ed7f4e64d` | ✅ | ✅ 69件 |✅ |
 | 76_sobaya_desert_mega_beer | `sobaya-desert-mega-beer` | `c0592de7-8df0-4be9-9034-cc229b0bcfbb` | ✅ | ✅ 22件 |✅ |
 | 77_sobaya_yametaro_dismissal_notice | `sobaya-yametaro-dismissal-notice` | `a2dcfaf3-6abb-4ac4-ba1b-79c55684db66` | ✅ | ✅ 39件 |✅ |
 | 78_fukuchan_rejection_officer | `fukuchan-rejection-officer` | `600e95ef-8b71-4597-9d49-f7e4d490d448` | ✅ | ✅ 29件 |✅ |
@@ -56,15 +56,16 @@ ffmpegで再結合している。キャラクターシートもキーフレー�
 確認できない。その場合は `get_episode` の応答（スピルファイル）から全 `body` を取り出して
 ローカルの結合ファイルと突き合わせる。
 
-## 残作業の手順
+## 完了状況（2026-10-06）
 
-入力素材は `create_input_upload` でファイル1件ずつチケットを発行し、返るURLへcurlでPUTする
-（1回のメッセージで10件ほど並列に発行し、まとめてPUTすると速い）。対象は各ランの
+- 動画＋ポスター: 21本すべて登録し `published` へ変更済み
+- 入力素材: 21ラン・累計818件（失敗0件）
+- プロンプト本文: プロンプトを持つ20ランすべて `upsert_prompt` 済み、全件を文字単位で照合して一致を確認
+
+入力素材は `create_input_upload` でファイル1件ずつチケットを発行し、返るURLへcurlでPUTする。
+1回の発行は8件程度に抑え、同じ作業内で続けてPUTする（期限切れ再発防止）。対象は各ランの
 `*_sheet.png` / `height_lineup.png` / `clip*_start.png` / `clip*_end.png` / `*.wav` と、
 章ごとの `ch*_prompt.txt` を結合したプロンプト原本。
-
-プロンプト本文は `upsert_prompt` に全文を渡す。登録後に `get_episode` で読み戻し、
-ローカルの結合ファイルと差分照合してから次へ進む。
 
 ## 動画の公開状態
 
