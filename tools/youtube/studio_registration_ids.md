@@ -22,8 +22,8 @@
 | 89_sobaya_panel_otarageshi | `sobaya-panel-otarageshi` | `aa693b81-d969-4153-a4b3-f5fa5680f4da` | ✅ | ✅ 27件 |✅ |
 | 96_sobaya_mug_mystery | `sobaya-mug-mystery` | `cc143eb6-1bc2-40b5-bf60-feb88a31b6c2` | ✅ | ✅ 46件 |✅ |
 | 97_yametaro_sword_master_final | `yametaro-sword-master-final` | `2e1cc059-2a4b-41c5-904e-4c4eb5ec94e3` | ✅ | ✅ 40件 |✅ |
-| 100_sobaya_prison_release_party | `sobaya-prison-release-party` v1 | `8f5b30fc-ed0f-4614-9bba-8511ba3fc931` | ✅ | ✅ 50件 | ⬜ |
-| 101_sobaya_prison_release_party_h3_r2v_ab | `sobaya-prison-release-party` v2 | `6167fba6-7b86-4e97-a028-cddf9e81417e` | ✅ | ✅ 34件 | ⬜ |
+| 100_sobaya_prison_release_party | `sobaya-prison-release-party` v1 | `8f5b30fc-ed0f-4614-9bba-8511ba3fc931` | ✅ | ✅ 50件 |✅ |
+| 101_sobaya_prison_release_party_h3_r2v_ab | `sobaya-prison-release-party` v2 | `6167fba6-7b86-4e97-a028-cddf9e81417e` | ✅ | ✅ 34件 |✅ |
 | 91_sobaya_madogiwa_tanker_fixed_side | `madogiwa-super-try-tanker` v3 | `b66f6494-26c5-4d8f-974c-7e18bbcfb10c` | ✅ | ✅ 35件 | ⬜ |
 | 94_sobaya_last_hope_beer_tshirt_cm | `madogiwa-tshirt-beer-complete` v4 | `dea7dec1-255c-42e4-95e9-687e90134864` | ✅ | ✅ 34件 | ⬜ |
 | 95_madogiwa_tshirt_destruction_cm | `madogiwa-tshirt-destruction-cm` v3 | `38f5bc4d-253c-4c55-92a7-b508ea3d2e83` | ✅ | ✅ 43件 | ⬜ |
@@ -48,6 +48,13 @@ Studio側に削除APIを足す必要がある。残骸の `assetId` は `get_epi
 ffmpegで再結合している。キャラクターシートもキーフレームも章プロンプトも存在しないため、
 入力素材は再収録した「わーい」2本、組み上げた音声トラック2本、concatリスト1本の計5件。
 プロンプトが無いので `upsert_prompt` の対象外とする。
+
+### プロンプト本文の照合方法
+
+公開ページの `<pre>` ブロックに出るのは「現在の生成バージョン」のプロンプトだけなので、
+同じエピソードに複数の生成がある場合（100/101、91、94、95）はページ照合だけでは片方しか
+確認できない。その場合は `get_episode` の応答（スピルファイル）から全 `body` を取り出して
+ローカルの結合ファイルと突き合わせる。
 
 ## 残作業の手順
 
