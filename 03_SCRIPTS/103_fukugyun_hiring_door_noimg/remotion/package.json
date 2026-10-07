@@ -1,0 +1,23 @@
+{
+  "name": "madogiwa-103-paper-text",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@remotion/cli": "4.0.518",
+    "@remotion/media": "4.0.518",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.518"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "studio": "remotion studio",
+    "typecheck": "tsc",
+    "render:ch15": "remotion render src/index.ts Ch15Signature out/ch15.mp4 --codec=h264 --crf=16 --overwrite",
+    "render:ch17": "remotion render src/index.ts Ch17Transform out/ch17.mp4 --codec=h264 --crf=16 --overwrite"
+  }
+}

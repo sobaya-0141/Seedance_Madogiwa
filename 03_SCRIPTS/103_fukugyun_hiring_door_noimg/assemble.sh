@@ -10,12 +10,12 @@ LIST="$DIR/_concat_list.txt"
 
 CHAPTERS="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19"
 
-# script.md の宣言フレーム数（17k+5グリッド）
+# script.md の宣言フレーム数（17k+5グリッド）。ch1だけはノック音を切るため76フレームへトリム済み（生成は107f）。
 frames_of() {
   case "$1" in
-    1)  echo 107 ;; 2)  echo 107 ;; 3)  echo 90  ;; 4)  echo 90  ;; 5)  echo 124 ;;
+    1)  echo 76  ;; 2)  echo 107 ;; 3)  echo 90  ;; 4)  echo 90  ;; 5)  echo 124 ;;
     6)  echo 192 ;; 7)  echo 107 ;; 8)  echo 107 ;; 9)  echo 90  ;; 10) echo 107 ;;
-    11) echo 107 ;; 12) echo 107 ;; 13) echo 192 ;; 14) echo 107 ;; 15) echo 90  ;;
+    11) echo 107 ;; 12) echo 107 ;; 13) echo 192 ;; 14) echo 107 ;; 15) echo 68  ;;
     16) echo 107 ;; 17) echo 124 ;; 18) echo 107 ;; 19) echo 107 ;;
     *) echo 0 ;;
   esac

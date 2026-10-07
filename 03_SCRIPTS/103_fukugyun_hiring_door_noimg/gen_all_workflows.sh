@@ -18,10 +18,10 @@ b() { # b <chapter> <frames> [args...]
 }
 
 b 1  107 --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png
-b 2  107 --image Yametaro_sheet.png --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png \
+b 2  107 --image Mob_knocker_sheet.png --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png \
          --audio ch2_line1_yametaro.wav
 b 3   90 --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png
-b 4   90 --image Yametaro_sheet.png --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png \
+b 4   90 --image Mob_knocker_sheet.png --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png \
          --audio ch4_line1_yametaro.wav
 b 5  124 --image Fukuchan_sheet.png --image Mob_grand_door_sheet.png
 b 6  192 --image Fukuchan_sheet.png
