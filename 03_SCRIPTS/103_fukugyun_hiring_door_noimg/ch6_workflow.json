@@ -1,0 +1,176 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "video/MiniMax_H3",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Fukuchan_sheet.png"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "Required attached input files: <Picture 1> = Fukuchan_sheet.png — Fukuchan's model sheet, identity reference only, NOT a composition reference (PRESERVE: a slim 48-year-old Japanese man with adult human proportions, medium black layered hair with a brow-length fringe, a warm smile, an open oversized black long coat over a white black-line-art T-shirt, black wide-leg trousers, white sneakers, ONE black SPONSOR lanyard and ONE blank wide white name card on his chest; do NOT carry over: pose, camera angle, sheet background, panel layout, text labels). These attachments are REQUIRED inputs. None of the attached pictures is a frame of this video: the video does NOT start on, end on or reproduce any sheet — no panels, no white sheet background, no labels or text. Photorealistic live-action cinematography with natural live-action proportions, in near-total darkness lit only by faint dim emergency strip lights streaking past; Fukuchan is a real photographed person. NOT flat 2D anime, NOT cartoon lineart. The shot opens on a MEDIUM shot of Fukuchan from the front, inside the long straight corridor, with the camera travelling backwards ahead of him at exactly his speed. He is floating, horizontal to the floor, arms trailing behind him, facing the camera. Everything around him is black except faint dim emergency strip lights set at regular intervals along the corridor walls, streaking past on both sides. Exactly one person appears in this chapter — Fukuchan — and he appears EXACTLY ONCE; nobody else enters the frame at any time, and EXACTLY FIVE pairs of doors are passed, no more and no fewer. Beat 1 (0.0–1.6s): he accelerates hard; his hair and the hem of his long coat whip backwards and his startled face turns into a grin. Beat 2 (1.6–3.2s): the FIRST pair of corridor doors appears behind the camera's travel and bangs open to the sides just before he reaches it; he shoots through. Beat 3 (3.2–4.8s): the SECOND and then the THIRD pair of doors bang open the same way and he passes through both. Beat 4 (4.8–6.4s): the FOURTH and then the FIFTH pair of doors bang open and he passes through both; he spreads his arms wide and begins to enjoy the flight. Beat 5 (6.4–8.0s): a red glow appears far ahead in the blackness and he visibly begins to slow. The camera tracks backwards fast, matching the subject's speed and keeping him centred, with a slight vertical float — no pan, no roll, no cuts. The shot ends in this state: fukuchan is still floating but slowing, a red light washing over his face from ahead. There is no speech, no dialogue and no narration in this chapter; Fukuchan's lips stay closed and no voice is generated. Fukuchan moves as ONE continuous person, never duplicated, with adult human proportions in every frame — NOT chibi — his long coat open, the black SPONSOR lanyard and the ONE blank white name card on his chest. Do NOT render any on-screen text — no subtitles, no captions, no lettering, no Japanese characters; the video must contain no text at all. Soundscape: a roaring rush of wind, five sharp bangs of doors flung open, a long low sub-bass tone. Music: no background music.",
+      "width": 1344,
+      "height": 768,
+      "length": 192,
+      "audio_vae": [
+        "120",
+        0
+      ],
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "200",
+        0
+      ]
+    }
+  }
+}
