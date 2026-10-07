@@ -29,7 +29,10 @@ import zipfile
 
 DRIVE_IN = "/content/drive/MyDrive/h3_inputs"
 DRIVE_OUT = "/content/drive/MyDrive/h3_outputs"
-ZIP_EXCLUDES = ["*/ref_canvas_*", "*/validation/*", "*/.DS_Store", "*/h3/*"]
+# remotion/ holds the run's post-production project. Its node_modules is hundreds of MB and its
+# out/ is renders the GPU never needs, so neither belongs in the bundle Colab downloads.
+ZIP_EXCLUDES = ["*/ref_canvas_*", "*/validation/*", "*/.DS_Store", "*/h3/*",
+                "*/remotion/node_modules/*", "*/remotion/out/*", "*/takes/*"]
 # ノートブックが実行時に呼ぶファイル。1つでも欠けるとColabで初めて失敗する
 # （2026-09-29の実測: h3_run.py が無いバンドルで全チャプターが即失敗し、
 #  49GBの重みをDL済みのセッションを捨てることになった）。
