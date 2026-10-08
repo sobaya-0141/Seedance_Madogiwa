@@ -5,3 +5,6 @@ dist-pages/
 # Local pickup compilation media, renders, and Python caches
 .local/
 __pycache__/
+
+# H3ランパッケージのバンドルzip（修正版ごとに増える数十〜200MBの生成物。ノートブックとREVISIONS.mdは残す）
+03_SCRIPTS/*/h3/*.zip
