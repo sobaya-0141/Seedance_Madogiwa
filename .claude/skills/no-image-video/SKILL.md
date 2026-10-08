@@ -248,7 +248,7 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
   --audio ch2_line1_mob_guard_a.wav
 ```
 
-3. **Colabで生成する場合（Macでは既定）**: `/colab-video`の2章に従い`build_h3_run_package.py`でバンドルzip＋R2V用ノートブックを作ってユーザーに渡す（本スキルのランはR2Vのみなので`h3_colab_r2v.ipynb`1本になる。`validate_local_run_bundle.py`ではなく本スキルの検証スクリプトを使う）。**ローカルCUDA機**なら`/local-video`ステップ7の`h3_run.py`で回す。
+3. **Colabで生成する場合（Macでは既定）**: `/colab-video`の2章に従い`build_h3_run_package.py`でバンドルzip＋R2V用ノートブックを作ってユーザーに渡す（本スキルのランはR2Vのみなので`<NN>_<slug>_h3_r2v.ipynb`1本になる。直しが出たら`--fix`で修正版パッケージを作り直す＝zip・ノートブック・Drive出力先が別名になる。`validate_local_run_bundle.py`ではなく本スキルの検証スクリプトを使う）。**ローカルCUDA機**なら`/local-video`ステップ7の`h3_run.py`で回す。
 4. **パイロットはセリフのあるチャプター1本**。上記プロトコルのチェックリストで判定し、特に「シートがそのまま第1フレームに出ていないか」「開始配置とビートが承認内容どおりか」「モブがシートどおりか」を見る。開始配置がずれる場合は、Opening compositionの記述を具体化する（人物の位置を画面の左/中/右と距離で指定、"nobody is visible yet"等）か、チャプターを割る。
 5. 合格後に残りを生成し、各チャプターで最低3点の中間フレームを確認する。
 

@@ -69,10 +69,11 @@ Apple SiliconでH3が実行できない理由（MPSの型/オペレータ非対�
 - **local-videoラン** → local-videoのステップ1〜6を完了させた状態から引き継ぐ
 
 1. **ローカル**: 素材を受け取り、必要ならH3向けに変換する（7章）。
-2. **ローカル**: `build_h3_run_package.py`でラン直下の`h3/`に**バンドルzip＋I2V用/R2V用ノートブック**の3ファイルを生成する（下記2章）。
-3. `h3/`の3ファイルをユーザーに渡す: zipはDriveの`h3_inputs/`へ置いてもらい、ノートブック（I2V用・R2V用の2本。片モードのランは1本）は https://colab.research.google.com →「アップロード」で開いてもらう。
+2. **ローカル**: `build_h3_run_package.py`でラン直下の`h3/`に**バンドルzip＋I2V用/R2V用ノートブック**を生成する（下記2章）。ファイル名にはラン名が入り、修正版は版名も付く。
+3. `h3/`の生成物をユーザーに渡す: zipはDriveの`h3_inputs/`へ置いてもらい、ノートブック（I2V用・R2V用の2本。片モードのランは1本）は https://colab.research.google.com →「アップロード」で開いてもらう。**ファイル名はランごと・修正版ごとにユニーク**なので、Colabの「最近のノートブック」やDriveの中で取り違えない。
 4. **Colab（L4）**: パイロットチャプター→残りチャプターを生成する（下記5章）。2本のノートブックは**別セッションで同時に回してよい**（L4×2並列）。
 5. **ローカル**: mp4を回収し、結合して仕上げる（下記6章）。
+6. 直しが出たら**修正版パッケージ（`--fix`）を作り直す**（下記2章「修正版」）。素材を直して同じ名前で回してはいけない。
 
 セルの実行はユーザーがブラウザで行う。Claudeの担当は「バンドルとworkflow JSONの準備」「ノートブックと手順の提示」「ユーザーが貼ったセル出力・ログの診断」「回収後の検証と結合」。
 
@@ -95,17 +96,35 @@ Apple SiliconでH3が実行できない理由（MPSの型/オペレータ非対�
 python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<NN>_<slug>
 ```
 
-生成物は`03_SCRIPTS/<NN>_<slug>/h3/`に3ファイル:
+生成物は`03_SCRIPTS/<NN>_<slug>/h3/`へ（初回は zip 1本＋ノートブック最大2本＋台帳1本）:
 
 - `<NN>_<slug>_h3_bundle.zip` — ポータブルバンドル（除外は従来どおり`ref_canvas_*`・`validation/`・`.DS_Store`＋`h3/`自身。通常20〜200MB）
-- `h3_colab_i2v.ipynb` / `h3_colab_r2v.ipynb` — 正典`h3_colab.ipynb`のセル1に「そのモードの`CHAPTERS`（workflowの`unet_name`から自動分類）・`BUNDLE_ZIP_FROM_DRIVE=/content/drive/MyDrive/h3_inputs/<NN>_<slug>_h3_bundle.zip`・`OUT_DRIVE_DIR=/content/drive/MyDrive/h3_outputs/<NN>_<slug>`」を書き込んだもの。**片モードしか無いランはそのモードの1本だけ生成される**
+- `<NN>_<slug>_h3_i2v.ipynb` / `<NN>_<slug>_h3_r2v.ipynb` — 正典`h3_colab.ipynb`のセル1に「そのモードの`CHAPTERS`（workflowの`unet_name`から自動分類）・`BUNDLE_ZIP_FROM_DRIVE=/content/drive/MyDrive/h3_inputs/<NN>_<slug>_h3_bundle.zip`・`OUT_DRIVE_DIR=/content/drive/MyDrive/h3_outputs/<NN>_<slug>`」を書き込んだもの。先頭のmarkdownセルに担当チャプター・入力zip・出力先も明記される。**片モードしか無いランはそのモードの1本だけ生成される**
+- `REVISIONS.md` — ビルド毎に1行追記される版の台帳（日付・版・チャプター・zip名・ノートブック名・Drive出力先）
+
+**名前は必ずランごとにユニーク**にする（2026-10に全ラン同名の`h3_colab_i2v.ipynb`から変更）。Colabのアップロード先もDriveの`h3_inputs/`・`h3_outputs/`も**全ランで共有の置き場**なので、同名だと別の動画のバンドルを回してしまう。手作業でリネームせず、必ずこのスクリプトが付ける名前のまま渡す。
+
+### 修正版（`--fix`）
+
+Colabで一度回した後に直しが出たら、**素材を直したうえで修正版パッケージを作り直す**:
+
+```
+python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<NN>_<slug> --fix --chapters ch3,ch8
+```
+
+- `--fix`は未使用の版名（`fix` → `fix2` → `fix3` …）を自動で割り当て、**zip・ノートブック・Drive出力先の3つすべてを別名にする**: `<NN>_<slug>_h3_bundle_fix.zip` / `<NN>_<slug>_h3_i2v_fix.ipynb` / `h3_outputs/<NN>_<slug>_fix`
+- **出力先を分けるのが修正版の肝**。セル7は`OUT_DRIVE_DIR`に同名mp4があると「生成済み」としてスキップするので、初回と同じ出力先を向けると**修正版が1本も生成されないまま成功したように見える**
+- `--chapters ch3,ch8`で直すチャプターだけに絞る（省略すると全チャプターを回し直す＝その分課金される）。zipの中身は常にラン一式で、絞られるのはノートブックの`CHAPTERS`
+- `--rev <名前>`で版名を明示してもよい（小文字英数と`-`・`_`。例`--rev retake2`）。既にある版名は拒否される
+- 版を付けずに再ビルドすると初回版を上書きし、その旨の警告が出る。**Colabで回す前の作り直しだけに使う**
+- 回収後は`h3_outputs/<NN>_<slug>_fix/`から修正チャプターのmp4を取り、初回版のmp4と差し替えて結合する（6章）
 
 運用:
 
-- zipはDriveの**`h3_inputs/`直下**へファイル名そのまま置く。成果物はラン名と同名の**`h3_outputs/<NN>_<slug>/`**に貯まる（どちらもノートブックに設定済みで、ユーザーの編集は不要）
+- zipはDriveの**`h3_inputs/`直下**へファイル名そのまま置く（リネームしない — ノートブックはフルパスで指定している）。成果物はラン名と同名の**`h3_outputs/<NN>_<slug>/`**（修正版は`<NN>_<slug>_fix`等）に貯まる。どちらもノートブックに設定済みで、ユーザーの編集は不要
 - **I2V/R2Vの2セッション並列が既定の回し方**: 2本を別々のColabセッション（L4×2推奨）で同時に★一括実行する。モード毎にユニットが分かれているため干渉せず、ユニット入れ替えも発生しない（`NEED_I2V`/`NEED_R2V`は各ノートブックの`CHAPTERS`から自動判定、`AUTO_SHUTDOWN`も各自の担当分だけ確認して切断する）
 - スクリプトがチャプターのモード分類と所要時間の目安（L4+sage実測の線形則: **0.645秒/フレーム/step**＝蒸留8stepで約5.2秒/フレーム。2026-09・83ラン ch3 158f）を表示するので、そのままユーザーへの案内に使う
-- 手動でzipだけ作る場合は従来コマンド（`cd 03_SCRIPTS && zip -r <NN>_<slug>_h3_bundle.zip <NN>_<slug> -x "*/ref_canvas_*" -x "*/validation/*" -x "*/.DS_Store" -x "*/h3/*"`）でもよいが、**`h3_run.py`と`build_h3_workflow.py`がzipに入っているかを`unzip -l`で必ず確認する**（この2本が無いとColabで全チャプターが失敗する）。**zipを展開して作り直す運用は避ける** — 実測でこの経路からツールが落ちた
+- 手動でzipだけ作る場合は従来コマンド（`cd 03_SCRIPTS && zip -r <NN>_<slug>_h3_bundle.zip <NN>_<slug> -x "*/ref_canvas_*" -x "*/validation/*" -x "*/.DS_Store" -x "*/h3/*"`）でもよいが、**`h3_run.py`と`build_h3_workflow.py`がzipに入っているかを`unzip -l`で必ず確認する**（この2本が無いとColabで全チャプターが失敗する）。**zipを展開して作り直す運用は避ける** — 実測でこの経路からツールが落ちた。手動で作るときも**zip名は`<NN>_<slug>_h3_bundle<_版名>.zip`のまま**にし、ノートブックの`BUNDLE_ZIP_FROM_DRIVE`・`OUT_DRIVE_DIR`も手で合わせる（Driveは全ラン共有）
 
 - workflow JSONの重み名はどのGPU向けでもよい（ノートブックのセル5が、割り当てられたGPUに合う重み名へ自動で書き換え、SaveVideoの`codec`も補完する）。
 - `--frames`のグリッド（17k+5）、R2Vの入力上限（画像9・音声3・合計12）はローカルと同一。local-video形式のランは`validate_local_run_bundle.py`をzip前に通しておく（seedance変換ランは対象外）。
