@@ -1,0 +1,22 @@
+{
+  "name": "madogiwa-105-bungee-app",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@remotion/cli": "4.0.518",
+    "@remotion/media": "4.0.518",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.518"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts BungeeApp ../105_sobaya_android_bungee_app_final.mp4 --codec=h264 --crf=16 --overwrite"
+  }
+}
