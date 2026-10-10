@@ -22,6 +22,8 @@ Madogiwa Studioを制作物の共有台帳として扱い、Remote MCPで制作�
 
 ## 登録依頼の承認範囲
 
+**Studioへの動画登録依頼は、対象の採用動画を公式YouTubeで公開し、公式サイト掲載まで進める依頼として扱う。** 追加の公開確認は不要。ユーザーが非公開・限定公開・予約公開・制作記録のみ等を指定した場合は、その指定を優先する。
+
 ユーザーの「Studioへ登録して」「Madogiwa Studioへアップロードして」「プロンプトと素材を同期して」という依頼は、登録完了に必要な採用済みファイルを設定済みのMadogiwa Studioへ外部送信することまで含む明示承認として扱う。この依頼を受けた後は、動画や素材ごとに追加確認を求めず、同じ作業内で次を送信する。
 
 - 採用済みの最新完成動画（公式YouTubeへ直接送信。既存IDがあれば再投稿しない）
@@ -57,18 +59,18 @@ Madogiwa Studioを制作物の共有台帳として扱い、Remote MCPで制作�
    - 種類は視聴者向けに `story`（物語）、`explainer`（解説）、`music`（音楽）、`other`（その他）。生成技術で分類しない。
    - 制作ノートは任意。公開する場合 `productionNotes:true` と対象 `generationId` が必要。プロンプト・モデル・入力素材は存在するセクションだけ表示。ノートなしの動画は `productionNotes:false`。
    - 再登録時も種類・ノート・イチオシを明示して、意図せず既存設定を既定値へ戻さない。
-6. ユーザーが公開を依頼・採用している場合はYouTubeをpublicにする。通常アップロードはprivate。YouTubeの公開操作とStudioのID登録を混同しない。登録だけを理由に未承認動画を公開しない。
-7. `sync_youtube_videos` を一度実行し、`list_youtube_videos` で状態確認。処理中・公開待ちならその状態とIDを報告する。Cloudflare Cronが約5分ごとに継続確認するので、会話を開いたまま待つ必要はない。
+6. Studio登録ではYouTubeを `public` にする。新規アップロードのmetadataへ `status.privacyStatus: "public"` を明示する。既存IDが非公開なら、その動画を公開へ更新し、再アップロードしない。`register_youtube_video` 自体には公開機能がないため、ID登録だけで止めない。非公開等の明示指定がある場合だけ、その指定を維持する。
+7. `sync_youtube_videos` を一度実行し、`list_youtube_videos` で状態確認。処理中ならその状態とIDを報告する。`waiting_public` で非公開等の指定がない場合は、YouTubeの公開設定を修正してから同期する。Cloudflare Cronは約5分ごとに状態を確認するが、非公開動画を公開へ変更する機能はない。
    新規作品の制作ノートURLは、サイト掲載条件が揃うまで404になる。YouTube公開直後に同期を実行して待ち時間を短くし、処理中なら約5分ごとの自動掲載を待つ。
 8. `ready` かつ `is_active:1` なら公開ページを確認する。差し替えは新IDを同作品に登録し、条件成立まで旧版を維持。チャンネルにある未登録動画は勝手に掲載されない。旧YouTube動画は自動削除しない。
 
 ## YouTubeアップロードと再開
 
-このリポジトリでは、利用可能なYouTube Data APIのアップロード手段を確認し、非公開でアップロードする。API認可・転送用コマンドが未設定なら、設定済みの公式チャンネル用YouTube Studioで投稿し、動画IDをMCPへ登録できる。StudioのMCPログインとYouTube APIのOAuth認可は別であり、MCP接続だけで動画本体をYouTubeへ転送できるわけではない。
+このリポジトリでは、利用可能なYouTube Data APIのアップロード手段を確認し、Studio登録では `status.privacyStatus: "public"` を明示してアップロードする。非公開・限定公開・予約公開・制作記録のみ等の指定がある場合は、その指定を優先する。API認可・転送用コマンドが未設定なら、設定済みの公式チャンネル用YouTube Studioで投稿し、動画IDをMCPへ登録できる。StudioのMCPログインとYouTube APIのOAuth認可は別であり、MCP接続だけで動画本体をYouTubeへ転送できるわけではない。
 
 - アップロード前に既存ID・チャンネル内の同作品を確認し、重複投稿を避ける。
 - API転送は再開可能アップロードを使い、セッションURL・OAuth tokenをログ・Git・チャットへ出さない。自分の環境の非公開領域へ保管する。所有者のOAuthキャッシュをコピーしない。
-- ID取得前の転送中断はCloudflareのCronでは再開できない。使用したアップローダーの再開機能を使う。ID取得後のYouTube処理・公開待ちはCronが担当する。
+- ID取得前の転送中断はCloudflareのCronでは再開できない。使用したアップローダーの再開機能を使う。ID取得後のYouTube処理状況はCronが確認する。公開設定の変更はこの登録作業で実施する。
 - セッション期限切れはチャンネルを確認して重複を防いでから再発行する。単なる失敗で新しいエピソードを作らない。
 - MMU側の参考実装は [upload-youtube.py](https://github.com/K9i-0/madogiwa-multimedia-universe/blob/main/16_MADOGIWA_STUDIO/tools/upload-youtube.py)。そのまま使うには同じリポジトリのOAuth管理クライアントと認証設定が必要。このリポジトリにない `16_MADOGIWA_STUDIO/` のコマンドを実行しない。
 

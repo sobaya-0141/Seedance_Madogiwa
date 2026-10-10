@@ -74,7 +74,7 @@ Use the configured YouTube Data API resumable uploader in this environment, or t
     "defaultAudioLanguage": "ja"
   },
   "status": {
-    "privacyStatus": "private",
+    "privacyStatus": "public",
     "selfDeclaredMadeForKids": false,
     "embeddable": true,
     "containsSyntheticMedia": true
@@ -82,13 +82,13 @@ Use the configured YouTube Data API resumable uploader in this environment, or t
 }
 ```
 
-Set audience and synthetic-content disclosures according to the actual work. Preserve required VOICEVOX/asset credits. Only add a production-page link if productionNotes=true and that page is intended to be published. Use private for the initial upload; use public only with the user's publication authorization. IDs, URLs and SHA256 may be recorded in the repository. Access/refresh tokens and resumable session URLs must remain private.
+Set audience and synthetic-content disclosures according to the actual work. Preserve required VOICEVOX/asset credits. Only add a production-page link if productionNotes=true and that page is intended to be published. A Studio video-registration request authorizes publishing the adopted video: explicitly set public unless the user requests private, unlisted, scheduled publication, or records only. For an existing private ID, update its visibility instead of uploading again. Neither register_youtube_video nor Cron changes YouTube privacy; resolve waiting_public in this registration task and sync again. IDs, URLs and SHA256 may be recorded in the repository. Access/refresh tokens and resumable session URLs must remain private.
 
 Keep the resumable upload session private and use the uploader's resume command after interruption. A lost final response is recovered by querying the session. Expired sessions require checking the channel before starting another upload. Once an ID exists, register it immediately so Cloudflare can continue checking readiness independently.
 
 ## Linking both directions
 
-Create the Studio episode first and obtain its stable slug. Build `https://madogiwa.work/episodes/<slug>` before uploading. Include that URL in the YouTube description only for a work with public production notes; otherwise include just `https://madogiwa.work`. After uploading, register the returned YouTube ID against the episode and selected generation, then publish on YouTube when authorized and run sync_youtube_videos. A new episode URL returns 404 until publication conditions are met. Processing can finish later; Cron continues checking independently.
+Create the Studio episode first and obtain its stable slug. Build `https://madogiwa.work/episodes/<slug>` before uploading. Include that URL in the YouTube description only for a work with public production notes; otherwise include just `https://madogiwa.work`. After uploading, register the returned YouTube ID against the episode and selected generation, then publish on YouTube as part of the registration request (unless explicitly instructed otherwise) and run sync_youtube_videos. A new episode URL returns 404 until publication conditions are met. Processing can finish later; Cron continues checking independently.
 
 ## Input / gallery binary PUT
 
