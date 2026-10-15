@@ -28,7 +28,7 @@ node render.mjs --manifest shorts-manifest.json --output ../final_remotion_short
 
 これは形式の例。実作品に例文をそのまま追加しない。`durationInFrames`を短縮すれば映像・音声も同じ終端へ切る。シーンの差し替えは`clips`を編集する（`from`=出力開始フレーム、`trimBefore`=元素材開始フレーム、`duration`=出力区間）。最初の入力以外を使う場合、publicへ追加し、幅/高さも実測値へ更新する。順序変更・複数シーンの再構成では、同じ時間軸に編集した完成音声を`audioSource`へ指定する。
 
-`creditText`例：`VOICEVOX:雨晴はう / VOICEVOX:中国うさぎ`。本リポジトリではVOICEVOX動画内クレジットを維持する。複数行が長くなる場合は実フレームを見て位置や大きさを調整する。
+`creditText`例：`VOICEVOX:中国うさぎ / VOICEVOX:白上虎太郎`。本リポジトリではVOICEVOX動画内クレジットを維持する。複数行が長くなる場合は実フレームを見て位置や大きさを調整する。
 
 元動画が可変fps、回転メタデータ付き、縦長の場合は初期化前に素材の扱いを確認する。テンプレートは横素材・固定fps用。対応範囲外を自動で速度変更しない。24/25/30/60/30000÷1001等の固定fpsは実測の比を使う。
 
