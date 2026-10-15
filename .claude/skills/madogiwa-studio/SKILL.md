@@ -66,13 +66,48 @@ Madogiwa Studioを制作物の共有台帳として扱い、Remote MCPで制作�
 
 ## YouTubeアップロードと再開
 
-このリポジトリでは、利用可能なYouTube Data APIのアップロード手段を確認し、Studio登録では `status.privacyStatus: "public"` を明示してアップロードする。非公開・限定公開・予約公開・制作記録のみ等の指定がある場合は、その指定を優先する。API認可・転送用コマンドが未設定なら、設定済みの公式チャンネル用YouTube Studioで投稿し、動画IDをMCPへ登録できる。StudioのMCPログインとYouTube APIのOAuth認可は別であり、MCP接続だけで動画本体をYouTubeへ転送できるわけではない。
+このリポジトリのAPIアップロード手段は `tools/youtube_upload.py`（YouTube Data API v3・再開可能アップロード。導入手順は下記）。これを使い、Studio登録では `status.privacyStatus: "public"` を明示してアップロードする。非公開・限定公開・予約公開・制作記録のみ等の指定がある場合は、その指定を優先する。API認可・転送用コマンドが未設定なら、設定済みの公式チャンネル用YouTube Studioで投稿し、動画IDをMCPへ登録できる。StudioのMCPログインとYouTube APIのOAuth認可は別であり、MCP接続だけで動画本体をYouTubeへ転送できるわけではない。
 
 - アップロード前に既存ID・チャンネル内の同作品を確認し、重複投稿を避ける。
 - API転送は再開可能アップロードを使い、セッションURL・OAuth tokenをログ・Git・チャットへ出さない。自分の環境の非公開領域へ保管する。所有者のOAuthキャッシュをコピーしない。
 - ID取得前の転送中断はCloudflareのCronでは再開できない。使用したアップローダーの再開機能を使う。ID取得後のYouTube処理状況はCronが確認する。公開設定の変更はこの登録作業で実施する。
 - セッション期限切れはチャンネルを確認して重複を防いでから再発行する。単なる失敗で新しいエピソードを作らない。
 - MMU側の参考実装は [upload-youtube.py](https://github.com/K9i-0/madogiwa-multimedia-universe/blob/main/16_MADOGIWA_STUDIO/tools/upload-youtube.py)。そのまま使うには同じリポジトリのOAuth管理クライアントと認証設定が必要。このリポジトリにない `16_MADOGIWA_STUDIO/` のコマンドを実行しない。
+
+### `tools/youtube_upload.py` の導入（メンバーごとに1回）
+
+前提:
+- 自分のGoogleアカウントが、公式チャンネル（`UCyQtPu94OaiGxFdd2A6bXdw`）のブランドアカウントで**オーナーまたは管理者**であること。YouTube Studioの「設定→権限」（編集者など）だけではData APIから投稿できない。
+- そのアカウントが、Google Cloudプロジェクト「My First Project」（`project-b7bc7bb1-ae77-4306-aaa`）のOAuth同意画面（Google Auth Platform →「対象」）の**テストユーザー**に登録されていること。公開ステータスが「テスト中」の間はテストユーザー以外は許可画面で拒否される（上限100人）。追加はプロジェクト管理者に依頼する。
+- `uv` が入っていること（依存ライブラリはスクリプト内のPEP 723宣言から `uv run` が自動で入れる）。
+
+手順:
+1. OAuthクライアント（デスクトップアプリ `madogiwa-youtube-uploader`）のJSONを管理者から**1Password等の非公開の経路で**受け取り、`~/.config/madogiwa-youtube/client_secret.json` に置く。Git・公開チャンネル・チャットには載せない。
+   ```bash
+   mkdir -p ~/.config/madogiwa-youtube && chmod 700 ~/.config/madogiwa-youtube
+   chmod 600 ~/.config/madogiwa-youtube/client_secret.json
+   ```
+2. `uv run tools/youtube_upload.py auth` を実行する。ブラウザが開くので自分のアカウントでログインし、「Googleはこのアプリを確認していません」が出たら「続行」、チャンネル選択では**公式チャンネル「窓際族物語」**を選び、「YouTubeアカウントの管理」「YouTube動画の管理」を許可する。`認可済み: 窓際族物語 (UCyQtPu94OaiGxFdd2A6bXdw) OK（公式チャンネル）` と出れば完了。
+3. `~/.config/madogiwa-youtube/token.json` は各自のMacだけにある個人の認可トークン。**他人と共有・コピーしない**。
+
+使い方:
+```bash
+uv run tools/youtube_upload.py whoami
+uv run tools/youtube_upload.py upload 03_SCRIPTS/<run>/<final>.mp4 \
+  --meta 03_SCRIPTS/<run>/youtube_meta.json --record 03_SCRIPTS/<run>/youtube_upload.json --privacy public
+uv run tools/youtube_upload.py status <VIDEO_ID>
+uv run tools/youtube_upload.py update <VIDEO_ID> --meta 03_SCRIPTS/<run>/youtube_meta.json --privacy public
+```
+- `youtube_meta.json` は `title` / `description` / `categoryId`（既定24）/ `defaultLanguage` / `defaultAudioLanguage` / `privacyStatus` / `selfDeclaredMadeForKids` / `embeddable` / `containsSyntheticMedia` を持つ。概要欄は登録ワークフロー4、公開範囲は同6に従う（Studio登録では `public`。`--privacy` 省略時はmetaの値、metaにも無ければ `private`）。
+- `upload` は `--record` のファイルに `youtubeId` があれば**再投稿せず停止する**。`youtube_upload.json`（動画ID・URL・SHA256のみ。秘密情報なし）はラン直下に置いてコミットし、メンバー間の重複投稿を防ぐ。
+- 既存IDが非公開のときは `update <VIDEO_ID> --privacy public` で公開し、再アップロードしない。
+- 変更系コマンド（`upload` / `update`）は、認可チャンネルが公式でなければ停止する。
+- `containsSyntheticMedia` はAPIの読み取り結果に出ないことがある。公開後、YouTube Studioの詳細画面で「改変されたコンテンツ」が「はい」か目視確認する。
+
+再認可・トラブル:
+- OAuthアプリが「テスト中」の間は**更新トークンが約7日で失効する**。`トークンの更新に失敗しました` / `未認可です` と出たら `auth` をやり直す。本番公開はプライバシーポリシー等の要件が重いため**行わず、テスト中のまま運用する**（2026-10-14決定）。失効は正常な挙動なので、その都度 `auth` し直す。
+- API利用枠（クォータ）はプロジェクト全体で共有。同じ日に大量投稿しない。
+- 許可画面で `access_denied` が出たら、テストユーザー未登録か、選んだアカウントが公式チャンネルの管理者でない。
 
 ## ギャラリー・記事ワークフロー
 

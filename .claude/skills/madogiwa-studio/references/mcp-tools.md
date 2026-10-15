@@ -62,7 +62,7 @@ IDs accepted by mutation tools are UUIDs returned by earlier tools. `studio_id` 
 
 ## Direct YouTube upload
 
-Use the configured YouTube Data API resumable uploader in this environment, or the official channel's YouTube Studio if no API uploader is configured. Studio MCP registers IDs; it does not transfer video bytes to YouTube. The MMU-only uploader path is not a command available in this repository. Example API metadata:
+Use `tools/youtube_upload.py` in this repository (YouTube Data API v3 resumable uploader; per-member setup in SKILL.md "`tools/youtube_upload.py` の導入"), or the official channel's YouTube Studio if it is not set up on this machine. Studio MCP registers IDs; it does not transfer video bytes to YouTube. The MMU-only uploader path is not a command available in this repository. Example API metadata:
 
 ```json
 {
