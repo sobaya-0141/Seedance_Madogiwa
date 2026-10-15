@@ -11,6 +11,8 @@
 - ゲーム用アセット（完成動画）: `04_GAME_ASSETS/videos/`（Seedance/CapCutで制作したゲーム組み込み用の完成動画が正典。ゲームからはコピーせず`public/videos/`からの相対symlinkで参照する）
 
 ## スキル（制作ワークフロー）
+
+- **Shorts加工** (`/shorts-video`): 自作・同僚作の採用済み短編を縦9:16へ編集し、メンバー色字幕・元音声・必要クレジットを保って投稿準備する。単独で使えるRemotionテンプレート付き。詳細: `.claude/skills/shorts-video/SKILL.md`
 制作物ごとのワークフローはスキルに分離している。該当する作業ではスキルを呼び出して従うこと。
 
 - **Seedance動画制作** (`/seedance`): ユーザーからストーリー（あらすじ）を渡されたら、このスキルに従って台本＋Seedanceプロンプト＋セリフ音声（VOICEVOX/Irodori-TTSボイスクローン、配役の正典は`02_CHARACTERS/VOICE_CAST.md`）＋Codex参考画像を作成する。詳細: `.claude/skills/seedance/SKILL.md`

@@ -1,0 +1,26 @@
+{
+  "name": "madogiwa-shorts-queue",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@remotion/cli": "4.0.529",
+    "@remotion/media": "4.0.529",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.529",
+    "@remotion/bundler": "4.0.529",
+    "@remotion/renderer": "4.0.529"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "render": "node render.mjs"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}
