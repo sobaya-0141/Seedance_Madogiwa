@@ -45,7 +45,14 @@ import zipfile
 
 DRIVE_IN = "/content/drive/MyDrive/h3_inputs"
 DRIVE_OUT = "/content/drive/MyDrive/h3_outputs"
-ZIP_EXCLUDES = ["*/ref_canvas_*", "*/validation/*", "*/.DS_Store", "*/h3/*"]
+ZIP_EXCLUDES = ["*/ref_canvas_*", "*/validation/*", "*/.DS_Store", "*/h3/*",
+                # 生成済み動画とTTSの没テイク。ノートブックはどれも読まない
+                # （セル7が見るのは ch*_workflow.json と、それが名前で指す PNG/WAV だけ）。
+                # 入れたままだと完パケ済みのランで数百MBの無駄なDriveアップロードになる
+                # （2026-10-09の103ラン: 211MB のうち 150MB がこれだった）。
+                # H3の入力は PNG と WAV だけなので、mp4 は何階層目にあっても入力ではない。
+                "*/clips/*", "*/takes/*", "*/retakes*/*", "*/voice_tests/*", "*/mp3/*",
+                "*/rejected_*/*", "*/montage_*.wav", "*.mp4"]
 # ノートブックが実行時に呼ぶファイル。1つでも欠けるとColabで初めて失敗する
 # （2026-09-29の実測: h3_run.py が無いバンドルで全チャプターが即失敗し、
 #  49GBの重みをDL済みのセッションを捨てることになった）。
