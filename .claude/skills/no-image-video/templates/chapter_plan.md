@@ -52,3 +52,10 @@
 各モブの外見をここで決め、ユーザー確認後に `make_mob_sheet.sh` でシートを作る。シート画像をユーザーが承認したら `Sheet: APPROVED` にする（検証スクリプトはこの行を見る）。
 
 - Mob_guards_sheet.png — 刑務官A（左）: <50代・がっしり・グレーの短髪>／刑務官B（右）: <30代・長身痩せ型>。共通: <紺の制服上下・白シャツ・濃紺ネクタイ・銀バッジ付き紺の制帽・黒ベルト・黒革靴> — Sheet: DRAFT
+
+## 小道具参照画像・場所シート（任意）
+
+画像をReadで開いて`PRESERVE:`を書き起こし、ユーザーが承認したら `Prop: APPROVED` / `Loc: APPROVED` にする（検証スクリプトはこの行を見る）。
+
+- Prop_<slug>.png — <小道具の説明> — Prop: DRAFT
+- Loc_<slug>_sheet.png — <場所の説明（例: オフィスの自席まわり）> — Loc: DRAFT

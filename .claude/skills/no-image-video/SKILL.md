@@ -14,7 +14,7 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 | | `/seedance` `/local-video` `/colab-video` | **本スキル** |
 |---|---|---|
 | チャプター（クリップ）毎の画像 | 開始/終了キーフレームをチェーン生成し、動画モデルに渡す | **作らない・渡さない** |
-| 動画モデルへの入力 | キーフレーム＋シート＋音声 | **プロンプト＋キャラクターシート（＋物語上重要な小道具の参照画像）＋セリフ音声だけ** |
+| 動画モデルへの入力 | キーフレーム＋シート＋音声 | **プロンプト＋キャラクターシート（＋物語上重要な小道具の参照画像・場所シート）＋セリフ音声だけ** |
 | 生成モード | セリフなし=I2V / あり=R2V | **全チャプターR2V**（シートを渡せる唯一のモード。セリフなしチャプターも音声なしR2V） |
 | 画風の指定 | ラン全体で1行の`## Style block`を全プロンプトに逐語埋め込み | **チャプター毎の最小限のStyle line**（そのチャプターに映るキャラ・物だけ） |
 | モブキャラ | 文章指定（シート不要） | **ラン専用シート`Mob_<slug>_sheet.png`を必ず作る**（キーフレームが無いため、シートが唯一の見た目の拘束） |
@@ -38,7 +38,7 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 0. ラン専用ディレクトリの作成、正典シートの同梱、全シートをReadで開く
 1. **チャプター分割案**（`chapter_plan.md`・日本語）→ **ユーザー確認（ゲート1）**
 2. **チャプター毎の動きの詳細化**（開始配置・ビート・終了状態・カメラ・セリフ・モブの外見）→ **ユーザー確認 → `Status: APPROVED`（ゲート2）**。全チャプターAPPROVEDまでプロンプトを1本も書かない
-3. **モブキャラクターシートの作成**（生成→仕様との照合→**ユーザー確認 → `Sheet: APPROVED`（ゲート3）**）。物語上重要な小道具があれば**小道具参照画像`Prop_<slug>.png`**も同梱し、ユーザー確認 → `Prop: APPROVED`
+3. **モブキャラクターシートの作成**（生成→仕様との照合→**ユーザー確認 → `Sheet: APPROVED`（ゲート3）**）。物語上重要な小道具があれば**小道具参照画像`Prop_<slug>.png`**、舞台の見た目を固定したい場所があれば**場所シート`Loc_<slug>_sheet.png`**も同梱し、ユーザー確認 → `Prop: APPROVED` / `Loc: APPROVED`
 4. セリフ音声の生成（2テイク→ユーザー確認→確定→2.0秒パディング）
 5. `script.md`（英語）: 台帳＋各チャプターのH3 inputs表＋Motion prompt
 6. 機械検証（`validate_no_image_run_bundle.py`）
@@ -60,7 +60,7 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 
 - 1チャプター＝1回のH3生成。**尺4〜15秒**、フレーム数は17k+5グリッド（90=3.75s, 107, 124=5.2s, 141=5.9s, 158=6.6s, 175, 192=8.0s, 209, 226, 243=10.1s, 260, 277, 294=12.25s, 311, 328, 345, 362=15.1s）。
 - **1チャプター1話者**（話者交代で割る）。同一話者でも音声は3ファイルまで。セリフのあるチャプターの尺は「wav合計長＋約1秒」。
-- **画像は9枚まで**＝そのチャプターに映るキャラのシート枚数（＋`height_lineup.png`＋そのチャプターに映る小道具参照画像`Prop_<slug>.png`）。映るキャラ・小道具が多すぎて入らないなら、画面に映るものを減らすか、チャプターを割る。
+- **画像は9枚まで**＝そのチャプターに映るキャラのシート枚数（＋`height_lineup.png`＋そのチャプターに映る小道具参照画像`Prop_<slug>.png`＋そのチャプターの舞台の場所シート`Loc_<slug>_sheet.png`）。映るキャラ・小道具が多すぎて入らないなら、画面に映るものを減らすか、チャプターを割る。
 - **1チャプター＝1ショット**。キーフレーム共有が無いので、チャプター境界は原則**CUT（別アングル・別場所）**にする。動作の途中で境界を跨ぐ設計（歩いている最中で次章へ続く等）は避け、境界の直前で動作を一度止める・区切る。
 - **動きの少ないチャプターは90f（3.75s）以下**にする（低イベントの長尺はモデルが台本に無い動作を発明する。local-video「I2Vの弱点」と同じ性質がR2Vにもある）。
 - Story Formula（変なことを始める→巻き込まれる→少し騒ぎになる→最後は笑顔）を満たす分割にする。
@@ -106,12 +106,23 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 
 デザインが決まっていて画面に大きく映る小道具（商品の缶・看板・ポスター・特定の道具等）は、**参照画像を1枚添付してよい**（2026-10-14追加。「窓際スーパーつらい」の缶のように、文章だけでは再現できない固有デザインのため）。キャラクターシートと同じ「見た目の拘束」として扱う。
 
-- **対象**: 固有のデザインを持ち、崩れると物語が成立しない小道具だけ。汎用の物（ジョッキ・椅子・皿等）は文章指定のままにする。雰囲気参照・場所の写真・ポスター（構図の参考）は引き続き**添付禁止**。
+- **対象**: 固有のデザインを持ち、崩れると物語が成立しない小道具だけ。汎用の物（ジョッキ・椅子・皿等）は文章指定のままにする。場所（オフィスの机まわり・部屋・建物）は3c章の場所シートで渡す。雰囲気だけの参照・ポスター（構図の参考）は引き続き**添付禁止**。小物を複数並べた小物シート（1枚に複数アングル・複数の小物）も`Prop_<slug>.png`として渡してよい。
 - **命名・配置**: ラン直下に`Prop_<slug>.png`（slugは小文字・数字・`_`。例: `Prop_super_tsurai_can.png`）として物理コピーする（原本は`03_SCRIPTS/ref_images/`等）。
 - **script.md**: `## Prop references`セクションを作り、各小道具の`PRESERVE:`（形・色・ロゴの配置・文字の色と位置を数えて書く）と`do NOT carry over:`（白背景・商品写真の構図・サイズ感）を書く。
 - **H3 inputs表**: その小道具が**画面に映るチャプターだけ**`- Props: <slug>, ...`行を書き、`<Picture N> = Prop_<slug>.png — <役割>, design reference only, NOT a composition reference`として添付する（画像9枚の枠に含める）。映らないチャプターには添付しない・`Props:`に書かない（検証スクリプトが双方向に照合する）。
 - **Motion prompt**: 添付宣言で`<Picture N> = Prop_<slug>.png`を再宣言し、`PRESERVE:`を書く。小道具に**ロゴや文字がある場合**は、文字をそのまま再現させる指示を書き（例: `the can's printed label is reproduced from <Picture 3> as-is`）、画面内テキスト禁止の定型文には**その小道具のラベルだけ例外**と明記する（`do NOT render any on-screen text other than the printed label already on the can in <Picture 3>`）。崩れた文字が出る可能性は残るので、生成後の確認項目に「小道具のラベルが参照どおりか（クロップして拡大）」を加える。
 - **確認**: `chapter_plan.md`末尾の「小道具参照画像」欄に`- Prop_<slug>.png — <説明> — Prop: DRAFT`を書き、画像をReadで開いて`PRESERVE:`列を書き起こしたうえでユーザーに見せ、承認後に`Prop: APPROVED`にする（検証スクリプトがこの行を見る）。
+
+### 3c. 場所シート（任意・`Loc_<slug>_sheet.png`）
+
+舞台（オフィスの机まわり・部屋・店・建物の外観等）の見た目をチャプター間で揃えたいときは、**場所シートを添付してよい**（2026-10-20追加）。キーフレームが無い本スキルでは、同じ机・同じ部屋が章ごとに別物になりやすいため、キャラクターシートと同じ「見た目の拘束」として扱う。ユーザーが場所・小物のシート（複数アングル・小物の単体パネルを並べた1枚）を提供した場合はこれを使う。
+
+- **命名・配置**: ラン直下に`Loc_<slug>_sheet.png`（slugは小文字・数字・`_`。例: `Loc_office_desk_sheet.png`）として物理コピーする（ユーザー提供の原本名は改名してよい）。
+- **script.md**: `## Location references`セクションを作り、各場所の`PRESERVE:`（家具・建具・小物の配置と色・窓の位置・照明の種類を数えて書く）と`do NOT carry over:`（パネルレイアウト・シートの時間帯や光がチャプターと違う場合はその光・シート内の文字）を書く。**シートの時間帯（夜等）とチャプターの時間帯が違う場合**は、`do NOT carry over`に光と窓の外を入れ、時間帯はScene ledgerの句に従わせる。シートとあらすじで物が食い違う場合（シートはデスクトップモニター／台本はノートPC等）は、台本側を正とし、`do NOT carry over`にその物を書いたうえで正しい物を本文で指定する。
+- **H3 inputs表**: その場所が**舞台になるチャプターだけ**`- Locations: <slug>, ...`行を書き、`<Picture N> = Loc_<slug>_sheet.png — <役割>, location/design reference only, NOT a composition reference`として添付する（画像9枚の枠に含める）。舞台にならないチャプターには添付しない・`Locations:`に書かない（検証スクリプトが双方向に照合する）。
+- **人物の映らないチャプター**（無人の部屋・画面のアップ等）は`- Cast: none`と書き、場所シートか小道具参照を最低1枚添付する。Opening compositionで「人物は映らない」を明記する（`Nobody appears in this chapter — EXACTLY ONCE rule: zero people, and nobody enters the frame`）。
+- **Motion prompt**: 添付宣言で`<Picture N> = Loc_<slug>_sheet.png`を再宣言し、`PRESERVE:`を書く。シートに文字（看板・張り紙等）があっても画面内テキスト禁止は例外にしない。
+- **確認**: `chapter_plan.md`末尾の「場所シート」欄に`- Loc_<slug>_sheet.png — <説明> — Loc: DRAFT`を書き、画像をReadで開いて`PRESERVE:`列を書き起こしたうえでユーザーに見せ、承認後に`Loc: APPROVED`にする（検証スクリプトがこの行を見る）。
 
 - **モブの声**: `02_CHARACTERS/VOICE_CAST.md`の「ナレーション（窓際メンバー以外の発話全般）」行＝Irodori-TTS `Narrator_voice.wav`が既定。複数モブが話すときはシードを変えて声を分ける。VOICEVOX話者を使う場合はユーザーに確認し、クレジット義務（seedanceステップ2）に従う。H3は添付wavをそのまま使う設計のため、**モブのセリフも必ずローカルで生成して添付する**（seedanceの「モブはサンプルなし可」の例外は本スキルでは使えない）。
 
@@ -128,7 +139,7 @@ seedanceステップ2と同一（等速＋1.5倍速の2テイク→ユーザー�
 `script.md`は英語（セリフ原文のみ日本語）。構成:
 
 1. タイトル・Production intent（`No-keyframe production: every chapter is MiniMax H3 R2V driven by character sheets + audio only`、生成先、合計尺）
-2. `## Character references` — 同梱シートの一覧と、キャラ（正典・モブ）ごとの`PRESERVE:` / `do NOT carry over:`（seedance「キャラ正典ルール」どおり数えて書く）。小道具参照画像を使うランは`## Prop references`も書く（3b章）
+2. `## Character references` — 同梱シートの一覧と、キャラ（正典・モブ）ごとの`PRESERVE:` / `do NOT carry over:`（seedance「キャラ正典ルール」どおり数えて書く）。小道具参照画像を使うランは`## Prop references`（3b章）、場所シートを使うランは`## Location references`（3c章）も書く
 3. `## Scene ledger`（列＝チャプター境界`C1 start | C1 end / C2 start | ...`）、`## Camera plan`（Join列は`CUT (new shot)`が既定。連続なら`CONTINUOUS (matched end/start state)`）、状態を持つ小道具があれば`## Prop state ledger`、可動建具があれば`## Fixture layout`
 4. `## Dialogue audio`
 5. 各チャプター: `## Chapter N — <title>` に **Cast / Opening composition / Action beats / End state**（`chapter_plan.md`の承認内容を英語化したもの）を書き、その下に`### H3 inputs (Chapter N)`
@@ -150,8 +161,8 @@ seedanceステップ2と同一（等速＋1.5倍速の2テイク→ユーザー�
 - Motion prompt: <1行・完成形>
 ```
 
-- `- Cast:`は**そのチャプターの画面内に映るキャラ**だけ（正典は`02_CHARACTERS`の英名、モブは`Mob:<slug>`）。画面外の声だけのキャラは書かない。添付するシートはCastのキャラのものだけで、Castの全員分を添付する（検証スクリプトが両方向を照合する）。
-- 添付できる画像は**キャラクターシート・`height_lineup.png`・小道具参照画像`Prop_<slug>.png`（3b章）のみ**。キーフレーム・雰囲気参照・ポスター等は添付しない。小道具参照を添付するチャプターは`- Props:`行を書く。
+- `- Cast:`は**そのチャプターの画面内に映るキャラ**だけ（正典は`02_CHARACTERS`の英名、モブは`Mob:<slug>`）。画面外の声だけのキャラは書かない。人物が映らないチャプターは`- Cast: none`（3c章）。添付するシートはCastのキャラのものだけで、Castの全員分を添付する（検証スクリプトが両方向を照合する）。
+- 添付できる画像は**キャラクターシート・`height_lineup.png`・小道具参照画像`Prop_<slug>.png`（3b章）・場所シート`Loc_<slug>_sheet.png`（3c章）のみ**。キーフレーム・雰囲気参照・ポスター等は添付しない。小道具参照を添付するチャプターは`- Props:`行、場所シートを添付するチャプターは`- Locations:`行を書く。
 
 ### Motion promptの構造（この順で1行に書く・要約禁止）
 
@@ -211,6 +222,7 @@ Generate ONLY the first dialogue chapter, then verify ALL of the following:
 - [ ] The dialogue is driven by the attached wav (correct voice, no synthesized or doubled voice); the CORRECT character lip-syncs and every non-speaker's mouth stays closed
 - [ ] Every canon character matches their `*_sheet.png` item by item (canon checklist); every mob matches their `Mob_*_sheet.png` item by item (the run's mob PRESERVE list). A near-miss is a FAIL
 - [ ] Every attached prop reference (`Prop_*.png`) is reproduced item by item (shape, colors, logo placement; crop and zoom the label — garbled lettering is a FAIL)
+- [ ] Every attached location sheet (`Loc_*_sheet.png`) is reproduced item by item (furniture/fixture layout and colors), while time of day and light follow the Scene ledger, not the sheet
 - [ ] Exactly the listed Cast appears, each EXACTLY ONCE, in EVERY sampled frame (sample at least 3 mid-chapter frames); nobody else enters
 - [ ] Style is photorealistic live-action in every sampled frame, with only the exceptions the chapter's style line states
 - [ ] Camera matches the Camera plan row; location, time of day and light match the Scene ledger; fixtures stay per the Fixture layout
@@ -235,7 +247,7 @@ Play back the assembled video before delivery and confirm every line sounds like
 python3 .claude/skills/no-image-video/validate_no_image_run_bundle.py 03_SCRIPTS/<NN>_<slug>
 ```
 
-検証内容: `chapter_plan.md`の全チャプターが`APPROVED`で番号が`script.md`と一致 / 使用する全`Mob_*_sheet.png`が`Sheet: APPROVED`、全`Prop_*.png`が`Prop: APPROVED`で`## Prop references`に記載 / `script.md`がキーフレーム（`chN_start/end.png`）やラン外パスを参照していない / `## Character references`・`## Scene ledger`・`## Camera plan`がある / 全チャプターが`R2V`で`- Cast:`がある / 添付画像が全て`*_sheet.png`・`Prop_<slug>.png`・`height_lineup.png`のいずれかで物理ファイルとして存在し、Cast・Propsと双方向に一致する / 画像9・音声3・合計12以内、wavが2.0〜15.0秒 / `Frames:`が17k+5グリッド / Motion promptが全添付を再宣言し、必須句（`Required attached input files:`・`NOT a composition reference`・`None of the attached pictures is a frame of this video`・カメラ・`EXACTLY ONCE`・`on-screen text`・`Soundscape:`・`Music:`、セリフ章は`(S1)`/`<d>[Japanese]`/`AS-IS`、無音章は`no speech`）を含む / **Castにいない正典キャラの名前がMotion promptに出ていない**。
+検証内容: `chapter_plan.md`の全チャプターが`APPROVED`で番号が`script.md`と一致 / 使用する全`Mob_*_sheet.png`が`Sheet: APPROVED`、全`Prop_*.png`が`Prop: APPROVED`で`## Prop references`に記載 / 全`Loc_*_sheet.png`が`Loc: APPROVED`で`## Location references`に記載 / `script.md`がキーフレーム（`chN_start/end.png`）やラン外パスを参照していない / `## Character references`・`## Scene ledger`・`## Camera plan`がある / 全チャプターが`R2V`で`- Cast:`がある / 添付画像が全て`*_sheet.png`・`Prop_<slug>.png`・`Loc_<slug>_sheet.png`・`height_lineup.png`のいずれかで物理ファイルとして存在し、Cast・Props・Locationsと双方向に一致する（`- Cast: none`の章は場所シートか小道具参照が必須） / 画像9・音声3・合計12以内、wavが2.0〜15.0秒 / `Frames:`が17k+5グリッド / Motion promptが全添付を再宣言し、必須句（`Required attached input files:`・`NOT a composition reference`・`None of the attached pictures is a frame of this video`・カメラ・`EXACTLY ONCE`・`on-screen text`・`Soundscape:`・`Music:`、セリフ章は`(S1)`/`<d>[Japanese]`/`AS-IS`、無音章は`no speech`）を含む / **Castにいない正典キャラの名前がMotion promptに出ていない**。
 
 さらに、ワークフローJSONを作ったあと（ステップ7の2の直後）に**台本との突き合わせ**を必ず通す:
 
@@ -275,7 +287,7 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 ## 完了条件（すべて満たすまで完了報告しない）
 
 - [ ] `chapter_plan.md`の全チャプターと全モブシートがユーザー承認済み（`APPROVED`）
-- [ ] 正典シートを全枚Readで開いて確認した。モブシートは仕様と照合してPASSし、ユーザーが承認した。小道具参照画像を使う場合はReadで開いて`PRESERVE:`を書き起こし、ユーザーが承認した
+- [ ] 正典シートを全枚Readで開いて確認した。モブシートは仕様と照合してPASSし、ユーザーが承認した。小道具参照画像・場所シートを使う場合はReadで開いて`PRESERVE:`を書き起こし、ユーザーが承認した
 - [ ] `check_workflows_match_script.py`がOK（ワークフローJSONと台本の突き合わせ）
 - [ ] セリフ音声はユーザーが採用テイクを選び、2.0秒以上に整えた
 - [ ] 全Motion promptが「添付宣言→Style line（映るものだけ）→開始配置→ビート→セリフ→カメラ→終了状態→ガード→音」の構造で、承認済みビートを漏れなく含む
