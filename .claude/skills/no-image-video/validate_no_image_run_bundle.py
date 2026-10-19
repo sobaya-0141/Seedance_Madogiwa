@@ -20,6 +20,10 @@ Checks:
   attached and every listed prop has its reference attached
 - every 'Prop_<slug>.png' referenced by script.md is marked APPROVED in chapter_plan.md and
   described in a '## Prop references' section
+- every 'Loc_<slug>_sheet.png' (location sheet) referenced by script.md is marked APPROVED in
+  chapter_plan.md and described in a '## Location references' section; it is attached exactly in
+  the chapters whose '- Locations:' line lists it
+- '- Cast: none' marks a chapter with no people; it must attach a location sheet or prop reference
 - R2V input limits: <=9 pictures, <=3 audio, <=12 files; every wav is 2.0-15.0 s
 - '- Duration:' declares 'Frames: N' on H3's 17k+5 grid (90..362)
 - the Motion prompt redeclares every attachment, and contains the mandatory phrases:
@@ -148,6 +152,21 @@ def main() -> None:
                 "(write '- Prop_<slug>.png — ... — Prop: APPROVED' after the user approved the prop reference)"
             )
 
+    # every location sheet used anywhere in script.md must be user-approved in chapter_plan.md
+    # and described (PRESERVE / do NOT carry over) in '## Location references'
+    loc_refs = sorted(set(re.findall(r"\bLoc_[a-z0-9_]+_sheet\.png\b", text)))
+    if loc_refs and re.search(r"^##.*\bLocation references\b", text, re.MULTILINE | re.IGNORECASE) is None:
+        errors.append("script.md attaches location sheets but lacks a '## Location references' section")
+    for loc_ref in loc_refs:
+        approved = any(
+            loc_ref in line and "APPROVED" in line for line in plan_text.splitlines()
+        )
+        if not approved:
+            errors.append(
+                f"{loc_ref} is not marked APPROVED in chapter_plan.md "
+                "(write '- Loc_<slug>_sheet.png — ... — Loc: APPROVED' after the user approved the location sheet)"
+            )
+
     # every mob sheet used anywhere in script.md must be user-approved in chapter_plan.md
     for mob_sheet in sorted(set(re.findall(r"\bMob_[a-z0-9_]+_sheet\.png\b", text))):
         approved = any(
@@ -183,7 +202,7 @@ def main() -> None:
         if cast_match is None:
             errors.append(f"Chapter {chapter}: missing '- Cast:' line (on-screen characters of this chapter)")
         else:
-            cast = [c.strip() for c in cast_match.group(1).split(",") if c.strip()]
+            cast = [c.strip() for c in cast_match.group(1).split(",") if c.strip() and c.strip().lower() != "none"]
             for c in cast:
                 if not (c in CANON or re.fullmatch(r"Mob:[a-z0-9_]+", c)):
                     errors.append(
@@ -197,6 +216,19 @@ def main() -> None:
             for s in props:
                 if not re.fullmatch(r"Prop:[a-z0-9_]+", s):
                     errors.append(f"Chapter {chapter}: Props entry '{s[5:]}' must be a lowercase slug (Prop_<slug>.png)")
+
+        locs_match = re.search(r"^- Locations:\s*(.*)$", section, re.MULTILINE)
+        locs: list[str] = []
+        if locs_match is not None:
+            locs = [f"Loc:{s.strip()}" for s in locs_match.group(1).split(",") if s.strip() and s.strip().lower() != "none"]
+            for s in locs:
+                if not re.fullmatch(r"Loc:[a-z0-9_]+", s):
+                    errors.append(f"Chapter {chapter}: Locations entry '{s[4:]}' must be a lowercase slug (Loc_<slug>_sheet.png)")
+        if cast_match is not None and not cast and not props and not locs:
+            errors.append(
+                f"Chapter {chapter}: '- Cast: none' chapters must attach a location sheet ('- Locations:') "
+                "or a prop reference ('- Props:') so H3 has a design reference"
+            )
 
         # The Motion prompt is exactly the one line extract_prompts.py feeds to H3 — not the rest
         # of the section. Reading to the end of the section would swallow the next chapter's prose
@@ -257,11 +289,22 @@ def main() -> None:
                         f"chapter's '- Props:' line — only attach props that are on screen in this chapter"
                     )
                 continue
+            loc_m = re.fullmatch(r"Loc_([a-z0-9_]+)_sheet\.png", filename)
+            if loc_m is not None:
+                owner = f"Loc:{loc_m.group(1)}"
+                attached_sheets.add(owner)
+                if owner not in locs:
+                    errors.append(
+                        f"Chapter {chapter}: <Picture {slot}> = {filename} is a location sheet not listed in this "
+                        f"chapter's '- Locations:' line — only attach the location this chapter takes place in"
+                    )
+                continue
             m = re.fullmatch(r"([A-Za-z]+)_sheet\.png", filename) or re.fullmatch(r"(Mob_[a-z0-9_]+)_sheet\.png", filename)
             if m is None:
                 errors.append(
                     f"Chapter {chapter}: <Picture {slot}> = {filename} is not a character sheet "
-                    "(*_sheet.png / Mob_<slug>_sheet.png), a prop reference (Prop_<slug>.png) or height_lineup.png "
+                    "(*_sheet.png / Mob_<slug>_sheet.png), a prop reference (Prop_<slug>.png), a location sheet "
+                    "(Loc_<slug>_sheet.png) or height_lineup.png "
                     "— no other images are attached in this skill"
                 )
                 continue
@@ -280,6 +323,9 @@ def main() -> None:
         for s in props:
             if s not in attached_sheets:
                 errors.append(f"Chapter {chapter}: listed prop '{s[5:]}' has no reference attached (expected Prop_{s[5:]}.png)")
+        for s in locs:
+            if s not in attached_sheets:
+                errors.append(f"Chapter {chapter}: listed location '{s[4:]}' has no sheet attached (expected Loc_{s[4:]}_sheet.png)")
 
         for slot, filename in audios:
             check_bundled(run_dir, chapter, f"<Audio {slot}>", filename, errors)
@@ -330,7 +376,7 @@ def main() -> None:
 
     if errors:
         fail(errors)
-    print(f"OK: no-image (MiniMax H3 R2V, sheets + prop refs + audio only) bundle validated: {run_dir}")
+    print(f"OK: no-image (MiniMax H3 R2V, sheets + prop/location refs + audio only) bundle validated: {run_dir}")
 
 
 if __name__ == "__main__":
