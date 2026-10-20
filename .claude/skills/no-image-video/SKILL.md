@@ -42,7 +42,7 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 4. セリフ音声の生成（2テイク→ユーザー確認→確定→2.0秒パディング）
 5. `script.md`（英語）: 台帳＋各チャプターのH3 inputs表＋Motion prompt
 6. 機械検証（`validate_no_image_run_bundle.py`）
-7. 動画生成（パイロット→残り）: Colab（`/colab-video`）またはローカルCUDA（`/local-video`ステップ7）
+7. 動画生成（**全チャプター一括**→回収後に全チャプター検証）: Colab（`/colab-video`）またはローカルCUDA（`/local-video`ステップ7）
 8. ffmpeg結合・クレジット（`/local-video`ステップ8）
 
 ## 0. 準備
@@ -214,8 +214,8 @@ Required attached input files: <Picture 1> = Sobaya_sheet.png — Sobaya's chara
 ```
 ## Generation & assembly protocol (REQUIRED — read before generating any chapter)
 
-### Step 1 — Pilot chapter first (batch generation is FORBIDDEN until the pilot passes)
-Generate ONLY the first dialogue chapter, then verify ALL of the following:
+### Step 1 — Generate ALL chapters in one run, then verify EVERY chapter
+Generate every chapter in one batch (one notebook run). After collecting the mp4s, verify ALL of the following on EACH chapter:
 - [ ] No attached sheet is reproduced as a frame: no panels, no white sheet background, no labels or text anywhere
 - [ ] The opening composition matches this chapter's "Opening composition" (shot size/angle, location, who stands where, held props, door/fixture state)
 - [ ] The action beats happen in the written order and the shot ends in the written end state
@@ -227,8 +227,7 @@ Generate ONLY the first dialogue chapter, then verify ALL of the following:
 - [ ] Style is photorealistic live-action in every sampled frame, with only the exceptions the chapter's style line states
 - [ ] Camera matches the Camera plan row; location, time of day and light match the Scene ledger; fixtures stay per the Fixture layout
 - [ ] NO on-screen text; Soundscape/Music as written; duration equals the declared frame count (17k+5 grid)
-If any check fails, fix the prompt (or split the chapter) and regenerate the pilot until all pass.
-Only then generate the remaining chapters, and re-run at least the sheet-leak + composition + cast + audio + duration checks on each.
+If any check fails on a chapter, fix that chapter's prompt (or split the chapter) and regenerate ONLY the failed chapters (a `--fix` package limited with `--chapters`) until all pass.
 
 ### Step 2 — Prompts are verbatim
 Copy each chapter's Motion prompt into the workflow JSON EXACTLY as written here (extract_prompts.py). Do NOT
@@ -236,7 +235,7 @@ summarize or shorten. If it seems too long, go back to the chapter plan and spli
 
 ### Step 3 — Final audio track (assembly)
 DEFAULT: keep H3's embedded audio for every chapter (verified faithful to the attached wavs, 2026-08).
-ONLY IF the pilot hears degradation, doubling or a changed voice: strip the embedded audio on that chapter
+ONLY IF a chapter's audio shows degradation, doubling or a changed voice: strip the embedded audio on that chapter
 and lay the original wav over the video, aligned to the frame where the speaker's mouth starts moving.
 Play back the assembled video before delivery and confirm every line sounds like the local take.
 ```
@@ -259,7 +258,7 @@ python3 .claude/skills/no-image-video/check_workflows_match_script.py 03_SCRIPTS
 
 **検証が失敗したまま生成に進んだり完了報告したりしてはいけない。**
 
-## 7. 動画生成（パイロット→残り）
+## 7. 動画生成（全チャプター一括）
 
 1. `python3 .claude/skills/local-video/extract_prompts.py 03_SCRIPTS/<NN>_<slug>` でMotion promptを逐語抽出（`chN_prompt.txt`）。
 2. 各チャプターのworkflowを生成（全てR2V。`--image`の順序＝`<Picture N>`）:
@@ -273,8 +272,8 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 ```
 
 3. **Colabで生成する場合（Macでは既定）**: `/colab-video`の2章に従い`build_h3_run_package.py`でバンドルzip＋R2V用ノートブックを作ってユーザーに渡す（本スキルのランはR2Vのみなので`<NN>_<slug>_h3_r2v.ipynb`1本になる。直しが出たら`--fix`で修正版パッケージを作り直す＝zip・ノートブック・Drive出力先が別名になる。`validate_local_run_bundle.py`ではなく本スキルの検証スクリプトを使う）。**ローカルCUDA機**なら`/local-video`ステップ7の`h3_run.py`で回す。
-4. **パイロットはセリフのあるチャプター1本**。上記プロトコルのチェックリストで判定し、特に「シートがそのまま第1フレームに出ていないか」「開始配置とビートが承認内容どおりか」「モブがシートどおりか」を見る。開始配置がずれる場合は、Opening compositionの記述を具体化する（人物の位置を画面の左/中/右と距離で指定、"nobody is visible yet"等）か、チャプターを割る。
-5. 合格後に残りを生成し、各チャプターで最低3点の中間フレームを確認する。
+4. **既定は全チャプターを1回で生成する**（2026-10-20ユーザー指定。パイロット1本で止めて確認する運用はしない）。`build_h3_run_package.py`は`--chapters`を付けずに実行し、全チャプター入りのノートブックを渡す。ユーザーが明示的に「パイロットだけ先に」と頼んだときに限り`--chapters chN`で絞る。
+5. 回収後、**全チャプター**を上記プロトコルのチェックリストで判定する（各チャプター最低3点の中間フレーム）。特に「シートがそのまま第1フレームに出ていないか」「開始配置とビートが承認内容どおりか」「モブがシートどおりか」を見る。開始配置がずれる場合は、Opening compositionの記述を具体化する（人物の位置を画面の左/中/右と距離で指定、"nobody is visible yet"等）か、チャプターを割る。FAILしたチャプターだけを`--fix --chapters chN,...`の修正版パッケージで回し直す。
 
 ## 8. 結合
 
@@ -292,4 +291,4 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 - [ ] セリフ音声はユーザーが採用テイクを選び、2.0秒以上に整えた
 - [ ] 全Motion promptが「添付宣言→Style line（映るものだけ）→開始配置→ビート→セリフ→カメラ→終了状態→ガード→音」の構造で、承認済みビートを漏れなく含む
 - [ ] `validate_no_image_run_bundle.py`がOK
-- [ ] パイロット合格後に残りを生成し、結合後の通し確認を行った
+- [ ] 全チャプターを一括生成し、回収後に全チャプターをチェックリストで確認（FAIL分は修正版で回し直し）、結合後の通し確認を行った
