@@ -41,6 +41,9 @@ Apple SiliconでH3が実行できない理由（MPSの型/オペレータ非対�
 | 並列生成 | 非推奨（VRAM 22GiBを割ると足りない） | `WORKERS=2` が目安（40GiBを2分割） |
 | 向き | **15秒級の単発**（既定） | **60秒超の大規模ラン**（1セッション完走でき、切断リスクと管理の手間が減る） |
 
+- **尺によるGPUの使い分け（2026-10実測・必ず守る）**:
+  - **L4はR2Vで158f（6.6秒）までが実績**。362f（15秒）は生成開始1.5分でComfyUIごと落ちた（`34_fukugyun_midnight_scare_official`）。**10秒を超えるチャプターが1本でもあるランはA100**を案内する。
+  - **A100の`WORKERS=2`でも、243f以上のチャプターはVAEデコードの段階で落ちることがある**（`36` ch1 294f、`37` lora-4step版でch1/ch2/ch4/ch6の243f・計5回）。落ちたチャプターは失敗扱いのまま残り、残りは進む。最後に失敗が残っていたら、セル1の`WORKERS`を`1`にして`FROM_STEP=7`で★一括実行セルを再実行する（生成済みはスキップされる）。ユーザーへの案内文にこの手順を最初から書いておく。
 - **並列生成（セル1の`WORKERS`）**: ComfyUIは1プロセスにつき1本ずつしか実行しないので、同時生成にはプロセスを複数立ててVRAMを分け合う。`WORKERS=N`にすると、セル6がポート8188〜8188+N-1でN個のComfyUIを起動し（各プロセスに`--reserve-vram`で「VRAM/N」だけ使わせる）、セル7がチャプターをN本ずつ流す。**`WORKERS=1`が従来どおりの直列**で、L4はこちらのまま。
   - **速くなるのはモデルロード・VAEデコード・IOが重なる分だけ**で、サンプリングは同じSMの取り合いになるため1本あたりは遅くなる。総時間が半分になるわけではない（A100での実測値は未取得。ランの`H3_COLAB.md`に実測を書き足していく）。見積りは直列時間で立てる。
   - **ホストRAMもプロセス数で分け合う**のが並列の主なリスク。ワーカーが突然消える／ログ末尾が`Killed`ならRAM不足なので`WORKERS=1`に戻す。VRAM側でOOMが出た場合は`WORKERS`を減らすか`COMFY_FLAGS=["--lowvram"]`。
@@ -230,6 +233,28 @@ python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<NN>_<slug
 - **新しいランでは回収後に全チャプターの声とリップシンクを確認する**（全チャプター一括生成が既定。パイロットで止めない）。
   1チャプター1シードで測った結果なので、話者・尺・構図が変わったランでも同じとは限らない。
 - 戻し方は`TURBO_8STEP=False`（セル1）だけ。バンドルもworkflowも作り直さなくてよい。
+
+### Turbo LoRAの版比較（2026-10・`37_sobaya_beer_ocean_kaiju`）
+
+`lightx2v/Minimax-h3-Turbo`には版が増える（2026-10-20に`ref2v_turbo_8step_v1.1`、`fl2v_turbo_4step_v1.3`等）。**R2V（ref2va）チャプターに使えるのは`ref2v_*`だけ**で、`fl2v_*`（v1.3等）はI2V用。
+
+| 版 | ユーザーの目視（9章・90秒・同一プロンプト・同一シード42・A100） | 声（`check_voice.py`・短いセリフ＋効果音の章） |
+|---|---|---|
+| 8step v1.0（既定） | 同等 | 0.43〜0.56 |
+| 8step v1.1 | 同等 | 0.41〜0.53 |
+| 4step v1.0 | 同等（Claudeの章ごと確認で、娘の重複・巨大さの縮み・機体数のズレ・岸の爆炎を確認。8stepの2本は章ごと確認をしていない） | 0.46〜0.56 |
+
+- **結論: 既定は8step v1.0のまま**（v1.1は目視で差が無く、上げる理由が無い。4stepは学習ステップ外の設定（euler/beta・shift 12/3を8stepから流用）で回したため、事故の多さが版のせいか設定のせいかは切り分けていない）。版を上げるときは同じ手順で測り直してから`TURBO_LORA`を変える。
+- 声の指標は版で差が無い。H3は**短い添付セリフ（1〜2秒）＋同じ瞬間の効果音**で指標が下がる（長い歌を頭から鳴らす33は0.98）。数字だけで判断せず必ず聴く。Wan 3.0は同じwavで0.98〜0.99。
+- **比較ノートブックの作り方**: 本番パッケージとは別の版名でパッケージを作り、ノートブックを`patch_lora_notebook.py`で書き換える（zip・ノートブック・Drive出力先が版ごとに別名になり、成果物は`chN__<label>.mp4`）。比較はシード42の1テイクに絞ると安い。
+
+```
+python3 .claude/skills/colab-video/build_h3_run_package.py 03_SCRIPTS/<run> --rev lora-v11 --chapters ch1,ch2,...,ch9
+python3 .claude/skills/colab-video/patch_lora_notebook.py 03_SCRIPTS/<run>/h3/<run>_h3_r2v_lora-v11.ipynb \
+    --lora minimax_h3_ref2v_turbo_8step_v1.1_768p_comfyui_bf16.safetensors --steps 8 --label v11
+```
+
+回収後は`/no-image-video`の`finish_cinematic.py --src out_v11 --suf __v11`で版ごとに結合し、ユーザーに並べて見てもらう。
 
 ### 生成方式のA/Bベンチ（`h3_ab_bench_colab.ipynb`）
 

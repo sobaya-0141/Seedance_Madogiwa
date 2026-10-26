@@ -1,6 +1,6 @@
 ---
 name: no-image-video
-description: 窓際族物語の動画を、チャプター毎のキーフレーム画像を作らずに「プロンプト＋キャラクターシート＋セリフ音声」だけでMiniMax H3（R2V）に生成させるワークフロー。ユーザーから「画像なしで動画を作って」「キーフレームなしで動画を作って」「シートだけで動画を作って」と指示されたときに必ず使用する。大まかな指示→チャプター分割案→チャプター毎の動きを人間に確認→全チャプター確定→プロンプト作成の順で進め、確定前にプロンプトを書かない。画風の注意文はチャプターに映るものだけを最小限で書き、モブキャラはラン専用のキャラクターシートを作って渡す。動画生成の実行先は/colab-video（Colab）または/local-videoステップ7（ローカルCUDA）。
+description: 窓際族物語の動画を、チャプター毎のキーフレーム画像を作らずに「プロンプト＋キャラクターシート＋セリフ音声」だけでMiniMax H3（R2V）に生成させるワークフロー。ユーザーから「画像なしで動画を作って」「キーフレームなしで動画を作って」「シートだけで動画を作って」と指示されたときに必ず使用する。大まかな指示→チャプター分割案→チャプター毎の動きを人間に確認→全チャプター確定→プロンプト作成の順で進め、確定前にプロンプトを書かない。画風の注意文はチャプターに映るものだけを最小限で書き、モブキャラはラン専用のキャラクターシートを作って渡す。既定は「映画品質モード」（公式Ref2VA 6セクション形式・1生成内の複数カット・各章1テイク・finish_cinematic.pyでシネスコ仕上げ）。動画生成の実行先は/colab-video（Colab・H3）、/local-videoステップ7（ローカルCUDA）、または最高画質が要るときは/wan3-video（Wan 3.0 API・同じプロンプトとシートを流用）。
 ---
 
 # 画像なし動画制作ワークフロー（MiniMax H3 R2V・キーフレームなし）
@@ -32,6 +32,36 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 - `.claude/skills/colab-video/SKILL.md`（Colabで生成する場合の`build_h3_run_package.py`・ノートブック運用）。
 
 **引き継がないもの**: `## Style block`の全プロンプト逐語埋め込み（本スキルはチャプター毎のStyle lineに置き換える）、キーフレーム生成・キーフレーム検証（ステップ5〜6）、I2Vモード、「クリップNの終了フレーム＝クリップN+1の開始フレーム」の共有規則。
+
+## 映画品質モード（既定・2026-10-26〜）
+
+**本スキルの既定は「映画品質モード」**。`36_fukugyun_midnight_scare_cinematic`（夜の繁華街）と`37_sobaya_beer_ocean_kaiju`（海＋巨大そば屋・SF怪獣映画風）で確立し、ユーザーが「この品質で今後も作ってほしい」と承認した作り方。ゲート（分割→動き→シート→音声→`APPROVED`→プロンプト）・Cast限定・EXACTLY ONCE・NG要素ガード・画面内テキスト禁止は従来どおりで、**変わるのはプロンプトの書式・1回の生成の中身・テイク数・仕上げ**。従来の1行Motion prompt形式（5章）は**互換モード**として残す（ユーザーが明示したときだけ使う）。
+
+| # | 映画品質モードの規則 | 理由（実測） |
+|---|---|---|
+| 1 | プロンプトは**公式Ref2VAの6セクション形式**（`subject_definitions` / `summary` / `retention_analysis` / `detailed_description` / `overall_soundscape` / `non_diegetic_music`。公式 https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills/h3-prompt-writing の`references/ref-en.txt`）。シートは`<Subject N> is … in <Picture N>`で定義し、ガード（EXACTLY ONCE・仮面の否定形・テキスト禁止）は`detailed_description`の中に書く | H3はこの形式で学習されている。1行形式（B版）より絵の破綻が少なかった |
+| 2 | **同じ場所・同じ光が続く区間は1回の生成にまとめ、その中で`[Shot N] At MM:SS.mmm, the shot cuts to …`でカットを割る**（1章3〜4ショット・6〜15秒）。セリフのwavは**1生成の頭から鳴る前提**で置く（セリフ章は単独ショット、または最初のショットに置く） | 別生成だと街並み・光・衣装が章ごとに変わる。生成内のカットは揃う |
+| 3 | 「cinematic」等の抽象語を使わず、**レンズ（35/85mm相当）・被写界深度・光源と色温度・質感（濡れた路面・霧・水しぶき）・モーションブラー・センサーグレイン**を具体的に書く | 公式ガイドの指示どおり。実写感は光の書き込みで決まった |
+| 4 | **2.39:1で切り出す前提**の構図（`Key subjects are kept inside the central horizontal band of the frame for a 2.39:1 extraction.`） | 仕上げでシネスコにクロップする |
+| 5 | **共通の被写体記述は文字列で共有**し、全章で同じ言葉にする（`templates/make_prompts_example.py`のDESC辞書方式。`chN_prompt.txt`はスクリプトで生成し、`script.md`には```text```ブロックで逐語埋め込み） | 人物の言い方が章ごとに揺れると別人になる |
+| 6 | **各章1テイク**（seed 42。2026-10-26ユーザー指定「2テイク作る必要はない」）。回収後の確認でFAILした章だけ、プロンプトを直して`--fix --chapters chN`で作り直す。別シードの2テイク目（`chNb`=seed 1234）はユーザーが明示的に頼んだときだけ作る（`templates/gen_all_workflows_example.sh`の`TAKES`） | 36・37では2テイク作ったが、ユーザーの判断で不要とされた（費用が倍になる割に差が小さい） |
+| 7 | 劇伴はH3に描かせない（`non_diegetic_music: N/A`）。**結合時に1本通しで敷く**（ライセンス済み音源、無ければ仮の低音ドローン＋章頭の重低音ヒット） | 章ごとに曲が変わるのを防ぐ |
+| 8 | 仕上げは`finish_cinematic.py`（2.39:1クロップ→1920x804 lanczos・1920x1080レターボックス、軽いグレード・周辺減光・グレイン、2パスloudnorm -14 LUFS、任意で最終章のスマッシュカット、末尾の暗転） | H3の生出力は「素材」。映画っぽさの最後の一押し |
+
+機械検証は`validate_no_image_run_bundle.py`ではなく**`check_ref2va_bundle.py`**（6セクションの順序・`<Picture N>`/`<Audio N>`の接続数・物理ファイル・17k+5グリッド・カット時刻・`script.md`への逐語埋め込み）。`chapter_plan.md`の`APPROVED`は従来どおり人間の承認で付ける。
+
+```
+python3 .claude/skills/no-image-video/check_ref2va_bundle.py 03_SCRIPTS/<NN>_<slug>
+python3 .claude/skills/no-image-video/finish_cinematic.py 03_SCRIPTS/<NN>_<slug> --mode h3 --chapters 9 \
+    --takes "a b a a b a a b a" --hits 5,8,9 --out finals/<slug>.mp4      # [--smash-last] [--music score.wav]
+python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav   # セリフ章の声の再現度（目安）
+```
+
+**モブを大勢映す章**: 主役のモブは1人1枚のシート。背景の群衆は、ユーザーが群衆シート（15人を並べた1枚など）を出してくれたら`Mob_crowd_*_sheet.png`として**群衆が映る章だけ**に渡す（服装・年齢層の参考。`retention_analysis`は`weak_reference`）。群衆シートに主役が含まれる場合は「群衆の中に同じ人物が2人目として出ない」と本文に書く。群衆シートが無いときは「顔の判別できない遠景の群衆」の文章指定でよい（ユーザー承認済みの例外として`chapter_plan.md`に記録）。群衆シートの1コマを切り出して2倍にしたものを主役シートに使ってよい（37の父・娘・カップル。解像度が低いので顔の再現は甘くなる — 主役だけ高解像度シートを貰えると最善）。
+
+**巨大キャラ（怪獣・巨大そば屋）**: 「several hundred meters tall」と書くだけでは数十メートル級に縮む。毎ショットに**大きさの比較対象**（豆粒のような人・パラソル・監視台・戦闘機・雲）を書き、`thin atmospheric haze softens the parts of him that are far away`を入れる。人のすぐ後ろに巨人を置く構図は縮みやすい（37 ch7）。
+
+**実測の品質評価（2026-10・37）**: H3はTurbo 8step v1.0 / 8step v1.1 / 4step v1.0のどれもユーザーの目視で同等の画質。**画質の最上位が要るときはWan 3.0（`/wan3-video`）**で、同じプロンプト・シート・wavから2208x948（21:9）を直接生成でき、ユーザー評価で明確に高画質だった。H3で起きた事故（37）: 同一人物の重複（娘が2人）、巨大さの縮み、機体数のズレ（4機→5〜6機）、地上への爆炎、仮面の口が開く、海の色の連続性（9章でビールの海が青に戻る — Scene ledgerの状態は**映像の説明文に**書く。soundscapeにだけ書くと効かない）。
 
 ## ワークフロー全体（順に実行する・ゲートを飛ばさない）
 
@@ -135,6 +165,8 @@ seedanceステップ2と同一（等速＋1.5倍速の2テイク→ユーザー�
 - **ナレーションもR2Vに添付する**（I2Vが無いため）。プロンプトでは "says in an off-screen voiceover" と書き、映っている全員に "lips remain completely closed" を添える（公式H3ガイドの記法）。ffmpegで後載せする場合はDialogue audio表に`laid over at assembly`と明記し、そのチャプターの音声添付なし・`no speech`扱いで書く。
 
 ## 5. `script.md`とプロンプト作成（全チャプターAPPROVED後）
+
+> **既定の映画品質モードでは**、台帳（Character references・Scene ledger・Prop state ledger・Camera plan・Dialogue audio）は本章どおり書き、各章のプロンプトは上の「映画品質モード」の6セクション形式で`make_prompts.py`から生成して`script.md`に```text```ブロックで逐語埋め込みする（実例: `03_SCRIPTS/37_sobaya_beer_ocean_kaiju/script.md`）。以下の「H3 inputs表」「Motion promptの構造（1行）」「Style line」は**互換モード**の書式。ただしStyle lineの「映るものだけを書く」原則は6セクション形式でも守る（`subject_definitions`に映らないキャラを定義しない）。
 
 `script.md`は英語（セリフ原文のみ日本語）。構成:
 
@@ -277,6 +309,8 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 
 ## 8. 結合
 
+**映画品質モードでは`finish_cinematic.py`で結合・仕上げする**（テイク選択`--takes`、LoRA A/Bの成果物は`--src out_v11 --suf __v11`、Wan 3.0の成果物は`--mode wan --src out_wan3`）。結合後は長さとコンタクトシートを確認し、セリフ章は`check_voice.py`で声の再現度を見る（0.9未満は必ず聴く）。書き出しは1本約1GB（90秒・グレイン入り）になるので、共有用には別途圧縮する。互換モードは以下:
+
 `/local-video`ステップ8と同一（既定は埋め込み音声をそのまま使い、ffmpeg concat。VOICEVOX使用時はdrawtextでクレジット焼き込み）。つなぎ目はCUTなので絵飛びのチェックは「場所・時間帯・キャラの衣装が章間で変わっていないか」に絞る。
 
 - **ランに置く`assemble.sh`はbash 3.2で書く**（macOS標準のbashは3.2で、`declare -A`＝連想配列が使えず`invalid option`で落ちる。実測済み）。チャプター→wavの対応は`case`文にする。
@@ -290,5 +324,5 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 - [ ] `check_workflows_match_script.py`がOK（ワークフローJSONと台本の突き合わせ）
 - [ ] セリフ音声はユーザーが採用テイクを選び、2.0秒以上に整えた
 - [ ] 全Motion promptが「添付宣言→Style line（映るものだけ）→開始配置→ビート→セリフ→カメラ→終了状態→ガード→音」の構造で、承認済みビートを漏れなく含む
-- [ ] `validate_no_image_run_bundle.py`がOK
+- [ ] `validate_no_image_run_bundle.py`がOK（互換モード）／`check_ref2va_bundle.py`がOK（映画品質モード）
 - [ ] 全チャプターを一括生成し、回収後に全チャプターをチェックリストで確認（FAIL分は修正版で回し直し）、結合後の通し確認を行った
