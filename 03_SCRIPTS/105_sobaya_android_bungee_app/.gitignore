@@ -1,0 +1,8 @@
+remotion/node_modules/
+takes/
+.contact/
+# Chapter mp4s collected from Colab, and the staged copies Remotion renders from
+ch?.mp4
+remotion/public/*.wav
+105_sobaya_android_bungee_app_final.mp4
+105_sobaya_android_bungee_app_contact_sheet.png
