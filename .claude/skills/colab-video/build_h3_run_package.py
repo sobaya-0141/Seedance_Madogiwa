@@ -27,8 +27,18 @@ h3_inputs/・h3_outputs/も全ランで共有の置き場なので、同名だ�
 
 ビルドのたびに h3/REVISIONS.md へ1行追記するので、どのzip・ノートブックが何版かを後から辿れる。
 
+**既定は480pの確認版（2026-10-28〜）**: まず480p（短辺480px・Turbo 8step）で全チャプターを短時間で回し、
+動き・構図・小物の状態を確認してから、OKのチャプターを `--hq`（H3ネイティブ768p）で作り直す。
+ラン内の ch*_workflow.json は768pのまま（正典）で、480pへの縮小はzipに入れるコピーだけに掛ける。
+確認版の名前には `_p480` が付く（zip・ノートブック・Drive出力先とも）ので、高画質版と取り違えない。
+
+zipには h3_package.json（担当チャプター・出力先・画質）を同梱する。生成中のColabセッションの
+h3_inputs/queue/ にこのzipを置くと、セットアップを飛ばして同じセッションで続けて生成される（ノートブック不要）。
+
 usage:
-  python3 build_h3_run_package.py 03_SCRIPTS/<NN>_<slug>                      # 初回
+  python3 build_h3_run_package.py 03_SCRIPTS/<NN>_<slug>                      # 初回（480p確認版）
+  python3 build_h3_run_package.py 03_SCRIPTS/<NN>_<slug> --hq                 # 高画質版（768p）
+  python3 build_h3_run_package.py 03_SCRIPTS/<NN>_<slug> --hq --chapters ch2,ch5   # OKのチャプターだけ高画質で
   python3 build_h3_run_package.py 03_SCRIPTS/<NN>_<slug> --fix --chapters ch3,ch7   # 修正版
   python3 build_h3_run_package.py 03_SCRIPTS/<NN>_<slug> --rev retake2        # 任意のラベル
 """
@@ -62,6 +72,50 @@ L4_SAGE_SEC_PER_FRAME = L4_SEC_PER_FRAME_STEP * STEPS
 OVERHEAD_MIN = 3                     # チャプターあたりのロード/VAE等
 # リビジョン名はzip名・ノートブック名・Driveディレクトリ名になるので、安全な文字だけに縛る。
 REV_RE = re.compile(r"[a-z0-9][a-z0-9_-]*\Z")
+PREVIEW_SHORT = 480   # 確認版の短辺（px）。H3は縦横32の倍数が必要（1344x768 -> 832x480）
+PREVIEW_TAG = "p480"
+
+
+def preview_size(w, h, short=PREVIEW_SHORT):
+    """短辺をshortにし、長辺を32の倍数へ丸める（縦長・横長どちらも）。"""
+    if w >= h:
+        return int(round(w * short / h / 32)) * 32, short
+    return short, int(round(h * short / w / 32)) * 32
+
+
+def effective_rev(rev, preview):
+    """確認版は版名に p480 を付ける（初回=p480、修正=p480_fix …）。"""
+    if not preview:
+        return rev
+    return f"{PREVIEW_TAG}_{rev}" if rev else PREVIEW_TAG
+
+
+def write_manifest_and_retarget(zip_path, slug, chapters, names, quality, preview):
+    """zipを作り直し、確認版ならworkflowの解像度を縮め、h3_package.jsonを同梱する。"""
+    tmp = zip_path + ".tmp"
+    sizes = {}
+    with zipfile.ZipFile(zip_path) as zin, zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            base = os.path.basename(item.filename)
+            if preview and item.filename.startswith(f"{slug}/ch") and base.endswith("_workflow.json"):
+                g = json.loads(data)
+                for node in g.values():
+                    ins = node.get("inputs", {})
+                    if str(node.get("class_type", "")).startswith("MiniMaxH3") and "width" in ins:
+                        ins["width"], ins["height"] = preview_size(int(ins["width"]), int(ins["height"]))
+                        sizes[base[: -len("_workflow.json")]] = f"{ins['width']}x{ins['height']}"
+                data = json.dumps(g, ensure_ascii=False, indent=1).encode()
+            if item.filename == f"{slug}/h3_package.json":
+                continue
+            zout.writestr(item, data)
+        man = {"slug": slug, "rev": names["rev"], "quality": quality, "chapters": chapters,
+               "out_drive": names["out_drive"], "built": str(datetime.datetime.now().replace(microsecond=0))}
+        if sizes:
+            man["preview_sizes"] = sizes
+        zout.writestr(f"{slug}/h3_package.json", json.dumps(man, ensure_ascii=False, indent=1))
+    os.replace(tmp, zip_path)
+    return sizes
 
 
 def existing_revs(h3_dir, slug):
@@ -73,10 +127,10 @@ def existing_revs(h3_dir, slug):
     return revs
 
 
-def next_fix_rev(used):
-    """未使用の fix / fix2 / fix3 … を返す（fix を fix1 とみなして連番）。"""
+def next_fix_rev(used, preview=False):
+    """未使用の fix / fix2 / fix3 … を返す（fix を fix1 とみなして連番。確認版は p480_fix … で数える）。"""
     n = 1
-    while ("fix" if n == 1 else f"fix{n}") in used:
+    while effective_rev("fix" if n == 1 else f"fix{n}", preview) in used:
         n += 1
     return "fix" if n == 1 else f"fix{n}"
 
@@ -85,6 +139,7 @@ def names_for(slug, rev):
     """リビジョンから、ユニークな成果物名とDriveパスをまとめて作る。"""
     sfx = f"_{rev}" if rev else ""
     return {
+        "rev": rev,
         "zip": f"{slug}_h3_bundle{sfx}.zip",
         "nb": lambda mode: f"{slug}_h3_{mode}{sfx}.ipynb",
         "zip_drive": f"{DRIVE_IN}/{slug}_h3_bundle{sfx}.zip",
@@ -200,7 +255,7 @@ def patch_cell1(src, chapters, zip_drive_path, out_drive_dir):
     return src
 
 
-def build_notebook(canonical, mode, chapters, slug, rev, names, out_path):
+def build_notebook(canonical, mode, chapters, slug, rev, names, out_path, quality=""):
     nb = json.load(open(canonical))
     patched = False
     label = f"{slug}（{rev}）" if rev else slug
@@ -210,11 +265,12 @@ def build_notebook(canonical, mode, chapters, slug, rev, names, out_path):
             head = (f"**{label} の {mode.upper()} チャプター専用（build_h3_run_package.pyで自動生成）** — "
                     f"もう一方のモードのノートブックと別セッションで同時に回してよい\n\n"
                     f"- 担当チャプター: `{' '.join(chapters)}`\n"
+                    f"- 画質: {quality or '768p'}（480p確認版でOKなら `--hq` で作り直す）\n"
                     f"- 入力zip: `{names['zip']}`（Driveの`h3_inputs/`へ置く）\n"
                     f"- 出力先: `{names['out_drive']}`\n\n")
             if rev:
-                head += (f"> 修正版（{rev}）。zip・このノートブック・Drive出力先は初回版と別名になっている。"
-                         f"初回版の出力先を流用すると、セル7が既存mp4を見て全チャプターをスキップする。\n\n")
+                head += (f"> 版「{rev}」。zip・このノートブック・Drive出力先は他の版と別名になっている。"
+                         f"別の版の出力先を流用すると、セル7が既存mp4を見て全チャプターをスキップする。\n\n")
             c["source"] = head + src
             continue
         if c["cell_type"] == "code" and src.startswith("#@title 1."):
@@ -234,6 +290,8 @@ def main():
     ap.add_argument("--chapters", default="",
                     help="このパッケージで回すチャプターを絞る（例 ch3,ch7）。既定は全チャプター。"
                          "修正版で「直すチャプターだけ回す」ときに使う")
+    ap.add_argument("--hq", action="store_true",
+                    help="高画質版（H3ネイティブ768p）で作る。既定は480pの確認版（名前に _p480 が付く）")
     ap.add_argument("--notebook", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "h3_colab.ipynb"),
                     help="正典ノートブック（既定: スキル同梱のh3_colab.ipynb）")
     a = ap.parse_args()
@@ -256,8 +314,9 @@ def main():
     os.makedirs(h3_dir, exist_ok=True)
 
     used = existing_revs(h3_dir, slug)
+    preview = not a.hq
     if a.fix:
-        rev = next_fix_rev(used)
+        rev = next_fix_rev(used, preview)
     elif a.rev:
         rev = a.rev
         if not REV_RE.match(rev):
@@ -265,17 +324,21 @@ def main():
                              "（zip名・ノートブック名・Driveディレクトリ名になる）")
     else:
         rev = ""
-        if "" in used:
+        if effective_rev("", preview) in used:
             print(f"⚠ 既に {slug}_h3_bundle.zip がある — 初回版を上書きする。"
                   " Colabで一度回した後の修正なら --fix を付けて別名の修正版にすること"
                   "（同名だとDriveのzipと出力先を取り違える）")
-    if rev and rev in used:
-        raise SystemExit(f"リビジョン「{rev}」は既に {slug}_h3_bundle_{rev}.zip として存在する — 別の名前にする")
+    if rev and effective_rev(rev, preview) in used:
+        raise SystemExit(f"リビジョン「{effective_rev(rev, preview)}」は既に存在する — 別の名前にする")
+    rev = effective_rev(rev, preview)
+    quality = f"preview {PREVIEW_SHORT}p" if preview else "hq 768p"
 
     names = names_for(slug, rev)
     ensure_tools(run_dir)
     zip_path = os.path.join(h3_dir, names["zip"])
-    size = make_zip(run_dir, zip_path)
+    make_zip(run_dir, zip_path)
+    sizes = write_manifest_and_retarget(zip_path, slug, list(chapters), names, quality, preview)
+    size = os.path.getsize(zip_path)
     verify_zip(zip_path, slug)
 
     made = []
@@ -284,28 +347,34 @@ def main():
         if not chs:
             continue
         out_path = os.path.join(h3_dir, names["nb"](mode))
-        build_notebook(a.notebook, mode, chs, slug, rev, names, out_path)
+        build_notebook(a.notebook, mode, chs, slug, rev, names, out_path, quality)
         made.append((mode, chs, out_path))
 
     log_revision(h3_dir, slug, rev, list(chapters), names, made)
 
-    print(f"★ {slug}: チャプター分類（I2V/R2Vの2セッション並列用）"
-          + (f" — 修正版 {rev}" if rev else ""))
+    # 所要は画素数にほぼ比例（480pは768pの約4割）。実測が取れたら係数を更新する
+    px = 0.39 if preview else 1.0
+    print(f"★ {slug}: 画質 {quality}" + (f"（{', '.join(sorted(set(sizes.values())))}）" if sizes else "")
+          + " — チャプター分類（I2V/R2Vの2セッション並列用）" + (f" — 版 {rev}" if rev else ""))
     for ch, (mode, frames) in chapters.items():
-        est = f"（{frames}f≒{frames / 24:.1f}s・L4+sage目安 {frames * L4_SAGE_SEC_PER_FRAME / 60 + OVERHEAD_MIN:.0f}分）" if frames else ""
+        est = f"（{frames}f≒{frames / 24:.1f}s・L4+sage目安 {frames * L4_SAGE_SEC_PER_FRAME * px / 60 + OVERHEAD_MIN:.0f}分）" if frames else ""
         print(f"  {ch}: {mode.upper()} {est}")
     print(f"\n★ 生成物 → {h3_dir}/")
     print(f"  {os.path.basename(zip_path)}（{size / 2**20:.1f} MB）→ Driveの {DRIVE_IN}/ へ置く")
     for mode, chs, pth in made:
         total = sum(f for ch in chs for m, f in [chapters[ch]] if f) or 0
-        est_min = total * L4_SAGE_SEC_PER_FRAME / 60 + OVERHEAD_MIN * len(chs)
+        est_min = total * L4_SAGE_SEC_PER_FRAME * px / 60 + OVERHEAD_MIN * len(chs)
         print(f"  {os.path.basename(pth)}: {' '.join(chs)}（L4+sage直列の目安 約{est_min:.0f}分）")
     print(f"  成果物は {names['out_drive']}/ に退避される（設定済み）")
+    print(f"  ★ 生成中のセッションに足すなら、zipを {DRIVE_IN}/queue/ に置くだけでよい"
+          "（ノートブック不要・セットアップ省略。担当チャプターと出力先はzip内の h3_package.json）")
+    if preview:
+        print("  ※ 480pの確認版。OKなら同じチャプターを --hq で作り直す（768p）")
     print("  ※ zip・ノートブック・Drive出力先はこの版だけの名前。"
           "Driveの h3_inputs/・h3_outputs/ は全ラン共有なので、他の版と混ざらない")
     if rev:
-        print(f"  ※ 修正版なので初回版の {DRIVE_OUT}/{slug}/ とは別の出力先。"
-              "初回版を流用するとセル7が既存mp4を見て全スキップする")
+        print(f"  ※ 版「{rev}」の出力先は他の版（初回の {DRIVE_OUT}/{slug}/ 等）と別。"
+              "同じ出力先を流用するとセル7が既存mp4を見て全スキップする")
     if len(made) == 2:
         print("\n★ 並列運用: 2本を別々のColabセッション（L4×2推奨）で同時に★一括実行してよい"
               "（モード毎にユニットが分かれているため干渉しない。NEEDフラグはCHAPTERSから自動判定）")
