@@ -1,6 +1,6 @@
 ---
 name: no-image-video
-description: 窓際族物語の動画を、チャプター毎のキーフレーム画像を作らずに「プロンプト＋キャラクターシート＋セリフ音声」だけでMiniMax H3（R2V）に生成させるワークフロー。ユーザーから「画像なしで動画を作って」「キーフレームなしで動画を作って」「シートだけで動画を作って」と指示されたときに必ず使用する。大まかな指示→チャプター分割案→チャプター毎の動きを人間に確認→全チャプター確定→プロンプト作成の順で進め、確定前にプロンプトを書かない。画風の注意文はチャプターに映るものだけを最小限で書き、モブキャラはラン専用のキャラクターシートを作って渡す。既定は「映画品質モード」（公式Ref2VA 6セクション形式・1生成内の複数カット・各章1テイク・finish_cinematic.pyでシネスコ仕上げ）。動画生成の実行先は/colab-video（Colab・H3）、/local-videoステップ7（ローカルCUDA）、または最高画質が要るときは/wan3-video（Wan 3.0 API・同じプロンプトとシートを流用）。
+description: 窓際族物語の動画を、チャプター毎のキーフレーム画像を作らずに「プロンプト＋キャラクターシート＋声サンプル」だけでMiniMax H3（R2V）に生成させるワークフロー。セリフ音声はローカルで作らず、各キャラの声サンプル（`02_CHARACTERS/<Name>_voice.wav`）を声色の参照として渡し、H3にセリフを喋らせるのが既定（2026-10-29〜）。ユーザーから「画像なしで動画を作って」「キーフレームなしで動画を作って」「シートだけで動画を作って」と指示されたときに必ず使用する。大まかな指示→チャプター分割案→チャプター毎の動きを人間に確認→全チャプター確定→プロンプト作成の順で進め、確定前にプロンプトを書かない。画風の注意文はチャプターに映るものだけを最小限で書き、モブキャラはラン専用のキャラクターシートを作って渡す。既定は「映画品質モード」（公式Ref2VA 6セクション形式・1生成内の複数カット・各章1テイク・finish_cinematic.pyでシネスコ仕上げ）。動画生成の実行先は/colab-video（Colab・H3）、/local-videoステップ7（ローカルCUDA）、または最高画質が要るときは/wan3-video（Wan 3.0 API・同じプロンプトとシートを流用）。
 ---
 
 # 画像なし動画制作ワークフロー（MiniMax H3 R2V・キーフレームなし）
@@ -14,7 +14,7 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 | | `/seedance` `/local-video` `/colab-video` | **本スキル** |
 |---|---|---|
 | チャプター（クリップ）毎の画像 | 開始/終了キーフレームをチェーン生成し、動画モデルに渡す | **作らない・渡さない** |
-| 動画モデルへの入力 | キーフレーム＋シート＋音声 | **プロンプト＋キャラクターシート（＋物語上重要な小道具の参照画像・場所シート）＋セリフ音声だけ** |
+| 動画モデルへの入力 | キーフレーム＋シート＋音声 | **プロンプト＋キャラクターシート（＋物語上重要な小道具の参照画像・場所シート）＋声サンプルだけ**（セリフはH3が声サンプルの声色で喋る。「声サンプル方式」参照） |
 | 生成モード | セリフなし=I2V / あり=R2V | **全チャプターR2V**（シートを渡せる唯一のモード。セリフなしチャプターも音声なしR2V） |
 | 画風の指定 | ラン全体で1行の`## Style block`を全プロンプトに逐語埋め込み | **チャプター毎の最小限のStyle line**（そのチャプターに映るキャラ・物だけ） |
 | モブキャラ | 文章指定（シート不要） | **ラン専用シート`Mob_<slug>_sheet.png`を必ず作る**（キーフレームが無いため、シートが唯一の見た目の拘束） |
@@ -27,20 +27,20 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 
 作業前に該当セクションを必ず読むこと:
 
-- `.claude/skills/seedance/SKILL.md` **ステップ0**（ラン専用ディレクトリ・シートの物理同梱・basename参照・全シートをReadで開く）、**ステップ1**のうち Story Formula・禁止事項 / Prop state ledger・物理整合性 / Scene ledger・昼夜ジャンプ防止 / Camera plan・単調防止 / Fixture layout / 話者分離（1チャプター1話者）/ リップシンク精度 / 言語ルール（`script.md`は英語・セリフのみ日本語）/ 画面内テキスト禁止 / 音響設計（`Soundscape:`・`Music:`）/ キャラ正典（`PRESERVE:`）/ 人数固定 / 話者バインディング、**ステップ2**（音声2テイク→ユーザー確認→確定、Dialogue audio表、VOICEVOXクレジット）。
-- `.claude/skills/local-video/SKILL.md` **ステップ3**のうち「チャプターの定義（H3の入力制限）」「Motion promptの内部構造（公式h3-prompt-writing準拠）」、**ステップ4**の2.0秒パディング、**ステップ7〜8**（ComfyUI実行・結合）。
+- `.claude/skills/seedance/SKILL.md` **ステップ0**（ラン専用ディレクトリ・シートの物理同梱・basename参照・全シートをReadで開く）、**ステップ1**のうち Story Formula・禁止事項 / Prop state ledger・物理整合性 / Scene ledger・昼夜ジャンプ防止 / Camera plan・単調防止 / Fixture layout / 話者分離（声サンプル方式では1チャプター3話者まで。下記）/ リップシンク精度 / 言語ルール（`script.md`は英語・セリフのみ日本語）/ 画面内テキスト禁止 / 音響設計（`Soundscape:`・`Music:`）/ キャラ正典（`PRESERVE:`）/ 人数固定 / 話者バインディング、**ステップ2**のうちDialogue audio表・VOICEVOXクレジット（音声2テイク→ユーザー確認の工程は、声サンプル方式では行わない。互換の「セリフwav方式」を使うときだけ）。
+- `.claude/skills/local-video/SKILL.md` **ステップ3**のうち「チャプターの定義（H3の入力制限）」「Motion promptの内部構造（公式h3-prompt-writing準拠）」、**ステップ4**の2.0秒パディング（セリフwav方式のときだけ）、**ステップ7〜8**（ComfyUI実行・結合）。
 - `.claude/skills/colab-video/SKILL.md`（Colabで生成する場合の`build_h3_run_package.py`・ノートブック運用）。
 
 **引き継がないもの**: `## Style block`の全プロンプト逐語埋め込み（本スキルはチャプター毎のStyle lineに置き換える）、キーフレーム生成・キーフレーム検証（ステップ5〜6）、I2Vモード、「クリップNの終了フレーム＝クリップN+1の開始フレーム」の共有規則。
 
 ## 映画品質モード（既定・2026-10-26〜）
 
-**本スキルの既定は「映画品質モード」**。`36_fukugyun_midnight_scare_cinematic`（夜の繁華街）と`37_sobaya_beer_ocean_kaiju`（海＋巨大そば屋・SF怪獣映画風）で確立し、ユーザーが「この品質で今後も作ってほしい」と承認した作り方。ゲート（分割→動き→シート→音声→`APPROVED`→プロンプト）・Cast限定・EXACTLY ONCE・NG要素ガード・画面内テキスト禁止は従来どおりで、**変わるのはプロンプトの書式・1回の生成の中身・テイク数・仕上げ**。従来の1行Motion prompt形式（5章）は**互換モード**として残す（ユーザーが明示したときだけ使う）。
+**本スキルの既定は「映画品質モード」**。`36_fukugyun_midnight_scare_cinematic`（夜の繁華街）と`37_sobaya_beer_ocean_kaiju`（海＋巨大そば屋・SF怪獣映画風）で確立し、ユーザーが「この品質で今後も作ってほしい」と承認した作り方。ゲート（分割→動き→シート→`APPROVED`→プロンプト）・Cast限定・EXACTLY ONCE・NG要素ガード・画面内テキスト禁止は従来どおりで、**変わるのはプロンプトの書式・1回の生成の中身・テイク数・仕上げ**。従来の1行Motion prompt形式（5章）は**互換モード**として残す（ユーザーが明示したときだけ使う）。
 
 | # | 映画品質モードの規則 | 理由（実測） |
 |---|---|---|
 | 1 | プロンプトは**公式Ref2VAの6セクション形式**（`subject_definitions` / `summary` / `retention_analysis` / `detailed_description` / `overall_soundscape` / `non_diegetic_music`。公式 https://github.com/MiniMax-AI/MiniMax-H3/tree/main/skills/h3-prompt-writing の`references/ref-en.txt`）。シートは`<Subject N> is … in <Picture N>`で定義し、ガード（EXACTLY ONCE・仮面の否定形・テキスト禁止）は`detailed_description`の中に書く | H3はこの形式で学習されている。1行形式（B版）より絵の破綻が少なかった |
-| 2 | **同じ場所・同じ光が続く区間は1回の生成にまとめ、その中で`[Shot N] At MM:SS.mmm, the shot cuts to …`でカットを割る**（1章3〜4ショット・6〜15秒）。セリフのwavは**1生成の頭から鳴る前提**で置く（セリフ章は単独ショット、または最初のショットに置く） | 別生成だと街並み・光・衣装が章ごとに変わる。生成内のカットは揃う |
+| 2 | **同じ場所・同じ光が続く区間は1回の生成にまとめ、その中で`[Shot N] At MM:SS.mmm, the shot cuts to …`でカットを割る**（1章3〜4ショット・6〜15秒）。声サンプル方式（既定）ではセリフの位置は自由（`At MM:SS.mmm`で喋り始めを書く）。互換のセリフwav方式ではwavが**1生成の頭から鳴る前提**で置く（セリフ章は単独ショット、または最初のショットに置く） | 別生成だと街並み・光・衣装が章ごとに変わる。生成内のカットは揃う |
 | 3 | 「cinematic」等の抽象語を使わず、**レンズ（35/85mm相当）・被写界深度・光源と色温度・質感（濡れた路面・霧・水しぶき）・モーションブラー・センサーグレイン**を具体的に書く | 公式ガイドの指示どおり。実写感は光の書き込みで決まった |
 | 4 | **2.39:1で切り出す前提**の構図（`Key subjects are kept inside the central horizontal band of the frame for a 2.39:1 extraction.`） | 仕上げでシネスコにクロップする |
 | 5 | **共通の被写体記述は文字列で共有**し、全章で同じ言葉にする（`templates/make_prompts_example.py`のDESC辞書方式。`chN_prompt.txt`はスクリプトで生成し、`script.md`には```text```ブロックで逐語埋め込み） | 人物の言い方が章ごとに揺れると別人になる |
@@ -54,8 +54,58 @@ description: 窓際族物語の動画を、チャプター毎のキーフレー�
 python3 .claude/skills/no-image-video/check_ref2va_bundle.py 03_SCRIPTS/<NN>_<slug>
 python3 .claude/skills/no-image-video/finish_cinematic.py 03_SCRIPTS/<NN>_<slug> --mode h3 --chapters 9 \
     --takes "a b a a b a a b a" --hits 5,8,9 --out finals/<slug>.mp4      # [--smash-last] [--music score.wav]
-python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav   # セリフ章の声の再現度（目安）
+python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav   # セリフwav方式のときだけ: 添付wavがそのまま鳴っているか（目安）
 ```
+
+## 声サンプル方式（既定・2026-10-29〜）
+
+**セリフ音声はローカルで作らない。** 各キャラの声サンプルを`<Audio N>`として渡し、公式Ref2VAの**audio reference**（声色だけを参照し、信号はコピーしない）でH3にセリフを喋らせる（`40_okayaman_booth_arrival`・`41_okayaman_hontai`で使い、2026-10-29にユーザーが「声はサンプルを渡してH3に作らせて。今後はこれを基本に」と既定化）。実例のプロンプトは`03_SCRIPTS/41_okayaman_hontai/ch1_prompt.txt`。従来の「Irodori-TTS/VOICEVOXでセリフwavを作り、`AS-IS`で鳴らす」方式は**セリフwav方式（互換）**として4b章に残し、ユーザーが明示したとき、または声サンプル方式で声・セリフが崩れて直らない章だけで使う。
+
+| 項目 | 声サンプル方式（既定） | セリフwav方式（互換） |
+|---|---|---|
+| `<Audio N>`の中身 | キャラの声サンプル`<Name>_voice.wav`（セリフとは別の発話） | そのセリフを読み上げたwav`chN_lineM_<char>.wav` |
+| セリフの声 | H3が`<d>`の文言を、サンプルの声色で生成 | 添付wavがそのまま鳴る |
+| 音声の事前制作・2テイク確認 | **なし**（ゲートが1つ減る） | あり（4b章） |
+| 1章の話者数 | **3人まで**（話者ごとにサンプル1つ。音声3ファイルの上限） | 1人 |
+| セリフの位置 | 自由（`At MM:SS.mmm`で喋り始めを指定） | 生成の頭から |
+| 章の尺 | セリフの読み上げ目安（日本語でおよそ1秒あたり7〜8モーラ）＋動作 | wav合計長＋約1秒 |
+
+**プロンプトの書き方（6セクション形式）**:
+
+```
+subject_definitions:
+<Subject 1> is <いーさんのDESC> in <Picture 1>.
+<Audio 1> is the voice-timbre reference for <Subject 1> (S1).
+
+summary:
+[reference generation + audio reference] ... <Subject 1> begs for work in the voice of <Audio 1>.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1]): fully_preserved - ...
+<Audio 1>: reference - only the voice timbre of <Subject 1> is taken from it, without copying the original signal or its words; his line is newly performed in that voice.
+
+detailed_description:
+... At 00:00.400, <Subject 1> (S1) says in the voice timbre of <Audio 1>, <d>[Japanese] 仕事ください!</d> His mouth moves only while he speaks; every other person's mouth stays closed.
+```
+
+- `<d>`の中はセリフ原文（公式ルールで`〜`や繰り返し記号は外し、`.` `?` `!`で終える。`！！`→`!`）。画面に出す字幕・`script.md`の台帳は原文のまま。
+- 話者が2〜3人の章は、話者ごとに`<Audio N>`と`(Sx)`を1対1で結び、`detailed_description`では**誰の口が動くか**を毎回書く（喋り終わったら口を閉じる、非話者は閉じたまま）。話者交代は間を置くか、ショットを割ると崩れにくい。
+- 仮面のそば屋は「the voice comes from behind his mask; the mask's mouth slit never moves」と書く。モニター越しのおかやまんは「his voice plays from the monitor's speaker」。
+
+**声サンプルの用意（ステップ0で同梱する）**:
+
+| 話者 | 渡すサンプル |
+|---|---|
+| Irodori-TTSのキャラ（そば屋以外） | `02_CHARACTERS/<Name>_voice.wav`をそのままラン直下へ物理コピー |
+| そば屋 | `Sobaya_voice.wav`のコピーに`sobaya_monsterize.sh`をかけた`Sobaya_voice_monster.wav`（正典の声はモンスター加工後のため。加工済みサンプルでH3がモンスター声を再現できるかは未検証 — 最初に使うランで耳で確認し、結果をここに追記する） |
+| VOICEVOXのキャラ（たこさん・とーくん） | `VOICE_CAST.md`の話者設定で3〜8秒の任意の発話を1本作り、`<Name>_voice.wav`としてラン直下へ置く（VOICEVOXクレジットは従来どおり必要） |
+| モブ・ナレーション | `Narrator_voice.wav`。複数のモブが話す場合も同じサンプルでよいが、`subject_definitions`で年齢・性別・話し方を書き分ける |
+| 声サンプルが未登録のキャラ | ユーザーに方式（本人の録音／Irodori-TTSのキャプション指定・参照音声なし／VOICEVOX）を確認して1本作り、ユーザーが採用したら`02_CHARACTERS/<Name>_voice.wav`へ登録し、`VOICE_CAST.md`とキャラ設定mdの「声ファイル：」行を更新する |
+
+- サンプルは**2.0〜15.0秒**（H3の入力制限。短ければ末尾を無音で2.0秒に延ばす）。サンプルの文言は使わないことを`retention_analysis`に必ず書く（上の例の`without copying the original signal or its words`）。
+- `## Dialogue audio`表は「章・話者・セリフ原文・声サンプル・読み上げ目安秒」を書く（wavの実測長の列は不要）。
+- 回収後の声の確認は**耳で**行う（`check_voice.py`は添付wavがそのまま鳴っているかを測るもので、この方式では使えない）。見るのは「話者ごとに声が別人か・サンプルの声に似ているか」「セリフが一字一句どおりか（言い間違い・追加の台詞が無いか）」「喋っている人の口だけが動くか」。崩れた章は、まずプロンプトを直して作り直し、それでも直らなければその章だけセリフwav方式に切り替える。
+- **Wan 3.0（`/wan3-video`）で同じ方式が使えるかは未検証**。Wanで回すときは、検証するまでセリフwav方式で音声を用意する。
 
 **モブを大勢映す章**: 主役のモブは1人1枚のシート。背景の群衆は、ユーザーが群衆シート（15人を並べた1枚など）を出してくれたら`Mob_crowd_*_sheet.png`として**群衆が映る章だけ**に渡す（服装・年齢層の参考。`retention_analysis`は`weak_reference`）。群衆シートに主役が含まれる場合は「群衆の中に同じ人物が2人目として出ない」と本文に書く。群衆シートが無いときは「顔の判別できない遠景の群衆」の文章指定でよい（ユーザー承認済みの例外として`chapter_plan.md`に記録）。群衆シートの1コマを切り出して2倍にしたものを主役シートに使ってよい（37の父・娘・カップル。解像度が低いので顔の再現は甘くなる — 主役だけ高解像度シートを貰えると最善）。
 
@@ -69,9 +119,9 @@ python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav
 1. **チャプター分割案**（`chapter_plan.md`・日本語）→ **ユーザー確認（ゲート1）**
 2. **チャプター毎の動きの詳細化**（開始配置・ビート・終了状態・カメラ・セリフ・モブの外見）→ **ユーザー確認 → `Status: APPROVED`（ゲート2）**。全チャプターAPPROVEDまでプロンプトを1本も書かない
 3. **モブキャラクターシートの作成**（生成→仕様との照合→**ユーザー確認 → `Sheet: APPROVED`（ゲート3）**）。物語上重要な小道具があれば**小道具参照画像`Prop_<slug>.png`**、舞台の見た目を固定したい場所があれば**場所シート`Loc_<slug>_sheet.png`**も同梱し、ユーザー確認 → `Prop: APPROVED` / `Loc: APPROVED`
-4. セリフ音声の生成（2テイク→ユーザー確認→確定→2.0秒パディング）
+4. 声サンプルの用意（「声サンプル方式」。セリフ音声は作らない。互換のセリフwav方式のときだけ4b章の2テイク確認）
 5. `script.md`（英語）: 台帳＋各チャプターのH3 inputs表＋Motion prompt
-6. 機械検証（`validate_no_image_run_bundle.py`）
+6. 機械検証（映画品質モード=`check_ref2va_bundle.py`／互換モード=`validate_no_image_run_bundle.py`）
 7. 動画生成（**全チャプター一括**→回収後に全チャプター検証）: Colab（`/colab-video`）またはローカルCUDA（`/local-video`ステップ7）
 8. ffmpeg結合・クレジット（`/local-video`ステップ8）
 
@@ -89,7 +139,7 @@ python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav
 分割の根拠（H3の制約と本スキルの性質）:
 
 - 1チャプター＝1回のH3生成。**尺4〜15秒**、フレーム数は17k+5グリッド（90=3.75s, 107, 124=5.2s, 141=5.9s, 158=6.6s, 175, 192=8.0s, 209, 226, 243=10.1s, 260, 277, 294=12.25s, 311, 328, 345, 362=15.1s）。
-- **1チャプター1話者**（話者交代で割る）。同一話者でも音声は3ファイルまで。セリフのあるチャプターの尺は「wav合計長＋約1秒」。
+- **話者は1チャプター3人まで**（声サンプル方式。話者ごとに声サンプル1つで、音声3ファイルの上限に収める）。セリフのあるチャプターの尺は「セリフの読み上げ目安＋動作」。互換のセリフwav方式では1チャプター1話者（話者交代で割る）・尺は「wav合計長＋約1秒」。
 - **画像は9枚まで**＝そのチャプターに映るキャラのシート枚数（＋`height_lineup.png`＋そのチャプターに映る小道具参照画像`Prop_<slug>.png`＋そのチャプターの舞台の場所シート`Loc_<slug>_sheet.png`）。映るキャラ・小道具が多すぎて入らないなら、画面に映るものを減らすか、チャプターを割る。
 - **1チャプター＝1ショット**。キーフレーム共有が無いので、チャプター境界は原則**CUT（別アングル・別場所）**にする。動作の途中で境界を跨ぐ設計（歩いている最中で次章へ続く等）は避け、境界の直前で動作を一度止める・区切る。
 - **動きの少ないチャプターは90f（3.75s）以下**にする（低イベントの長尺はモデルが台本に無い動作を発明する。local-video「I2Vの弱点」と同じ性質がR2Vにもある）。
@@ -112,7 +162,7 @@ python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav
 - **前後のつなぎ**: 次章とのつなぎ（CUT / 連続。連続なら終了状態＝次章の開始配置を同じ言葉で書く）。
 - **モブの外見**（そのチャプターに映るモブがいれば末尾のモブ欄に）: 年齢感・体格・髪・顔立ち・制服/衣装（色まで）・帽子・小物。2人以上の同型モブは**見分けがつく差**（年齢・体格・髪）を必ず付ける。
 
-提示は全チャプターまとめて1回でよい（往復を減らす）。ユーザーの修正を反映し、**ユーザーが「OK」と言ったチャプターだけ`- Status: APPROVED`にする**。全チャプターがAPPROVEDになるまでステップ3以降のプロンプト作成へ進まない（モブシート生成・音声生成は、該当チャプターと外見・セリフが確定していれば先行してよい）。確定後にユーザーが内容を変えたら、そのチャプターを`DRAFT`に戻し、再確認後に該当プロンプトを書き直す。
+提示は全チャプターまとめて1回でよい（往復を減らす）。ユーザーの修正を反映し、**ユーザーが「OK」と言ったチャプターだけ`- Status: APPROVED`にする**。全チャプターがAPPROVEDになるまでステップ3以降のプロンプト作成へ進まない（モブシート生成・声サンプルの用意は、該当チャプターと外見・話者が確定していれば先行してよい）。確定後にユーザーが内容を変えたら、そのチャプターを`DRAFT`に戻し、再確認後に該当プロンプトを書き直す。
 
 ## 3. モブキャラクターシート（必須・ゲート3）
 
@@ -154,15 +204,20 @@ python3 .claude/skills/no-image-video/check_voice.py out/ch3.mp4 ch3_line1_x.wav
 - **Motion prompt**: 添付宣言で`<Picture N> = Loc_<slug>_sheet.png`を再宣言し、`PRESERVE:`を書く。シートに文字（看板・張り紙等）があっても画面内テキスト禁止は例外にしない。
 - **確認**: `chapter_plan.md`末尾の「場所シート」欄に`- Loc_<slug>_sheet.png — <説明> — Loc: DRAFT`を書き、画像をReadで開いて`PRESERVE:`列を書き起こしたうえでユーザーに見せ、承認後に`Loc: APPROVED`にする（検証スクリプトがこの行を見る）。
 
-- **モブの声**: `02_CHARACTERS/VOICE_CAST.md`の「ナレーション（窓際メンバー以外の発話全般）」行＝Irodori-TTS `Narrator_voice.wav`が既定。複数モブが話すときはシードを変えて声を分ける。VOICEVOX話者を使う場合はユーザーに確認し、クレジット義務（seedanceステップ2）に従う。H3は添付wavをそのまま使う設計のため、**モブのセリフも必ずローカルで生成して添付する**（seedanceの「モブはサンプルなし可」の例外は本スキルでは使えない）。
+- **モブの声**: `02_CHARACTERS/VOICE_CAST.md`の「ナレーション（窓際メンバー以外の発話全般）」行＝`Narrator_voice.wav`を声サンプルとして渡すのが既定（「声サンプル方式」）。VOICEVOX話者を使う場合はユーザーに確認し、クレジット義務（seedanceステップ2）に従う。セリフwav方式のときは、モブのセリフも必ずローカルで生成して添付する（seedanceの「モブはサンプルなし可」の例外は使えない）。
 
-## 4. セリフ音声
+## 4. 声サンプル（既定）
 
-seedanceステップ2と同一（等速＋1.5倍速の2テイク→ユーザーが選ぶ→正式ファイル。Dialogue audio表に採用パラメータと実測長を記録）。本スキル固有:
+「声サンプル方式」の表どおり、Castの話者全員のサンプルをラン直下へ同梱する（`Sobaya_voice_monster.wav`・VOICEVOXキャラのサンプル・未登録キャラの新規サンプルもここで作る）。セリフ音声の生成・2テイク確認・パディングは行わない。未登録キャラの新規サンプルだけはユーザーに聴いてもらい、採用を確認してから`02_CHARACTERS/`へ登録する。
+
+## 4b. セリフwav方式（互換）
+
+ユーザーが明示したとき、または声サンプル方式で崩れが直らない章だけで使う。seedanceステップ2と同一（等速＋1.5倍速の2テイク→ユーザーが選ぶ→正式ファイル。Dialogue audio表に採用パラメータと実測長を記録）。本スキル固有:
 
 - ファイル名は`chN_lineM_<char>.wav`（モブは`chN_lineM_mob_<slug>.wav`、ナレーションは`chN_nar1.wav`）。
 - **H3は1ファイル2.0秒以上**。短いwavは末尾に無音を足して2.0秒にする（local-videoステップ4のコマンド。先頭には足さない）。Dialogue audio表には`2.0s (padded from 1.4s)`のように併記する。
 - **ナレーションもR2Vに添付する**（I2Vが無いため）。プロンプトでは "says in an off-screen voiceover" と書き、映っている全員に "lips remain completely closed" を添える（公式H3ガイドの記法）。ffmpegで後載せする場合はDialogue audio表に`laid over at assembly`と明記し、そのチャプターの音声添付なし・`no speech`扱いで書く。
+- プロンプトは`<Audio N>: partially_copy`（または`fully_copy`）で、`using <Audio 1> as-is with no other voice`と書く（`templates/make_prompts_example.py`のch3）。
 
 ## 5. `script.md`とプロンプト作成（全チャプターAPPROVED後）
 
@@ -251,7 +306,7 @@ Generate every chapter in one batch (one notebook run). After collecting the mp4
 - [ ] No attached sheet is reproduced as a frame: no panels, no white sheet background, no labels or text anywhere
 - [ ] The opening composition matches this chapter's "Opening composition" (shot size/angle, location, who stands where, held props, door/fixture state)
 - [ ] The action beats happen in the written order and the shot ends in the written end state
-- [ ] The dialogue is driven by the attached wav (correct voice, no synthesized or doubled voice); the CORRECT character lip-syncs and every non-speaker's mouth stays closed
+- [ ] Dialogue (voice-sample mode): each line is spoken word for word in the timbre of that speaker's voice sample, with no extra or doubled lines; the CORRECT character lip-syncs and every non-speaker's mouth stays closed (wav mode: the attached wav itself is heard, no re-synthesized voice)
 - [ ] Every canon character matches their `*_sheet.png` item by item (canon checklist); every mob matches their `Mob_*_sheet.png` item by item (the run's mob PRESERVE list). A near-miss is a FAIL
 - [ ] Every attached prop reference (`Prop_*.png`) is reproduced item by item (shape, colors, logo placement; crop and zoom the label — garbled lettering is a FAIL)
 - [ ] Every attached location sheet (`Loc_*_sheet.png`) is reproduced item by item (furniture/fixture layout and colors), while time of day and light follow the Scene ledger, not the sheet
@@ -266,10 +321,12 @@ Copy each chapter's Motion prompt into the workflow JSON EXACTLY as written here
 summarize or shorten. If it seems too long, go back to the chapter plan and split the chapter.
 
 ### Step 3 — Final audio track (assembly)
-DEFAULT: keep H3's embedded audio for every chapter (verified faithful to the attached wavs, 2026-08).
-ONLY IF a chapter's audio shows degradation, doubling or a changed voice: strip the embedded audio on that chapter
-and lay the original wav over the video, aligned to the frame where the speaker's mouth starts moving.
-Play back the assembled video before delivery and confirm every line sounds like the local take.
+DEFAULT: keep H3's embedded audio for every chapter (voice-sample mode: the voices are generated by H3 itself).
+Listen to every dialogue chapter: wrong words, a voice that does not match the speaker's sample, or lips moving on the
+wrong person is a FAIL -> fix the prompt and regenerate that chapter; if it still fails, switch ONLY that chapter to
+wav mode (local TTS line, attached AS-IS).
+Wav mode only: if a chapter's audio shows degradation, doubling or a changed voice, strip the embedded audio and lay the
+original wav over the video, aligned to the frame where the speaker's mouth starts moving.
 ```
 
 ## 6. 機械検証（必須・生成前と完了報告前）
@@ -322,7 +379,8 @@ python3 .claude/skills/local-video/build_h3_workflow.py --mode r2v \
 - [ ] `chapter_plan.md`の全チャプターと全モブシートがユーザー承認済み（`APPROVED`）
 - [ ] 正典シートを全枚Readで開いて確認した。モブシートは仕様と照合してPASSし、ユーザーが承認した。小道具参照画像・場所シートを使う場合はReadで開いて`PRESERVE:`を書き起こし、ユーザーが承認した
 - [ ] `check_workflows_match_script.py`がOK（ワークフローJSONと台本の突き合わせ）
-- [ ] セリフ音声はユーザーが採用テイクを選び、2.0秒以上に整えた
+- [ ] Castの話者全員の声サンプル（2.0〜15.0秒）を同梱した。未登録キャラの新規サンプルはユーザーが採用し`02_CHARACTERS/`・`VOICE_CAST.md`へ登録した（セリフwav方式の章は、ユーザーが採用テイクを選び2.0秒以上に整えた）
+- [ ] 回収後、セリフ章を全部耳で確認した（文言どおり・声色が話者のサンプルどおり・喋っている人だけ口が動く）
 - [ ] 全Motion promptが「添付宣言→Style line（映るものだけ）→開始配置→ビート→セリフ→カメラ→終了状態→ガード→音」の構造で、承認済みビートを漏れなく含む
 - [ ] `validate_no_image_run_bundle.py`がOK（互換モード）／`check_ref2va_bundle.py`がOK（映画品質モード）
 - [ ] 全チャプターを一括生成し、回収後に全チャプターをチェックリストで確認（FAIL分は修正版で回し直し）、結合後の通し確認を行った

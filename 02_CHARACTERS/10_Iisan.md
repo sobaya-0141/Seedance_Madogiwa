@@ -17,4 +17,4 @@ NG変更: 本人の顔（美化・若返り・平均顔化しない）、紺の�
 キャラクターシート：Iisan_sheet.png（実写スタジオシート: 正面・横向き左右・後ろの立ち姿4面図＋顔寄り＋バストアップ＋横向きの完全土下座。後ろ姿は後頭部の黒髪と法被背中の市松帯の基準。上流リポジトリ K9i-0/madogiwa-multimedia-universe の `03_SCRIPTS/67_madogiwa_super_try_keisha/character_iisan_keisha_sheet.png`（顔寄り・正面全身・土下座の3ビュー）を顔参照にCodexで後ろ姿・横向きを追加して再作成）
 プロンプト用同定句（英語）：Ii-san — the apologetic-looking Japanese man with short dark hair and worried, drooping eyebrows, in a navy happi coat with black lapels printed with white "奥田酒店", a white shirt and dark trousers, the undefeated champion of speed dogeza
 画像ファイル：未登録（上流でも元写真は未確保。正典写真を登録する際は元データを改めて確保する）
-声ファイル：未設定（上流でも音声参照未提供。エピソード67ではWanの新規声を仮配役。既存メンバーの声は流用しない）
+声ファイル：Iisan_voice.wav（本人の声ではなく、Irodori-TTS `v4.1-Small` のキャプション指定・参照音声なし・シード7で作成した声。2026-10-29採用。作成条件は`VOICE_CAST.md`。上流エピソード67ではWanの新規声を仮配役していた。既存メンバーの声は流用しない）

@@ -12,6 +12,11 @@ For every chN*_workflow.json:
 - every <Picture N> / <Audio N> label used in the prompt is wired (N <= attached count) and every attachment is used
 - attached files exist as physical files in the run; <=9 images, <=3 audio, <=12 total; wavs 2.0-15.0 s
 - frames sit on H3's 17k+5 grid (90..362) and every '[Shot N] At MM:SS.mmm' cut is increasing and inside the duration
+- audio roles match the file kind: a voice sample (*_voice*.wav, the default voice-sample mode) must be declared as
+  '<Audio N> is the voice-timbre reference for ...' with '<Audio N>: reference' in retention_analysis; a dialogue line
+  wav (wav mode) must be '<Audio N>: partially_copy' or 'fully_copy'
+- WARNING (not an error) when a prompt has more speakers (Sx) than attached audio: a speaker without a voice sample gets
+  a voice invented by H3 (accepted in older runs such as 39; the skill now gives every speaker a sample)
 """
 from __future__ import annotations
 
@@ -73,6 +78,17 @@ def main() -> None:
                     s = w.getnframes() / w.getframerate()
                 if not 2.0 - 1e-3 <= s <= 15.0 + 1e-3:
                     errors.append(f"{ch}: {f} is {s:.2f}s (needs 2.0-15.0s)")
+        for n, f in enumerate(auds, 1):
+            if re.search(r"_voice[^/]*\.wav$", f):
+                if f"<Audio {n}> is the voice-timbre reference for" not in prompt or f"<Audio {n}>: reference" not in prompt:
+                    errors.append(f"{ch}: {f} is a voice sample but <Audio {n}> is not declared as a voice-timbre "
+                                  f"reference ('<Audio {n}> is the voice-timbre reference for ...' + '<Audio {n}>: reference')")
+            elif not re.search(rf"<Audio {n}>: (partially|fully)_copy", prompt):
+                errors.append(f"{ch}: {f} is a dialogue wav but <Audio {n}> is not partially_copy/fully_copy")
+        speakers = set(re.findall(r"\((S\d+)\)", prompt))
+        if len(speakers) > len(auds):
+            print(f"WARNING: {ch}: {len(speakers)} speakers {sorted(speakers)} but only {len(auds)} audio attached"
+                  " - a speaker without a voice sample gets a voice invented by H3", file=sys.stderr)
         words = len(prompt.split("detailed_description:")[1].split("overall_soundscape:")[0].split())
         print(f"{ch}: {frames}f ({dur:.2f}s) seed={next(v for v in g.values() if v['class_type']=='RandomNoise')['inputs']['noise_seed']}"
               f" images={imgs} audio={auds} cuts={cuts} detailed_description={words} words")
