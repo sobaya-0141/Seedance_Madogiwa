@@ -37,8 +37,19 @@ for (const game of manifest.games) {
   const distDir = path.resolve(sourceDir, game.distDir);
   const destination = path.resolve(outputRoot, game.outputDir);
 
-  run("npm", ["ci"], sourceDir);
-  run("npm", ["run", game.buildScript], sourceDir);
+  if (game.engine === "godot") {
+    // Godot製: アセットを取り込んでから Web プリセットで書き出す（godot と Web 用テンプレートが必要）
+    const godot = process.env.GODOT_BIN || "godot";
+    await mkdir(distDir, { recursive: true });
+    run(godot, ["--headless", "--path", ".", "--import"], sourceDir);
+    run(godot, ["--headless", "--path", ".", "--export-release", game.exportPreset, path.join(distDir, "index.html")], sourceDir);
+    if (game.extraDir) {
+      await cp(path.resolve(sourceDir, game.extraDir), distDir, { recursive: true, filter: (src) => !src.endsWith(".gdignore") });
+    }
+  } else {
+    run("npm", ["ci"], sourceDir);
+    run("npm", ["run", game.buildScript], sourceDir);
+  }
   await mkdir(path.dirname(destination), { recursive: true });
   await cp(distDir, destination, { recursive: true });
   await rm(path.join(destination, ".openai"), { recursive: true, force: true });

@@ -30,6 +30,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "10_GYUN_GYUN_QUEST_GAME"],
       "port": 5190
+    },
+    {
+      "name": "sobaya-musou-web",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5195", "--directory", "12_SOBAYA_MUSOU_GODOT/build/web"],
+      "port": 5195
     }
   ]
 }

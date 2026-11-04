@@ -13,6 +13,9 @@ on:
       - "08_ROMANCE_NOVEL_GAME/**"
       - "09_VOXEL_BATTLE_GAME/**"
       - "10_GYUN_GYUN_QUEST_GAME/**"
+      - "12_SOBAYA_MUSOU_GODOT/**"
+      - "04_GAME_ASSETS/models3d/**"
+      - "04_GAME_ASSETS/fonts/**"
   workflow_dispatch:
 
 permissions:
@@ -44,8 +47,39 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      # Godot製ゲーム（12_SOBAYA_MUSOU_GODOT）の Web 書き出し用。公式リリースから取得し、SHA512-SUMS で照合する
+      - name: Restore Godot
+        id: godot-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates/4.7.2.stable
+          key: godot-4.7.2-stable-web-nothreads
+
+      - name: Install Godot and Web export templates
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        env:
+          GODOT_VERSION: 4.7.2-stable
+        run: |
+          set -euo pipefail
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}"
+          dl="$RUNNER_TEMP/godot-dl"
+          mkdir -p "$dl" "$HOME/godot"
+          cd "$dl"
+          curl -fsSLO "$base/SHA512-SUMS.txt"
+          curl -fsSLO "$base/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          curl -fsSLO "$base/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          grep -E "  Godot_v${GODOT_VERSION}_(linux\.x86_64\.zip|export_templates\.tpz)$" SHA512-SUMS.txt > checks.txt
+          test "$(wc -l < checks.txt)" -eq 2
+          sha512sum -c checks.txt
+          unzip -q "Godot_v${GODOT_VERSION}_linux.x86_64.zip" -d "$HOME/godot"
+          tpl="$HOME/.local/share/godot/export_templates/${GODOT_VERSION/-/.}"
+          mkdir -p "$tpl"
+          unzip -q -j "Godot_v${GODOT_VERSION}_export_templates.tpz" templates/version.txt templates/web_nothreads_release.zip -d "$tpl"
+
       - name: Build game arcade
-        run: node GAMES_PORTAL/scripts/build-pages.mjs
+        run: GODOT_BIN="$HOME/godot/Godot_v4.7.2-stable_linux.x86_64" node GAMES_PORTAL/scripts/build-pages.mjs
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
