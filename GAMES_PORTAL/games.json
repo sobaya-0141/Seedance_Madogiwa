@@ -64,6 +64,21 @@
       "image": "games/gyun-gyun-quest/og.svg",
       "accent": "blue",
       "controls": "PC・スマホ対応"
+    },
+    {
+      "id": "sobaya-musou",
+      "title": "そば屋無双",
+      "subtitle": "ビール工場強奪作戦（体験版）",
+      "description": "ビール工場に乗り込み、押し寄せる警備員と警察官をジョッキでなぎ倒せ。4段コンボと無双乱舞で3つのエリアを突破し、製造ラインのできたてビールを奪う3Dアクション。",
+      "engine": "godot",
+      "sourceDir": "12_SOBAYA_MUSOU_GODOT",
+      "exportPreset": "Web",
+      "distDir": "build/web",
+      "extraDir": "web_assets",
+      "outputDir": "games/sobaya-musou",
+      "image": "games/sobaya-musou/og.png",
+      "accent": "orange",
+      "controls": "PC（キーボード・ゲームパッド）"
     }
   ]
 }

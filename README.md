@@ -32,6 +32,7 @@ https://sobaya-0141.github.io/Seedance_Madogiwa/
 - **[そば屋は心のヤバイやつ 〜ドキドキ好感度ADV〜](08_ROMANCE_NOVEL_GAME/README.md)** (`08_ROMANCE_NOVEL_GAME/`): 一般社員の「あなた」が、白い仮面のそば屋さんを攻略する恋愛ノベルゲーム。全7回の選択で好感度ゲージが変化し、ゲージの量でエンディングが分岐する（MAXで両想いTRUE END）。Vite + TypeScript製。
 - **[窓際族バトル 〜立ち飲み処の決闘〜](09_VOXEL_BATTLE_GAME/README.md)** (`09_VOXEL_BATTLE_GAME/`): 部屋コードを交換して離れた相手と対戦する、オンライン1対1のターン制コマンドバトル。8体から1体を選び、固有スキルで決闘。ゲーム本体はGitHub Pages配信のまま、対戦同期にFirebase Realtime Databaseを利用する（同じPCの2タブで遊べるローカル対戦モードも搭載）。Vite + TypeScript + Three.js製。セットアップは[ゲームのREADME](09_VOXEL_BATTLE_GAME/README.md)を参照。
 - **[ギュンギュン・クエスト 〜魔王そば屋と最高の一杯〜](10_GYUN_GYUN_QUEST_GAME/README.md)** (`10_GYUN_GYUN_QUEST_GAME/`): 福ギュン王にもらった500円で最高の一杯を選び、城下町・平原・洞窟を旅して魔王そば屋へ届けるファミコンRPG風2Dアドベンチャー。オープニングムービーと3種類のエンディングを収録。Vite + TypeScript製。
+- **[そば屋無双 〜ビール工場強奪作戦〜（体験版）](12_SOBAYA_MUSOU_GODOT/README.md)** (`12_SOBAYA_MUSOU_GODOT/`): ビール工場に乗り込んだそば屋が、押し寄せる警備員・警察官をジョッキでなぎ倒しながら3エリアを突破し、製造ラインのできたてビールを奪う無双系3Dアクション。4段コンボ・チャージ攻撃・無双乱舞（ゲージ＝ジョッキのビールの量）・ボス戦あり。Godot 4製（ゲームパッド対応）。
 
 ## ピックアップ動画の結合
 
