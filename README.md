@@ -33,6 +33,7 @@ https://sobaya-0141.github.io/Seedance_Madogiwa/
 - **[窓際族バトル 〜立ち飲み処の決闘〜](09_VOXEL_BATTLE_GAME/README.md)** (`09_VOXEL_BATTLE_GAME/`): 部屋コードを交換して離れた相手と対戦する、オンライン1対1のターン制コマンドバトル。8体から1体を選び、固有スキルで決闘。ゲーム本体はGitHub Pages配信のまま、対戦同期にFirebase Realtime Databaseを利用する（同じPCの2タブで遊べるローカル対戦モードも搭載）。Vite + TypeScript + Three.js製。セットアップは[ゲームのREADME](09_VOXEL_BATTLE_GAME/README.md)を参照。
 - **[ギュンギュン・クエスト 〜魔王そば屋と最高の一杯〜](10_GYUN_GYUN_QUEST_GAME/README.md)** (`10_GYUN_GYUN_QUEST_GAME/`): 福ギュン王にもらった500円で最高の一杯を選び、城下町・平原・洞窟を旅して魔王そば屋へ届けるファミコンRPG風2Dアドベンチャー。オープニングムービーと3種類のエンディングを収録。Vite + TypeScript製。
 - **[そば屋無双 〜ビール工場強奪作戦〜（体験版）](12_SOBAYA_MUSOU_GODOT/README.md)** (`12_SOBAYA_MUSOU_GODOT/`): ビール工場に乗り込んだそば屋が、押し寄せる警備員・警察官をジョッキでなぎ倒しながら3エリアを突破し、製造ラインのできたてビールを奪う無双系3Dアクション。4段コンボ・チャージ攻撃・無双乱舞（ゲージ＝ジョッキのビールの量）・ボス戦あり。Godot 4製（ゲームパッド対応）。
+- **[窓際ダンジョン 〜地下5階の伝説のビールサーバ〜（試作）](16_MADOGIWA_DUNGEON_KORGE/README.md)** (`16_MADOGIWA_DUNGEON_KORGE/`): 段ボールで増築されすぎた本社地下の「窓際倉庫」を、そば屋が地下5階まで潜るローグライク。フロアはランダム生成で、ターン制の体当たり戦闘。各階で出会う仲間（とーくん・よーたん・福ギュン・やめたろう）が回復や強化をくれ、最下層のボスは巨大アーロンチュア。立ち絵は採用3Dモデルのレンダー。KorGE（Kotlin）製、PC（JVM）版のみ。
 
 ## ピックアップ動画の結合
 

@@ -13,8 +13,27 @@
 | 福ギュン | `fukuchan.glb` | `assets/3d/hazard_adopted/v2_20260913/fukuchan.glb` | 1.7 | 54 | 99本（Idle / Walk / Run / Greeting / Dance / Sitting など） | 課題が多い |
 | たこさん | `takosan.glb` | `assets/3d/characters/takosan/rig_radial_v4_hands/takosan.glb` | 1.43 | 27 | 3本（Idle / Talk / Wave） | かなり高い |
 | やめ太郎 | `yametaro.glb` | `assets/3d/characters/yametaro/rig_nose_v3/yametaro.glb` | 1.3 | 23 | 4本（Idle / Talk / Walk / Wave） | かなり高い |
+| おかやまん | `okayaman.glb` | `assets/3d/characters/okayaman/monitor_v1/okayaman_monitor.glb` | 2.09 | なし | なし（静止モデル） | 元リポジトリのゲームで採用（2026-11-03） |
+| ゆめみん | `yumemin.glb` | `assets/3d/characters/yumemin/eye_seams_20260919/yumemin_clean_v2.glb` | — | なし | なし（動きは使う側で付ける） | 現行g2。同じ版の軽量LODが `game_lod_20261106/yumemin_game.glb` にある |
 
 身長は glTF の単位（m）。Godot 4.7 で読み込み、スケルトンとアニメーションが認識されることを確認済み。
+
+- おかやまん・ゆめみんは取得元コミット `2234ee9ae2f968dd02185c88294367b4b63249f1`（2026-11-06 取得。Git blob ハッシュが元のファイルと一致することを確認済み）。
+- おかやまんは自立式の大型モニター（画面越しのリモート出演＝NG変更要素）で、画面に正典写真 `02_CHARACTERS/Okayaman.jpg` を内蔵している。**この写真はCMYKのJPEGなので、Godotでは読み込めず画面が黒くなる**。Godotで使うときは写真をsRGBに変換して `Okayaman canonical photograph` ノードの材質を差し替える（`tools/render_sprites/render_sprites.gd` の `_fix_okayaman_photo` を参照）。
+
+## 2D用の立ち絵（sprites/）
+
+`sprites/<キャラ>/{front,back,left,right}.png` は上のモデルをGodotでレンダリングした透過PNG。2Dゲームの立ち絵・アイコンに使う（`16_MADOGIWA_DUNGEON_KORGE` が参照）。`left` / `right` は「画面の左 / 右を向いている絵」。余白は切り詰めてある。
+
+- そば屋は `Hybrid_MugHold` の最初のフレームで、右手にジョッキ（`props/beer_mug.glb`）を持たせて描く。他の骨付きモデルは `Idle` の最初のフレーム
+- モデルを更新したら作り直す（Godotのウィンドウが一瞬開く。`--headless` では描画されない）:
+
+```bash
+cd 04_GAME_ASSETS/models3d
+godot --path tools/render_sprites --script render_sprites.gd
+```
+
+とーくん・よーたんには採用3Dモデルが無いので、立ち絵はボクセル版の4方向レンダー（`../voxel/model_source/previews/`）を使う。
 
 ## プロップ・モブ
 

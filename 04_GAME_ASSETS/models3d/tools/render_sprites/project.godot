@@ -1,0 +1,17 @@
+; models3d のGLBを2Dゲーム用の立ち絵PNGへレンダリングするだけのGodotプロジェクト。
+; 使い方は render_sprites.gd の冒頭を参照。
+
+config_version=5
+
+[application]
+
+config/name="models3d sprite renderer"
+
+[display]
+
+window/size/viewport_width=512
+window/size/viewport_height=512
+
+[rendering]
+
+renderer/rendering_method="forward_plus"

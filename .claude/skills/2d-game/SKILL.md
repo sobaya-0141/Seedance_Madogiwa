@@ -20,7 +20,8 @@ description: 窓際族物語の2Dゲームを新規作成し、Seedance（CapCut
 - 2Dゲームのテンプレート実装: `08_ROMANCE_NOVEL_GAME/`（Vite + TypeScript、依存ゼロ、データ駆動シーン＋ステートマシン）
 - 2D用アート素材:
   - キャラ参照画像: `02_CHARACTERS/*.jpg|png`
-  - 全キャラの前後左右ボクセルレンダリング（スプライトに流用可）: `04_GAME_ASSETS/voxel/model_source/previews/`
+  - 採用3Dモデルの前後左右レンダー（透過PNG・スプライトに流用可）: `04_GAME_ASSETS/models3d/sprites/`（そば屋・福ギュン・たこさん・やめ太郎・おかやまん・ゆめみん。作り方は`04_GAME_ASSETS/models3d/README.md`）
+  - 採用3Dモデルが無いとーくん・よーたんだけは旧ボクセルの前後左右レンダー: `04_GAME_ASSETS/voxel/model_source/previews/`（背景が単色グレー。使う側で透過する）
   - インラインSVGでキャラを描く場合の手本: `08_ROMANCE_NOVEL_GAME/src/avatar.ts`（NG変更要素をコメントで明記した上でSVG化している）
 
 ## 1. 動画アセットの受け入れ（添付mp4を受け取ったら必ずこの手順）
