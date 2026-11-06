@@ -9,7 +9,7 @@
       "buildScript": "build:pages",
       "distDir": "dist-pages",
       "outputDir": "games/office-crash",
-      "image": "games/office-crash/og-voxel.png",
+      "image": "games/office-crash/og.png",
       "accent": "orange",
       "controls": "PC・スマホ対応"
     },

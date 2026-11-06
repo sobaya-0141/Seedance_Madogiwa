@@ -1,24 +1,28 @@
-import {
-  STANDARD_BIPED_MOTION,
-  STANDARD_VOXEL_RIG_NODES,
-  type VoxelCharacterDefinition,
-} from "./voxel-character-kit";
+import type { SkinnedCharacterDefinition } from "./skinned-character-kit";
 
-export const SOBAYA_CHARACTER: VoxelCharacterDefinition = {
+/**
+ * そば屋の採用3Dモデル（共同開発リポジトリ K9i-0/madogiwa-multimedia-universe の hazard_adopted、スマホ軽量版）。
+ * NG変更要素のジョッキは別モデルで、右手の PropSocket.R に持たせる。
+ */
+export const SOBAYA_CHARACTER: SkinnedCharacterDefinition = {
   id: "sobaya",
-  assetUrl: "./models/sobaya.glb?v=rear-turnaround-1",
-  modelName: "sobaya-reusable-model",
-  scale: 1.32,
-  // The Blender source faces -Y, which exports toward +Z in glTF.
+  assetUrl: "./models/sobaya.glb?v=models3d-mobile-20260919",
+  modelName: "sobaya-adopted-model",
+  // 等身大より大きめ（俯瞰でも仮面とジョッキが読める大きさ）
+  height: 2.6,
+  // glTF の正面は +Z。ゲームは -Z を前とするので反転する
   rotationY: Math.PI,
-  rig: {
-    primaryArm: [STANDARD_VOXEL_RIG_NODES.primaryArm, "SobayaVoxel_MugArmPivot"],
-    secondaryArm: [STANDARD_VOXEL_RIG_NODES.secondaryArm, "SobayaVoxel_FreeArmPivot"],
-    leftLeg: [STANDARD_VOXEL_RIG_NODES.leftLeg, "SobayaVoxel_LegPivot_NegX"],
-    rightLeg: [STANDARD_VOXEL_RIG_NODES.rightLeg, "SobayaVoxel_LegPivot_PosX"],
-    locomotionExtras: [STANDARD_VOXEL_RIG_NODES.locomotionPrefix],
+  clips: {
+    idle: "CharacterSheet_MugStand",
+    move: "Hybrid_MugRun",
+    moveTimeScale: 1.15,
+    // 叩きつけ（1.6秒）。0.42秒で肩口に振りかぶり、0.9秒あたりでジョッキが前下方へ振り下ろされる
+    smash: { name: "Hybrid_MugSmash", startAt: 0.42, impactAt: 0.9 },
   },
-  motion: {
-    ...STANDARD_BIPED_MOTION,
+  prop: {
+    assetUrl: "./models/beer_mug.glb?v=models3d-20261104",
+    socket: "PropSocket.R",
+    grip: "Grip",
+    morphs: { MugGrip: 1 },
   },
 };
