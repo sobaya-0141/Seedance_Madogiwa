@@ -8,7 +8,7 @@
 - キャラクター設定: `02_CHARACTERS/*.md`（各キャラのNG変更＝デザイン上変えてはいけない要素に注意）
 - 台本・生成済みプロンプト: `03_SCRIPTS/`
 - ゲーム用アセット（ボクセル）: `04_GAME_ASSETS/voxel/`（全キャラのリグ付きボクセルモデル`.glb`は`04_GAME_ASSETS/voxel/models/`が正典。`tools/build_*_voxel_model.py`から生成するため手作業で編集しない。新規ゲームはモデルをコピーせず、`public/models/`等からここへの相対symlinkで参照する。リグ仕様は`04_GAME_ASSETS/voxel/VOXEL_CHARACTER_KIT.md`を参照）
-- ゲーム用アセット（非ボクセル3Dモデル）: `04_GAME_ASSETS/models3d/`（共同開発者リポジトリ K9i-0/madogiwa-multimedia-universe の採用GLB。スケルトン＋アニメーション付き。取得元コミットと各モデルの情報は同ディレクトリのREADME。ゲームからはコピーせず相対symlinkで参照する）
+- ゲーム用アセット（非ボクセル3Dモデル）: `04_GAME_ASSETS/models3d/`（共同開発者リポジトリ K9i-0/madogiwa-multimedia-universe の採用GLB。スケルトン＋アニメーション付き。取得元コミットと各モデルの情報は同ディレクトリのREADME。2Dゲーム用の4方向の立ち絵（透過PNG）は`sprites/`にあり、`tools/render_sprites/`で作り直せる。ゲームからはコピーせず相対symlinkで参照する）
 - ゲーム用アセット（完成動画）: `04_GAME_ASSETS/videos/`（Seedance/CapCutで制作したゲーム組み込み用の完成動画が正典。ゲームからはコピーせず`public/videos/`からの相対symlinkで参照する）
 
 ## スキル（制作ワークフロー）
