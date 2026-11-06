@@ -4,9 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { SOBAYA_CHARACTER } from "./characters/sobaya";
 import {
-  loadVoxelCharacter,
-  type VoxelActionController,
-} from "./characters/voxel-character-kit";
+  loadSkinnedCharacter,
+  type CharacterActionController,
+} from "./characters/skinned-character-kit";
 
 type GameStatus = "ready" | "playing" | "gameover";
 type GameApi = {
@@ -69,6 +69,8 @@ const PERFECT_DISTANCE = 0.55;
 const NORMAL_SMASH_RADIUS = 1.45;
 const MEGA_SMASH_RADIUS = 2.25;
 const SMASH_FORWARD_OFFSET = 1.1;
+/** ボタンを押してからジョッキが着弾するまで（アニメーションもこの時刻に打撃が当たるよう再生する） */
+const SMASH_IMPACT_DELAY = 0.17;
 const OFFICE_AREAS: OfficeArea[] = ["窓際デスク", "中央執務", "書庫・ロッカー", "複合機"];
 
 const EMPTY_RESULT: ResultStats = {
@@ -414,14 +416,13 @@ function makeSobaya() {
   markers.add(arrow);
   player.add(markers);
 
-  loadVoxelCharacter({
+  loadSkinnedCharacter({
     definition: SOBAYA_CHARACTER,
     parent: player,
-    onReady: ({ mixer, actions }) => {
+    onReady: ({ actions }) => {
       fallback.visible = false;
       markers.visible = true;
-      if (mixer) player.userData.mixer = mixer;
-      if (actions) player.userData.animator = actions;
+      player.userData.animator = actions;
     },
     onError: (error) => {
       console.warn("Sobaya GLB could not be loaded; using procedural fallback.", error);
@@ -1145,9 +1146,9 @@ export default function OfficeCrashGame() {
       const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotation.y);
       const center = player.position.clone().addScaledVector(forward, SMASH_FORWARD_OFFSET);
       center.y = 0;
-      (player.userData.animator as VoxelActionController | undefined)?.triggerSmash(mega);
+      (player.userData.animator as CharacterActionController | undefined)?.triggerSmash(mega, SMASH_IMPACT_DELAY);
       tone(260, 0.12, "sawtooth", mega ? 0.06 : 0.04, 720);
-      runtime.pendingSmash = { impactAt: runtime.elapsed + 0.17, mega, center };
+      runtime.pendingSmash = { impactAt: runtime.elapsed + SMASH_IMPACT_DELAY, mega, center };
     };
 
     const start = () => {
@@ -1241,7 +1242,6 @@ export default function OfficeCrashGame() {
       previous = now;
       if (!runtime.paused) {
         runtime.elapsed += dt;
-        (player.userData.mixer as THREE.AnimationMixer | undefined)?.update(dt);
       }
       let isWalking = false;
 
@@ -1319,7 +1319,7 @@ export default function OfficeCrashGame() {
       }
 
       if (!runtime.paused) {
-        (player.userData.animator as VoxelActionController | undefined)?.update(
+        (player.userData.animator as CharacterActionController | undefined)?.update(
           dt,
           runtime.elapsed,
           isWalking && runtime.playing,

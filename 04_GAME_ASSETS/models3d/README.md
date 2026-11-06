@@ -16,6 +16,12 @@
 | おかやまん | `okayaman.glb` | `assets/3d/characters/okayaman/monitor_v1/okayaman_monitor.glb` | 2.09 | なし | なし（静止モデル） | 元リポジトリのゲームで採用（2026-11-03） |
 | ゆめみん | `yumemin.glb` | `assets/3d/characters/yumemin/eye_seams_20260919/yumemin_clean_v2.glb` | — | なし | なし（動きは使う側で付ける） | 現行g2。同じ版の軽量LODが `game_lod_20261106/yumemin_game.glb` にある |
 
+### スマホ・Web向けの軽量版（mobile/）
+
+| キャラ | ファイル | 取得元パス | 内容 |
+|---|---|---|---|
+| そば屋 | `mobile/sobaya.glb` | `assets/3d/hazard_adopted/mobile_20260919/sobaya.glb` | 上のそば屋を三角形50%減・衣服テクスチャ半分にした軽量版（約11.4 MiB）。骨・ソケット・アニメーションは同じ。取得元コミット `2234ee9ae2f968dd02185c88294367b4b63249f1`（Git blob ハッシュ一致を確認済み）。Webゲーム（`05_OFFICE_CRASH_GAME`）が参照 |
+
 身長は glTF の単位（m）。Godot 4.7 で読み込み、スケルトンとアニメーションが認識されることを確認済み。
 
 - おかやまん・ゆめみんは取得元コミット `2234ee9ae2f968dd02185c88294367b4b63249f1`（2026-11-06 取得。Git blob ハッシュが元のファイルと一致することを確認済み）。

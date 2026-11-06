@@ -17,7 +17,7 @@
 
 | キャラクター | GLB | リグ | 参照ゲーム |
 |---|---|---|---|
-| そば屋 | `models/sobaya.glb` | 二足（両腕＋両脚＋ジョッキ用ハンドソケット） | 05, 06 |
+| そば屋 | `models/sobaya.glb` | 二足（両腕＋両脚＋ジョッキ用ハンドソケット） | 06 |
 | たこさん | `models/takosan.glb` | 両腕＋触手6本（`VoxelRig_Locomotion_00`〜`05`） | 06 |
 | とーくん | `models/tokun.glb` | 二足 | 06 |
 | よーたん | `models/yotan.glb` | 二足 | 06 |
