@@ -45,6 +45,10 @@ godot --path tools/render_sprites --script render_sprites.gd
 
 モブ素体は [Mesh2Motion](https://github.com/Mesh2Motion/mesh2motion-assets) / [Quaternius](https://quaternius.com/) 由来の **CC0 1.0**（`mobs/CC0-1.0.txt` を同梱）。キャラクターではないので、制服などの見た目は使う側で付ける。
 
+## 敵キャラ（Tripo・有料プラン）
+
+`tripo/` に、そば屋無双の作り直し用に Tripo Studio（有料プラン）で作った敵7体（工場の警備員・警察官・警部・白バイ隊員・機動隊長・本社警備員・警備本部長）を置いている。Mixamo 形式のリグ付き（65ボーン）・約1万三角形・テクスチャ2K・アニメーションなし。作り方と一覧は [tripo/README.md](tripo/README.md)、元の絵は `04_GAME_ASSETS/tripo_inputs/`。
+
 ## 使い方
 
 - ゲームからはコピーせず、`models/` や `public/models/` からここへの相対symlinkで参照する（ボクセル版と同じ方針）
