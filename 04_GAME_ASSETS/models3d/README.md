@@ -33,6 +33,19 @@ cd 04_GAME_ASSETS/models3d
 godot --path tools/render_sprites --script render_sprites.gd
 ```
 
+### アニメーションのスプライトシート（sprites/sheets/）
+
+`sprites/sheets/<名前>.png` と `<名前>.txt` は、アニメーションを横向き（右向き）に描いた2D用のスプライトシート（`17_SOBAYA_MUSOU_2D_KORGE` が参照）。1行が1アニメーション、1マスが1コマ（288×288）。`.txt` にマスの大きさ・足元の位置・各行のアニメーション名とコマ数・クリップの長さ・ループするかを書いてある。左向きは左右反転して使う。
+
+- `sobaya`: そば屋（右手にジョッキ）。idle / run / punch / hook / smash / charge / dodge / hurt / down / win
+- `guard` / `police` / `captain` / `sergeant` / `boss`: マネキン素体（`mobs/`）に、12_SOBAYA_MUSOU_GODOT と同じ規則で制服の色（頂点カラー）・帽子・警棒を付けたもの。idle / walk / attack / hit / fly / dizzy（boss は special＝地響き も）
+- 作り直す（Godotのウィンドウが一瞬開く）:
+
+```bash
+cd 04_GAME_ASSETS/models3d
+godot --path tools/render_sprites --script render_sheets.gd
+```
+
 とーくん・よーたんには採用3Dモデルが無いので、立ち絵はボクセル版の4方向レンダー（`../voxel/model_source/previews/`）を使う。
 
 ## プロップ・モブ
