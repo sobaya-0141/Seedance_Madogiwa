@@ -16,7 +16,8 @@ class SpriteFrame(val slice: BmpSlice, val offX: Double, val offY: Double)
 /** hitFrame は当たりのコマ（0始まり。無ければ -1） */
 class Anim(val name: String, val frames: List<SpriteFrame>, val length: Double, val loop: Boolean, val hitFrame: Int = -1)
 
-class Sheet(val name: String, val anims: Map<String, Anim>) {
+/** handDrawn = 手描きアニメのアトラス（PackSprites.java）から読んだもの */
+class Sheet(val name: String, val anims: Map<String, Anim>, val handDrawn: Boolean = false) {
     fun anim(name: String) = anims[name] ?: error("$this: アニメーション $name がありません")
 
     /** 経過秒でコマを選ぶ（ループしないアニメは最後のコマで止まる） */
@@ -76,7 +77,7 @@ class Sheet(val name: String, val anims: Map<String, Anim>) {
                 val list = frames.getValue(n).map { it ?: error("$name/$n: コマが足りません") }
                 anims[n] = Anim(n, list, info.count.toDouble() / info.fps, info.mode == "loop", info.hit - 1)
             }
-            return Sheet(name, anims)
+            return Sheet(name, anims, handDrawn = true)
         }
     }
 }

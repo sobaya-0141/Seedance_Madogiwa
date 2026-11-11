@@ -74,6 +74,8 @@ class Enemy(val kind: EnemyKind, val title: String?, hpScale: Double) : Actor() 
     var hitDone = false
     var secondPound = false
     var removed = false
+    /** 出てきてからの秒数（登場ポーズの間は動かない） */
+    var age = 0.0
     var alpha = 1.0
     /** 囲むときの持ち場（プレイヤーからの相対位置） */
     var ringX = 0.0
@@ -92,6 +94,9 @@ class Pickup(val beer: Boolean, val x: Double, val y: Double) {
     var taken = false
     var t = 0.0
 }
+
+/** 登場ポーズ（intro）のある敵の、その長さ（秒）。シーンが起動時に入れる */
+val introLength = mutableMapOf<String, Double>()
 
 class Battle(val stage: StageDef, seed: Int = 1) {
     private val rng = Random(seed)
@@ -135,6 +140,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
         updatePlayer(dt, input)
         assignTokens()
         for (e in enemies) updateEnemy(e, dt)
+        separate(dt)
         enemies.removeAll { it.removed }
         updatePickups(dt)
         if (comboTimer > 0) { comboTimer -= dt; if (comboTimer <= 0) combo = 0 }
@@ -419,6 +425,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
 
     private fun updateEnemy(e: Enemy, dt: Double) {
         e.t += dt
+        e.age += dt
         e.attackCd -= dt
         e.specialCd -= dt
         val p = player
@@ -427,7 +434,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
         val speedMul = if (e.enraged) 1.3 else 1.0
         when (e.state) {
             EState.CHASE -> {
-                if (phase != Phase.PLAY || p.state == PState.DOWN) {
+                if (phase != Phase.PLAY || p.state == PState.DOWN || e.age < (introLength[e.kind.sheet] ?: 0.0)) {
                     e.facing = sign(dx).takeIf { it != 0.0 } ?: e.facing
                     return
                 }
@@ -502,6 +509,33 @@ class Battle(val stage: StageDef, seed: Int = 1) {
         }
         e.x = e.x.coerceIn(zoneStart - 150, zoneEnd + 150)
         e.y = e.y.coerceIn(0.0, DEPTH)
+    }
+
+    /**
+     * 立っている者どうしが重ならないよう押し離す（絵が大きいので、重なると体が混ざって見える）。
+     * そば屋とは手前・奥が近いときだけ、敵どうしは軽めに離す
+     */
+    private fun separate(dt: Double) {
+        val standing = enemies.filter { it.state == EState.CHASE || it.state == EState.ATTACK || it.state == EState.SPECIAL || it.state == EState.HIT }
+        val p = player
+        for (e in standing) {
+            val minX = 95.0 * e.kind.scale
+            val dx = e.x - p.x
+            if (abs(dx) < minX && abs(e.y - p.y) < 45) {
+                val dir = if (dx == 0.0) -p.facing else sign(dx)
+                e.x = p.x + dir * minX
+            }
+        }
+        for (i in standing.indices) for (j in i + 1 until standing.size) {
+            val a = standing[i]; val b = standing[j]
+            val dx = b.x - a.x
+            val minX = 60.0 * (a.kind.scale + b.kind.scale) / 2
+            if (abs(dx) < minX && abs(b.y - a.y) < 30) {
+                val push = (minX - abs(dx)) * min(1.0, dt * 8) / 2
+                val dir = if (dx == 0.0) 1.0 else sign(dx)
+                a.x -= dir * push; b.x += dir * push
+            }
+        }
     }
 
     private fun pound(e: Enemy) {

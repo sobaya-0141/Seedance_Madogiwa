@@ -25,9 +25,12 @@ suspend fun main() = Korge(
     backgroundColor = Colors["#101216"],
 ) {
     val font = resourcesVfs["fonts/MPLUSRounded1c-ExtraBold.ttf"].readTtfFont()
-    // そば屋は手描きアニメのアトラス（04_GAME_ASSETS/musou2d）、敵はまだ採用3Dモデルを描いたシート
-    val sheets = listOf("guard", "police", "captain", "sergeant", "boss").associateWith { Sheet.load(it) } +
-        ("sobaya" to Sheet.loadAtlas("sobaya"))
+    // 手描きアニメのアトラス（04_GAME_ASSETS/musou2d）: そば屋・警備員・警備隊長。
+    // 残りの敵（警察官・巡査部長・警部）はまだ採用3Dモデルを描いたシート
+    val handDrawn = listOf("sobaya", "guard", "captain")
+    val sheets = handDrawn.associateWith { Sheet.loadAtlas(it) } +
+        listOf("police", "sergeant", "boss").associateWith { Sheet.load(it) }
+    for ((name, sheet) in sheets) sheet.anims["intro"]?.let { introLength[name] = it.length }
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
     val stage1Backdrop = resourcesVfs["musou2d_bg/s1_a1_rough.png"].readBitmap().also { it.mipmaps = true }
@@ -260,17 +263,30 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         playerView.aura(p.state == PState.MUSOU, clock)
 
         for (e in b.enemies) {
-            val v = enemyViews.getOrPut(e) { ActorView(actors, sheets.getValue(e.kind.sheet), e.kind.scale, e.title ?: e.kind.title, font) }
+            val v = enemyViews.getOrPut(e) {
+                val sh = sheets.getValue(e.kind.sheet)
+                // 手描きの敵は、絵の中でそば屋との身長の比が決まっているので、そば屋と同じ倍率で描く
+                ActorView(actors, sh, if (sh.handDrawn) PLAYER_SCALE else e.kind.scale, e.title ?: e.kind.title, font, shadowW = if (sh.handDrawn) 55.0 * e.kind.scale else 46 * e.kind.scale)
+            }
             val sh = v.sheet
             val moving = abs(e.x - v.lastX) + abs(e.y - v.lastY) > 0.6
             v.lastX = e.x; v.lastY = e.y
             val f = when (e.state) {
-                EState.CHASE -> if (moving) sh.frameAt("walk", clock + e.ringX) else sh.frameAt("idle", clock + e.ringY)
+                EState.CHASE -> when {
+                    sh.anims.containsKey("intro") && e.age < sh.anim("intro").length -> sh.frameAt("intro", e.age)
+                    moving -> sh.frameAt("walk", clock + e.ringX)
+                    else -> sh.frameAt("idle", clock + e.ringY)
+                }
                 EState.ATTACK -> sh.frameAtProgress("attack", e.t / (e.len("attack") / (e.kind.attackSpeed * if (e.enraged) 1.3 else 1.0)))
                 EState.SPECIAL -> sh.frameAtProgress("special", e.t / e.len("special"))
                 EState.HIT -> sh.frameAtProgress("hit", e.t / 0.4)
-                EState.FLY -> sh.frameAtProgress("fly", min(0.45, e.t / 0.9))
-                EState.LYING -> sh.frameAtProgress("fly", 0.5)
+                // 手描き: 宙では吹っ飛びの1〜4コマ目、着地したら5〜6コマ目、そのあと目を回す
+                EState.FLY -> if (sh.handDrawn) sh.frameAtProgress("fly", min(0.66, e.t / 0.9)) else sh.frameAtProgress("fly", min(0.45, e.t / 0.9))
+                EState.LYING -> when {
+                    !sh.handDrawn -> sh.frameAtProgress("fly", 0.5)
+                    e.t < 0.2 -> sh.frameAtProgress("fly", 0.67 + e.t / 0.6)
+                    else -> sh.frameAt("dizzy", e.t)
+                }
             }
             v.update(e, f, e.alpha)
             v.stars(e.state == EState.LYING, clock)
