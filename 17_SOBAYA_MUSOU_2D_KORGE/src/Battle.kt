@@ -283,8 +283,9 @@ class Battle(val stage: StageDef, seed: Int = 1) {
             PState.WIN -> Unit
         }
         // 行ける範囲（未制圧のエリアから先へは出られない）
-        val right = if (zone < stage.zones.size) zoneEnd - 60 else stageLength - 60
-        val left = if (zoneActive) zoneStart + 40 else 40.0
+        // そば屋の絵は足元から左右に約80px広がるので、画面の端で切れないよう余白を取る
+        val right = if (zone < stage.zones.size) zoneEnd - 130 else stageLength - 130
+        val left = if (zoneActive) zoneStart + 110 else 110.0
         p.x = p.x.coerceIn(left, right)
         p.y = p.y.coerceIn(0.0, DEPTH)
     }

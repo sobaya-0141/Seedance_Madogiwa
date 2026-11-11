@@ -13,8 +13,10 @@ const val FLOOR_TOP = 430.0
 const val DEPTH = 270.0
 /** 1エリアの横幅 */
 const val ZONE_W = 1700.0
-/** そば屋の表示倍率（主役なので敵より少し大きく） */
-const val PLAYER_SCALE = 1.1
+/** そば屋の表示倍率。アトラスは立ち姿の身長が約438px、画面では約270px（主役なので敵より大きく） */
+const val PLAYER_SCALE = 0.62
+/** 背景の一枚絵を画面より横に何割広く敷くか（カメラに合わせてずらす分） */
+const val BACKDROP_OVERSCAN = 0.12
 
 const val PLAYER_MAX_HP = 1000.0
 const val MUSOU_MAX = 100.0
@@ -66,14 +68,19 @@ class Move(
     val heavy: Boolean = false,
 )
 
-/** 4段コンボ（3D版の COMBO と同じ値） */
+/**
+ * 4段コンボ。威力・範囲・吹っ飛ばしは3D版の COMBO と同じ値。
+ * アニメは手描きのコマ（04_GAME_ASSETS/musou2d/sobaya_anims.txt）。長さはコマ数÷12、
+ * hit は当たりのコマの始まり（combo1〜3 は7コマ中4コマ目、combo4 は11コマ中6コマ目）に少し足した割合
+ */
 val COMBO = listOf(
-    Move("punch", 1.9, 0.46, 0.6, 0.85, 34.0, 2.5, false, 3.0, 0.0, 1.2),
-    Move("hook", 2.1, 0.46, 0.6, 0.85, 34.0, 2.7, false, 3.5, 0.0, 1.0),
-    Move("punch", 2.3, 0.46, 0.6, 0.85, 40.0, 2.6, false, 4.0, 0.0, 1.4),
-    Move("smash", 1.7, 0.5, 0.8, 0.92, 70.0, 3.4, true, 7.0, 7.0, 0.8, heavy = true),
+    Move("combo1", 1.0, 0.46, 0.6, 0.85, 34.0, 2.5, false, 3.0, 0.0, 1.2),
+    Move("combo2", 1.0, 0.46, 0.6, 0.85, 34.0, 2.7, false, 3.5, 0.0, 1.0),
+    Move("combo3", 1.2, 0.46, 0.6, 0.85, 40.0, 2.6, false, 4.0, 0.0, 1.4),
+    Move("combo4", 1.0, 0.48, 0.8, 0.92, 70.0, 3.4, true, 7.0, 7.0, 0.8, heavy = true),
 )
-val CHARGE = Move("charge", 1.25, 0.55, 0.85, 0.95, 110.0, 4.2, true, 10.0, 9.0, 0.4, heavy = true)
+/** チャージ攻撃。12コマ中8コマ目が当たり */
+val CHARGE = Move("charge", 1.0, 0.6, 0.85, 0.95, 110.0, 4.2, true, 10.0, 9.0, 0.4, heavy = true)
 
 const val RUN_SPEED = 6.0
 const val DODGE_TIME = 0.62

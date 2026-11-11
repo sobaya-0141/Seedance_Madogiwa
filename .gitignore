@@ -8,3 +8,4 @@ __pycache__/
 
 # H3ランパッケージのバンドルzip（修正版ごとに増える数十〜200MBの生成物。ノートブックとREVISIONS.mdは残す）
 03_SCRIPTS/*/h3/*.zip
+17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated/

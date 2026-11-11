@@ -18,15 +18,20 @@ import kotlin.random.Random
 import kotlin.time.Duration
 
 suspend fun main() = Korge(
-    windowSize = Size(SCREEN_W, SCREEN_H),
+    // 手描きの絵を細部までくっきり出すため、画面は1920×1080で描く（ゲームの座標は1280×720のまま）
+    windowSize = Size(1920, 1080),
+    virtualSize = Size(SCREEN_W, SCREEN_H),
     title = "そば屋無双 2D",
     backgroundColor = Colors["#101216"],
 ) {
     val font = resourcesVfs["fonts/MPLUSRounded1c-ExtraBold.ttf"].readTtfFont()
-    val sheets = listOf("sobaya", "guard", "police", "captain", "sergeant", "boss").associateWith { Sheet.load(it) }
+    // そば屋は手描きアニメのアトラス（04_GAME_ASSETS/musou2d）、敵はまだ採用3Dモデルを描いたシート
+    val sheets = listOf("guard", "police", "captain", "sergeant", "boss").associateWith { Sheet.load(it) } +
+        ("sobaya" to Sheet.loadAtlas("sobaya"))
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
-    sceneContainer().changeTo { MusouScene(font, sheets) }
+    val stage1Backdrop = resourcesVfs["musou2d_bg/s1_a1_rough.png"].readBitmap().also { it.mipmaps = true }
+    sceneContainer().changeTo { MusouScene(font, sheets, stage1Backdrop) }
 }
 
 private object Pal {
@@ -44,7 +49,7 @@ private object Pal {
  * タイトル → ステージ → リザルト（→ 次のステージ / エンディング）を1つのシーンで切り替える。
  * ルールと数値は Battle / Data、ここは描画と入力だけを持つ。
  */
-class MusouScene(private val font: TtfFont, private val sheets: Map<String, Sheet>) : Scene() {
+class MusouScene(private val font: TtfFont, private val sheets: Map<String, Sheet>, private val stage1Backdrop: korlibs.image.bitmap.Bitmap) : Scene() {
     private enum class Screen { TITLE, PLAY, ENDING }
 
     private var screen = Screen.TITLE
@@ -61,6 +66,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private lateinit var actors: Container
     private lateinit var fxLayer: Container
     private lateinit var playerView: ActorView
+    private var backdrop: Image? = null
     private val enemyViews = mutableMapOf<Enemy, ActorView>()
     private val pickupViews = mutableMapOf<Pickup, View>()
     private val gateViews = mutableListOf<View>()
@@ -74,6 +80,10 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private val auto = Environment["MADOGIWA_AUTO"] == "1"
     private val shotsDir = Environment["MADOGIWA_SHOTS"]
     private val autoSpeed = Environment["MADOGIWA_AUTO_SPEED"]?.toIntOrNull() ?: 4
+    /** 指定すると、自動プレイのステージ1を1/30秒ずつ進めながら全コマを書き出す（動画の確認用） */
+    private val recordDir = Environment["MADOGIWA_RECORD"]
+    private val recordSeconds = Environment["MADOGIWA_RECORD_SECONDS"]?.toDoubleOrNull() ?: 15.0
+    private var manualClock = false
     private var pendingShot: String? = null
     private val shotsTaken = mutableSetOf<String>()
 
@@ -129,13 +139,16 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     // ---------------------------------------------------------------- 毎フレーム
 
     private fun tick(dt: Duration) {
-        val d = min(dt.seconds, 1.0 / 30)
+        if (manualClock) return
+        step(min(dt.seconds, 1.0 / 30), if (auto) autoSpeed else 1)
+    }
+
+    private fun step(d: Double, steps: Int) {
         clock += d
         updateFloating(d)
         if (screen == Screen.TITLE) animateTitle()
         val b = battle
         if (screen != Screen.PLAY || b == null) { pressed.clear(); return }
-        val steps = if (auto) autoSpeed else 1
         repeat(steps) {
             if (auto) b.autoInput(playerInput) else readInput()
             b.update(d, playerInput)
@@ -155,7 +168,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         battle = null
         ui.removeChildren()
         floating.clear()
-        drawScenery(ui, STAGES[stageIndex].scenery, SCREEN_W.toDouble(), title = true)
+        if (STAGES[stageIndex].scenery == Scenery.FACTORY) ui.image(stage1Backdrop) { smoothing = true; fitBackdrop(this) }
+        else drawScenery(ui, STAGES[stageIndex].scenery, SCREEN_W.toDouble(), title = true)
         ui.solidRect(SCREEN_W, SCREEN_H, Colors["#0c0d12aa"])
         ui.text("そば屋無双", 92, Pal.gold, font) { position(70, 60) }
         ui.text("2D", 46, Pal.text, font) { position(560, 98) }
@@ -175,16 +189,22 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             "やり直し  R　　タイトルへ  Esc",
         )
         help.forEachIndexed { i, s -> ui.text(s, 17, Pal.dim, font) { position(80, 478 + i * 30) } }
-        val sheet = sheets.getValue("sobaya")
-        titleSobaya = ui.image(sheet.frameAt("idle", 0.0)) {
-            scale(2.2)
-            position(1000 - sheet.pivotX * 2.2, 690 - sheet.pivotY * 2.2)
-        }
+        titleSobaya = ui.image(sheets.getValue("sobaya").frameAt("idle", 0.0).slice) { smoothing = true }
+        placeTitleSobaya(sheets.getValue("sobaya").frameAt("idle", 0.0))
         ui.text("KorGE 版・PC", 14, Pal.dim, font) { position(SCREEN_W - 120, SCREEN_H - 28) }
     }
 
     private fun animateTitle() {
-        titleSobaya?.bitmap = sheets.getValue("sobaya").frameAt("idle", clock)
+        placeTitleSobaya(sheets.getValue("sobaya").frameAt("idle", clock))
+    }
+
+    /** タイトルの大きなそば屋（足元を画面の 1000, 690 に置く） */
+    private fun placeTitleSobaya(f: SpriteFrame) {
+        val img = titleSobaya ?: return
+        val k = 1.35
+        img.bitmap = f.slice
+        img.scale(k)
+        img.position(1000 + f.offX * k, 690 + f.offY * k)
     }
 
     // ---------------------------------------------------------------- ステージ
@@ -199,13 +219,16 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         ui.removeChildren()
         enemyViews.clear(); pickupViews.clear(); gateViews.clear(); floating.clear()
 
+        // ステージ1は工場正門の背景ラフ（04_GAME_ASSETS/musou2d/backgrounds）を画面いっぱいに敷く。
+        // 層に分けた清書が届くまでの仮置きで、カメラに合わせて少しだけ横にずらして奥行きを出す
+        backdrop = if (b.stage.scenery == Scenery.FACTORY) ui.image(stage1Backdrop) { smoothing = true; fitBackdrop(this) } else null
         world = ui.container()
-        drawScenery(world, b.stage.scenery, b.stageLength, title = false)
+        if (backdrop == null) drawScenery(world, b.stage.scenery, b.stageLength, title = false)
         for (i in 0 until b.stage.zones.size - 1) gateViews += drawGate(world, (i + 1) * ZONE_W)
         goalGlow = drawGoal(world, b)
         actors = world.container()
         fxLayer = world.container()
-        playerView = ActorView(actors, sheets.getValue("sobaya"), PLAYER_SCALE, null)
+        playerView = ActorView(actors, sheets.getValue("sobaya"), PLAYER_SCALE, null, shadowW = 60.0)
         hud = Hud(ui)
         fx(Fx.Banner("STAGE ${b.stage.number}  ${b.stage.title}", b.stage.subtitle))
     }
@@ -216,16 +239,21 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         val sy = if (shake > 0.5) (Random.nextDouble() - 0.5) * shake else 0.0
         world.x = -b.camX + sx
         world.y = sy
+        backdrop?.let { it.x = -BACKDROP_OVERSCAN * SCREEN_W * (b.camX / (b.stageLength - SCREEN_W).coerceAtLeast(1.0)) + sx * 0.3 }
 
         val p = b.player
         val sobaya = sheets.getValue("sobaya")
         val frame = when (p.state) {
-            PState.MOVE -> if (p.running) sobaya.frameAt("run", clock, 1.1) else sobaya.frameAt("idle", clock)
+            PState.MOVE -> when {
+                b.grab > 0.05 -> sobaya.frameAt("grab", clock)
+                p.running -> sobaya.frameAt("run", clock)
+                else -> sobaya.frameAt("idle", clock)
+            }
             PState.ATTACK -> sobaya.frameAtProgress(p.move.anim, p.t / p.moveDuration)
             PState.DODGE -> sobaya.frameAtProgress("dodge", p.t / DODGE_TIME)
             PState.HURT -> sobaya.frameAtProgress("hurt", p.t / 0.35)
-            PState.MUSOU -> sobaya.frameAtProgress("charge", (p.t * 2.4 / sobaya.anim("charge").length) % 1.0)
-            PState.DOWN -> sobaya.frameAtProgress("down", min(1.0, p.t / 0.8))
+            PState.MUSOU -> sobaya.frameAt("musou", p.t)
+            PState.DOWN -> sobaya.frameAt("down", p.t)
             PState.WIN -> sobaya.frameAt("win", p.t)
         }
         playerView.update(p, frame, if (p.invuln > 0 && p.state == PState.HURT && (clock * 20).toInt() % 2 == 0) 0.5 else 1.0)
@@ -316,12 +344,12 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         drawStandingBar(ui, 760.0)
         val feet = 600.0
         val sobaya = sheets.getValue("sobaya")
-        ui.image(sobaya.frameAt("win", 1.2)) { scale(1.4); position(600 - sobaya.pivotX * 1.4, feet - sobaya.pivotY * 1.4) }
+        sobaya.frameAt("win", 1.2).let { f -> ui.image(f.slice) { scale(0.85); position(600 + f.offX * 0.85, feet + f.offY * 0.85) } }
         // 警備員と警察官も、今日はお客さんとして店へ向かう
         val police = sheets.getValue("police")
-        ui.image(police.frameAt("walk", 0.3)) { scale(1.2); position(200 - police.pivotX * 1.2, feet - police.pivotY * 1.2) }
+        police.frameAt("walk", 0.3).let { f -> ui.image(f.slice) { scale(1.2); position(200 + f.offX * 1.2, feet + f.offY * 1.2) } }
         val guard = sheets.getValue("guard")
-        ui.image(guard.frameAt("walk", 0.0)) { scale(1.2); position(360 - guard.pivotX * 1.2, feet + 10 - guard.pivotY * 1.2) }
+        guard.frameAt("walk", 0.0).let { f -> ui.image(f.slice) { scale(1.2); position(360 + f.offX * 1.2, feet + 10 + f.offY * 1.2) } }
         ui.solidRect(SCREEN_W, 112, Colors["#0c0d12dd"]) { y = SCREEN_H - 112.0 }
         ui.text("立ち飲み処、開店！", 44, Pal.gold, font) { position(60, SCREEN_H - 104) }
         ui.text("奪ったビールは窓際の立ち飲み処へ。警備員も警察官も、今日はお客さん。", 20, Pal.text, font) { position(470, SCREEN_H - 92) }
@@ -330,6 +358,13 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     }
 
     private fun formatTime(s: Double) = "${(s / 60).toInt()}:${(s % 60).toInt().toString().padStart(2, '0')}"
+
+    /** 背景ラフを画面の高さに合わせ、横は少し余らせる（カメラに合わせてずらす分） */
+    private fun fitBackdrop(img: Image) {
+        val k = maxOf(SCREEN_H / stage1Backdrop.height.toDouble(), SCREEN_W * (1 + BACKDROP_OVERSCAN) / stage1Backdrop.width.toDouble())
+        img.scale(k)
+        img.y = SCREEN_H - stage1Backdrop.height * k
+    }
 
     // ---------------------------------------------------------------- 背景（図形で描く）
 
@@ -472,6 +507,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
      */
     private suspend fun SContainer.runAuto() {
         delay(0.4.seconds)
+        recordDir?.let { dir -> record(dir); views.gameWindow.close(0); return }
         shot("title")
         startStage(0)
         var lastLog = 0.0
@@ -503,35 +539,53 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         views.gameWindow.close(0)
     }
 
+    /** ステージ1を等速（1/30秒ずつ）で進め、毎コマを frame_0000.png … に書き出す */
+    private suspend fun SContainer.record(dir: String) {
+        manualClock = true
+        startStage(0)
+        val frames = (recordSeconds * 30).toInt()
+        for (i in 0 until frames) {
+            step(1.0 / 30, 1)
+            stage!!.renderToBitmap(views).writeTo(localVfs("$dir/frame_${i.toString().padStart(4, '0')}.png"), PNG)
+        }
+        println("AUTO: recorded $frames frames")
+    }
+
     private suspend fun SContainer.shot(name: String) {
         shotsTaken += name
         val dir = shotsDir ?: return
-        stage!!.renderToBitmap(views).writeTo(localVfs("$dir/$name.png"), PNG)
+        stage!!.renderToBitmap(views, scale = 1.5).writeTo(localVfs("$dir/$name.png"), PNG)
         println("AUTO: shot $name")
     }
 
     // ---------------------------------------------------------------- 部品
 
     /** そば屋・敵1人ぶんの表示（影・スプライト・名札・目を回す★） */
-    private inner class ActorView(parent: Container, val sheet: Sheet, val scaleK: Double, name: String?, labelFont: TtfFont? = null) {
+    private inner class ActorView(
+        parent: Container, val sheet: Sheet, val scaleK: Double, name: String?, labelFont: TtfFont? = null,
+        /** 足元の影の半径（横） */
+        shadowW: Double = 46 * scaleK,
+    ) {
         val root = parent.container()
-        val shadow = root.ellipse(Size(46 * scaleK, 14 * scaleK), Pal.shadow) { position(-46 * scaleK, -14 * scaleK) }
+        val shadow = root.ellipse(Size(shadowW, shadowW * 0.3), Pal.shadow) { position(-shadowW, -shadowW * 0.3) }
         val auraView = root.ellipse(Size(130.0, 40.0), Colors["#ffc23d55"], Pal.gold, 4.0) { position(-130, -40); visible = false }
-        val image = root.image(sheet.frameAt(sheet.anims.keys.first(), 0.0)) { smoothing = true }
-        val label = if (name != null && labelFont != null) root.text(name, 18, Pal.gold, labelFont) { position(-36, -sheet.pivotY * scaleK * 0.72 - 30) } else null
+        val image = root.image(sheet.frameAt(sheet.anims.keys.first(), 0.0).slice) { smoothing = true }
+        private val standTop = sheet.frameAt(sheet.anims.keys.first(), 0.0).offY
+        val label = if (name != null && labelFont != null) root.text(name, 18, Pal.gold, labelFont) { position(-36, standTop * scaleK * 0.72 - 30) } else null
         val starText = root.text("★ ★", 22, Pal.gold, font) { visible = false }
         var lastX = 0.0
         var lastY = 0.0
 
-        fun update(a: Actor, frame: korlibs.image.bitmap.BmpSlice, alpha: Double) {
+        fun update(a: Actor, frame: SpriteFrame, alpha: Double) {
             root.x = a.x
             root.y = FLOOR_TOP + a.y
             root.zIndex = a.y
-            image.bitmap = frame
+            image.bitmap = frame.slice
+            // 足元（root の原点）からのずれでコマを置く。左向きは原点を軸に左右反転する
             image.scaleX = scaleK * a.facing
             image.scaleY = scaleK
-            image.x = -sheet.pivotX * scaleK * a.facing
-            image.y = -sheet.pivotY * scaleK - a.z
+            image.x = frame.offX * scaleK * a.facing
+            image.y = frame.offY * scaleK - a.z
             root.alpha = alpha
             shadow.scaleX = (1.0 - min(0.5, a.z / 600))
         }
