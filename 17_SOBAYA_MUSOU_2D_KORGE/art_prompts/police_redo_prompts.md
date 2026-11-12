@@ -204,3 +204,20 @@ Change: <下の表の1行>
 | hit | hit_01〜03（3） | 生成 |
 | fly | fly_01〜06（6） | 生成 |
 | dizzy | dizzy_01〜04（4） | 新しい fly_06 を編集 |
+
+---
+
+## 照合の結果（2026-11-12）と追加の作り直し2コマ
+
+33コマのうち31コマ合格（帽章は全コマ6つ星、警棒は全コマ右手）。次の2コマだけ作り直す。共通ブロックの後ろにつなげて使う。
+
+**attack_03.png**（不合格: 白い振りの軌跡が描かれている。指示は「効果なし」）
+```
+Frame: attack, frame 3 of 7. The baton swinging down in front of him at head height. The black baton is always in his RIGHT white-gloved hand (on the camera side of his body in this three-quarter view facing screen-right).
+Absolutely NO swoosh, NO motion trail, NO speed lines, NO white arcs anywhere: only the character on the flat magenta background.
+```
+
+**fly_05.png**（不合格: 空中に浮いている。床に落ちた瞬間のコマなので、体が床の線に着いていないといけない）
+```
+Frame: knocked flying, frame 5 of 6. The moment he lands: his back and hips are flat ON the floor line (the same height as the soles in Image C), a small bounce lifting only his arms and legs up, a dazed face. His body must touch the floor line; he is NOT floating in the air. He has dropped his baton; it is not in the picture.
+```
