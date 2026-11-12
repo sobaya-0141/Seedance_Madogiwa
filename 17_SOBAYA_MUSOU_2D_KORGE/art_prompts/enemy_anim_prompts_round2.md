@@ -126,3 +126,5 @@ Frame: rage, frame 8 of 8. Same as frame 7, with comic white steam puffing from 
 | --- | --- | --- |
 | police/idle_01.png | **不合格**: 帽章が5つ星（デザイン画は6つ星）。ほかは合格 | 作り直し。指示の末尾に `The cap badge is a plain gold star with exactly SIX points, exactly as on Image A (not five).` を足す |
 | boss/idle_01.png | 合格。ただし身長がそば屋の1.0倍で、警備隊長（1.02倍）より低い | 作り直し不要。ゲーム側で警部だけ5%大きく描く（`Data.kt` の `HAND_DRAWN_SIZE`） |
+| sergeant_sheet.png | 合格（`04_GAME_ASSETS/musou2d/designs/` に登録） | — |
+| sergeant/idle・walk・attack_01〜04 | walk_08 だけ**不合格**: ほかのコマより約1割大きく、足元が浮いている（人物の高さ 1074px、ほかは 960〜990px） | walk_08 を作り直す。指示の末尾に `Keep exactly the same character size and foot line as Image C (the figure must not be larger or higher than Image C).` を足す |
