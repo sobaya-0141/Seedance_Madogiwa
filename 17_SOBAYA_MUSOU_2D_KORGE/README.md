@@ -51,10 +51,14 @@ Gradle 8.8 を動かすため、どれも JDK 21 を `JAVA_HOME` に指定する
 | PC | `./gradlew runJvm` | ウィンドウで起動 | 動作確認済み |
 | Web | `./gradlew jsBrowserDistribution --no-configuration-cache` | `build/dist/js/productionExecutable/`（約10MB） | ブラウザ・スマホ幅で動作確認済み。ゲームサイトへは `GAMES_PORTAL/games.json` の `"engine": "korge"` で載せる |
 | Android | `./gradlew assembleDebug` | `build/outputs/apk/debug/sobaya-musou2d-debug.apk` | エミュレーター（API 37）で起動・タッチ操作を確認済み |
-| iOS | `./gradlew packageIosSimulatorDebug --no-configuration-cache` | — | **未完了**（下記） |
+| iOS | `./gradlew packageIosSimulatorDebug --no-configuration-cache` | `build/platforms/ios/app.xcodeproj/build/Build/Products/Debug-iphonesimulator/そば屋無双2D.app` | シミュレーター（iPhone 18 Pro・iOS 27）で横画面での起動を確認済み。タッチ操作はシミュレーターでは未確認 |
 
 - Android: 署名用の鍵 `build/korge.keystore` が要る（開発用は `keytool -genkeypair -keystore build/korge.keystore -storepass password -keypass password -alias korge -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Madogiwa Dev"`）。ストア公開用の鍵は別に用意して `RELEASE_STORE_FILE` などのプロパティで渡す。画面は横向きに固定（`build.gradle.kts` の `orientation`）
-- iOS: KorGE が `~/.korge/XcodeGen-2.42.0` に XcodeGen を取得してビルドするが、2.42.0 は Xcode 27 の Swift でビルドできない。XcodeGen を新しい版（2.46.0 など）にしてビルドするか、`/usr/local/bin/xcodegen` に入れれば進められる
+- iOS:
+    - KorGE は iOS 用の Xcode プロジェクトを XcodeGen（[yonaskolb/XcodeGen](https://github.com/yonaskolb/XcodeGen)、MIT のオープンソース）で作る。KorGE が取得する 2.42.0 は Xcode 27 でビルドできないので、`~/.korge/XcodeGen-2.42.0` で 2.46.0 をビルドしてある（`git checkout 2.46.0 && env PATH=/usr/bin:/bin:/usr/sbin:/sbin make build`）
+    - swiftly で入れた Swift が PATH の先にあると、Xcode と版が合わずビルドに失敗する。Gradle を実行するときは PATH から `~/.swiftly/bin` を外す
+    - KorGE 6.0.0 が生成する `main.m` と `Info.plist` は UIScene に対応しておらず、iOS 27 では起動直後に止められる。`build.gradle.kts` で、UIScene 対応・横向き固定にした `ios_template/` の版に差し替えている
+    - 実機向けは `packageIosDeviceDebug`。Apple Developer のチーム（`korge { iosDevelopmentTeam = "..." }`）と署名が必要
 - 画像は WebP（`04_GAME_ASSETS/musou2d/sprites/*.webp`）で入れている。PNG の数分の1で、PC・Web・Android で読めることを確認済み
 - スマホでは画面に触れるとタッチ操作が出る（左半分＝その場に出るスティック、右下＝攻撃・チャージ・回避・無双、ゴール付近で「ゴール」ボタン、右上＝一時停止）。`src/TouchControls.kt`
 

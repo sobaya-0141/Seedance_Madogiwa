@@ -20,3 +20,14 @@ korge {
 dependencies {
 	add("commonMainApi", project(":deps"))
 }
+
+// iOS: KorGE 6.0.0 が生成する main.m と Info.plist は UIScene に対応しておらず、iOS 27 では起動直後に止められる。
+// 生成のあとで、UIScene 対応・横向き固定にした ios_template/ の版に差し替える
+tasks.matching { it.name == "prepareKotlinNativeIosProject" }.configureEach {
+	doLast {
+		copy {
+			from("ios_template")
+			into(layout.buildDirectory.dir("platforms/ios/app"))
+		}
+	}
+}

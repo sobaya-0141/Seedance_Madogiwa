@@ -292,7 +292,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         help.forEachIndexed { i, s -> ui.text(s, 17, Pal.dim, font) { position(80, 478 + i * 30) } }
         titleSobaya = ui.image(sheets.getValue("sobaya").frameAt("idle", 0.0).slice) { smoothing = true }
         placeTitleSobaya(sheets.getValue("sobaya").frameAt("idle", 0.0))
-        ui.text("KorGE 版・PC", 14, Pal.dim, font) { position(SCREEN_W - 120, SCREEN_H - 28) }
+        ui.text("KorGE 版", 14, Pal.dim, font) { position(SCREEN_W - 120, SCREEN_H - 28) }
     }
 
     private fun animateTitle() {
