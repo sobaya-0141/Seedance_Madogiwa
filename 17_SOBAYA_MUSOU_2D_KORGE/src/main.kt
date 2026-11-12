@@ -650,6 +650,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
                 b.enemies.any { it.kind == EnemyKind.BOSS && it.age in 0.3..0.5 } -> requestShot("s${n}_boss_intro")
                 b.enemies.any { it.state == EState.SPECIAL && it.hitDone } -> requestShot("s${n}_boss_pound")
                 b.goalOpen && b.grab > 0.5 -> requestShot("s${n}_goal")
+                b.enemies.any { it.kind == EnemyKind.SERGEANT && it.state == EState.ATTACK } -> requestShot("s${n}_sergeant_attack")
+                b.enemies.any { it.kind == EnemyKind.SERGEANT && it.state == EState.LYING } -> requestShot("s${n}_sergeant_down")
             }
             if (b.time - lastLog > 30) {
                 lastLog = b.time
