@@ -25,11 +25,11 @@ suspend fun main() = Korge(
     backgroundColor = Colors["#101216"],
 ) {
     val font = resourcesVfs["fonts/MPLUSRounded1c-ExtraBold.ttf"].readTtfFont()
-    // 手描きアニメのアトラス（04_GAME_ASSETS/musou2d）: そば屋・警備員・警備隊長。
-    // 残りの敵（警察官・巡査部長・警部）はまだ採用3Dモデルを描いたシート
-    val handDrawn = listOf("sobaya", "guard", "captain")
-    val sheets = handDrawn.associateWith { Sheet.loadAtlas(it) } +
-        listOf("police", "sergeant", "boss").associateWith { Sheet.load(it) }
+    // 手描きアニメのアトラス（04_GAME_ASSETS/musou2d/sprites）があるキャラはそれを使い、
+    // まだ無い敵は採用3Dモデルを描いたシートを使う（pack_all.sh でアトラスを作れば自動で切り替わる）
+    val sheets = listOf("sobaya", "guard", "captain", "police", "sergeant", "boss").associateWith {
+        if (resourcesVfs["musou2d/$it.txt"].exists()) Sheet.loadAtlas(it) else Sheet.load(it)
+    }
     for ((name, sheet) in sheets) sheet.anims["intro"]?.let { introLength[name] = it.length }
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
@@ -87,6 +87,17 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private val recordDir = Environment["MADOGIWA_RECORD"]
     private val recordSeconds = Environment["MADOGIWA_RECORD_SECONDS"]?.toDoubleOrNull() ?: 15.0
     private var manualClock = false
+    private val noHeal = Environment["MADOGIWA_NO_HEAL"] == "1"
+
+    // 手応え・一時停止・ゲームパッド
+    private lateinit var particles: Particles
+    private var hitStop = 0.0
+    private var paused = false
+    private var pauseView: View? = null
+    private val padHeld = mutableSetOf<GameButton>()
+    private val padPressed = mutableSetOf<GameButton>()
+    private var padX = 0.0
+    private var padY = 0.0
     private var pendingShot: String? = null
     private val shotsTaken = mutableSetOf<String>()
 
@@ -96,6 +107,24 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         keys {
             down { held += it.key; pressed += it.key; onKey(it.key) }
             up { held -= it.key }
+        }
+        // ゲームパッド（3D版と同じ割り当て）: 左スティック/十字キー=移動、□=攻撃、△=チャージ、○=無双、×=回避、R1長押し=ゴール、START=決定/一時停止
+        gamepad {
+            button { _, down, btn, _ ->
+                if (down) {
+                    if (btn !in padHeld) padPressed += btn
+                    padHeld += btn
+                    when (btn) {
+                        GameButton.START -> onKey(if (screen == Screen.PLAY && battle?.phase == Phase.PLAY) Key.P else Key.ENTER)
+                        GameButton.BUTTON_SOUTH -> if (screen != Screen.PLAY) onKey(Key.ENTER)
+                        GameButton.LEFT, GameButton.L1 -> if (screen == Screen.TITLE) onKey(Key.LEFT)
+                        GameButton.RIGHT, GameButton.R1 -> if (screen == Screen.TITLE) onKey(Key.RIGHT)
+                        GameButton.SELECT -> if (screen == Screen.PLAY) onKey(Key.R)
+                        else -> Unit
+                    }
+                } else padHeld -= btn
+            }
+            stick { _, stick, x, y -> if (stick == GameStick.LEFT) { padX = x; padY = -y } }
         }
         addUpdater { dt -> tick(dt) }
         if (auto) runAuto()
@@ -114,6 +143,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             Screen.PLAY -> {
                 val b = battle ?: return
                 when {
+                    key == Key.P && b.phase == Phase.PLAY -> togglePause()
                     key == Key.ESCAPE -> showTitle()
                     key == Key.R -> startStage(stageIndex)
                     b.phase == Phase.WIN && resultShown && (key == Key.ENTER || key == Key.RETURN) -> nextStage()
@@ -133,6 +163,28 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         playerInput.musou = p(Key.L, Key.C)
         playerInput.dodge = p(Key.SPACE)
         playerInput.interact = h(Key.F)
+        // ゲームパッド
+        fun ph(vararg g: GameButton) = g.any { it in padHeld }
+        fun pp(vararg g: GameButton) = g.any { it in padPressed }
+        val dx = (if (ph(GameButton.RIGHT)) 1.0 else 0.0) - (if (ph(GameButton.LEFT)) 1.0 else 0.0) + (if (abs(padX) > 0.25) padX else 0.0)
+        val dy = (if (ph(GameButton.DOWN)) 1.0 else 0.0) - (if (ph(GameButton.UP)) 1.0 else 0.0) + (if (abs(padY) > 0.25) padY else 0.0)
+        playerInput.moveX = (playerInput.moveX + dx).coerceIn(-1.0, 1.0)
+        playerInput.moveY = (playerInput.moveY + dy).coerceIn(-1.0, 1.0)
+        playerInput.attack = playerInput.attack || pp(GameButton.BUTTON_WEST)
+        playerInput.charge = playerInput.charge || pp(GameButton.BUTTON_NORTH)
+        playerInput.musou = playerInput.musou || pp(GameButton.BUTTON_EAST)
+        playerInput.dodge = playerInput.dodge || pp(GameButton.BUTTON_SOUTH)
+        playerInput.interact = playerInput.interact || ph(GameButton.R1, GameButton.R2)
+    }
+
+    private fun togglePause() {
+        paused = !paused
+        pauseView?.removeFromParent()
+        pauseView = if (paused) ui.container {
+            solidRect(SCREEN_W, SCREEN_H, Colors["#000000aa"])
+            text("PAUSE", 72, Pal.gold, font) { position(530, 250) }
+            text("P / START でつづける　　R でやり直し　　Esc でタイトルへ", 22, Pal.text, font) { position(330, 360) }
+        } else null
     }
 
     private fun nextStage() {
@@ -151,11 +203,16 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         updateFloating(d)
         if (screen == Screen.TITLE) animateTitle()
         val b = battle
-        if (screen != Screen.PLAY || b == null) { pressed.clear(); return }
+        if (screen != Screen.PLAY || b == null) { pressed.clear(); padPressed.clear(); return }
+        if (paused) { pressed.clear(); padPressed.clear(); return }
+        particles.update(d)
         repeat(steps) {
+            // ヒットストップ: 当たった瞬間だけ時間を止めて重さを出す（演出だけは動かす）
+            if (hitStop > 0) { hitStop -= d; return@repeat }
             if (auto) b.autoInput(playerInput) else readInput()
             b.update(d, playerInput)
             pressed.clear()
+            padPressed.clear()
             consumeFx(b)
         }
         render(b)
@@ -217,7 +274,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         screen = Screen.PLAY
         resultShown = false
         val b = Battle(STAGES[index], seed = 20251201 + index)
-        b.autoHeal = auto
+        b.autoHeal = auto && !noHeal
+        paused = false; pauseView = null; hitStop = 0.0
         battle = b
         ui.removeChildren()
         enemyViews.clear(); pickupViews.clear(); gateViews.clear(); floating.clear()
@@ -231,6 +289,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         goalGlow = drawGoal(world, b)
         actors = world.container()
         fxLayer = world.container()
+        particles = Particles(fxLayer)
         playerView = ActorView(actors, sheets.getValue("sobaya"), PLAYER_SCALE, null, shadowW = 60.0)
         hud = Hud(ui)
         fx(Fx.Banner("STAGE ${b.stage.number}  ${b.stage.title}", b.stage.subtitle))
@@ -266,7 +325,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             val v = enemyViews.getOrPut(e) {
                 val sh = sheets.getValue(e.kind.sheet)
                 // 手描きの敵は、絵の中でそば屋との身長の比が決まっているので、そば屋と同じ倍率で描く
-                ActorView(actors, sh, if (sh.handDrawn) PLAYER_SCALE else e.kind.scale, e.title ?: e.kind.title, font, shadowW = if (sh.handDrawn) 55.0 * e.kind.scale else 46 * e.kind.scale)
+                ActorView(actors, sh, if (sh.handDrawn) PLAYER_SCALE * (HAND_DRAWN_SIZE[e.kind.sheet] ?: 1.0) else e.kind.scale, e.title ?: e.kind.title, font, shadowW = if (sh.handDrawn) 55.0 * e.kind.scale else 46 * e.kind.scale)
             }
             val sh = v.sheet
             val moving = abs(e.x - v.lastX) + abs(e.y - v.lastY) > 0.6
@@ -291,6 +350,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             v.update(e, f, e.alpha)
             v.stars(e.state == EState.LYING, clock)
             v.rage(e.enraged)
+            if (e.flash > 0) v.image.colorMul = Colors["#ff9c8c"].also { v.image.scaleY = v.scaleK * 0.96 }
         }
         for ((e, v) in enemyViews.entries.toList()) if (e !in b.enemies) { v.remove(); enemyViews.remove(e) }
 
@@ -311,11 +371,13 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private fun fx(f: Fx) {
         when (f) {
             is Fx.Hit -> {
-                val c = fxLayer.container { position(f.x, FLOOR_TOP + f.y - 110) }
-                c.circle(if (f.heavy) 30 else 20, Colors["#fff3b0"]) { anchor(0.5, 0.5) }
-                c.text(if (f.heavy) "ドカッ！" else "バシッ", if (f.heavy) 30 else 22, Pal.gold, font) { position(-30, -50) }
-                floating += Floating(c, 0.35, rise = 40.0, grow = 1.6)
+                particles.hit(f.x, FLOOR_TOP + f.y - 120, f.heavy, f.dir)
+                hitStop = max(hitStop, if (f.heavy) 0.085 else 0.035)
+                val t = fxLayer.text(if (f.heavy) "ドカッ！" else "バシッ", if (f.heavy) 34 else 24, Pal.gold, font,
+                    stroke = korlibs.image.paint.Stroke(Colors["#2a1606"], korlibs.math.geom.vector.StrokeInfo(thickness = 5.0))) { position(f.x - 34, FLOOR_TOP + f.y - 210) }
+                floating += Floating(t, 0.35, rise = 40.0, grow = 1.3)
             }
+            is Fx.Dust -> particles.dust(f.x, FLOOR_TOP + f.y)
             is Fx.Text -> {
                 val t = fxLayer.text(f.text, if (f.big) 24 else 26, if (f.big) Pal.green else Pal.red, font) { position(f.x - 20, FLOOR_TOP + f.y - 230) }
                 floating += Floating(t, 0.9, rise = 60.0)
@@ -525,7 +587,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         delay(0.4.seconds)
         recordDir?.let { dir -> record(dir); views.gameWindow.close(0); return }
         shot("title")
-        startStage(0)
+        startStage((Environment["MADOGIWA_START_STAGE"]?.toIntOrNull() ?: 1) - 1)
         var lastLog = 0.0
         while (true) {
             delay(50.milliseconds)
@@ -631,8 +693,22 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         val musouLabel = c.text("無双", 18, Pal.gold, font) { position(20, 46) }
         val musouBack = c.solidRect(360, 18, Colors["#3a3020"]) { position(80, 50) }
         val musouBar = c.solidRect(0, 18, Pal.beer) { position(80, 50) }
-        val musouHint = c.text("", 16, Pal.gold, font) { position(452, 48) }
-        val objective = c.text("", 20, Pal.text, font) { position(470, 12) }
+        val musouHint = c.text("", 16, Pal.gold, font) { position(560, 48) }
+        // 無双ゲージ＝ジョッキのビールの量（3D版と同じ考え方）。手描きのUI素材が届くまでは図形で描く
+        val mug = c.container { position(452, 6) }
+        val mugBeer = mug.solidRect(40, 0, Pal.beer) { position(4, 70) }
+        val mugFoam = mug.solidRect(40, 8, Colors["#fffaf0"]) { position(4, 62) }
+        init {
+            mug.solidRect(48, 4, Colors["#e8eef4cc"]) { position(0, 72) }
+            mug.solidRect(4, 74, Colors["#e8eef4cc"]) { position(0, 2) }
+            mug.solidRect(4, 74, Colors["#e8eef4cc"]) { position(44, 2) }
+            mug.solidRect(14, 4, Colors["#e8eef4cc"]) { position(48, 20) }
+            mug.solidRect(4, 30, Colors["#e8eef4cc"]) { position(58, 20) }
+            mug.solidRect(14, 4, Colors["#e8eef4cc"]) { position(48, 48) }
+        }
+        var lastCombo = 0
+        var comboPop = 0.0
+        val objective = c.text("", 20, Pal.text, font) { position(560, 12) }
         val ko = c.text("", 30, Pal.gold, font) { position(SCREEN_W - 230, 10) }
         val timeText = c.text("", 18, Pal.dim, font) { position(SCREEN_W - 230, 52) }
         val comboText = c.text("", 34, Pal.gold, font) { position(SCREEN_W - 260, 120) }
@@ -677,6 +753,12 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             val full = p.musou >= MUSOU_MAX && p.state != PState.MUSOU
             musouHint.text = if (full) "L で無双乱舞！" else ""
             musouBar.color = if (full && (clock * 6).toInt() % 2 == 0) Colors["#ffe27a"] else Pal.beer
+            val level = (p.musou / MUSOU_MAX).coerceIn(0.0, 1.0)
+            mugBeer.height = 66 * level
+            mugBeer.y = 70 - 66 * level
+            mugFoam.y = mugBeer.y - 8
+            mugFoam.visible = level > 0.02
+            mugBeer.color = musouBar.color
             objective.text = when {
                 b.phase == Phase.WIN -> b.stage.clearText
                 b.goalOpen -> "${b.stage.goalLabel}へ（${b.stage.goalAction}）"
@@ -686,6 +768,11 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             ko.text = "${b.koTotal} KO"
             timeText.text = "STAGE ${b.stage.number}　${formatTime(b.time)}"
             comboText.text = if (b.combo >= 3) "${b.combo} HIT!" else ""
+            // コンボが増えた瞬間に文字をはずませる
+            if (b.combo > lastCombo && b.combo >= 3) comboPop = 1.0
+            lastCombo = b.combo
+            comboPop = max(0.0, comboPop - d * 6)
+            comboText.scale(1.0 + 0.35 * comboPop)
             val boss = b.leader?.takeIf { it.hp > 0 && it in b.enemies }
             bossBox.visible = boss != null
             if (boss != null) {

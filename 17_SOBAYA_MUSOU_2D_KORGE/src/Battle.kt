@@ -22,7 +22,9 @@ enum class Phase { PLAY, WIN, LOSE }
 
 /** 画面に出す演出。シーン側が受け取って消費する */
 sealed class Fx {
-    class Hit(val x: Double, val y: Double, val heavy: Boolean) : Fx()
+    class Hit(val x: Double, val y: Double, val heavy: Boolean, val dir: Double = 1.0) : Fx()
+    /** 床に体が落ちた（土ぼこり） */
+    class Dust(val x: Double, val y: Double) : Fx()
     class Text(val x: Double, val y: Double, val text: String, val big: Boolean) : Fx()
     class Wave(val x: Double, val y: Double, val radius: Double, val enemy: Boolean) : Fx()
     class Banner(val text: String, val sub: String = "") : Fx()
@@ -74,6 +76,8 @@ class Enemy(val kind: EnemyKind, val title: String?, hpScale: Double) : Actor() 
     var hitDone = false
     var secondPound = false
     var removed = false
+    /** 殴られた直後に白っぽく光らせる残り秒数 */
+    var flash = 0.0
     /** 出てきてからの秒数（登場ポーズの間は動かない） */
     var age = 0.0
     var alpha = 1.0
@@ -164,6 +168,8 @@ class Battle(val stage: StageDef, seed: Int = 1) {
             leaderSpawned = true
             val e = spawn(z.leader, z.leaderTitle, z.leaderHpScale)
             leader = e
+            // ボスの前に回復の枝豆を1つ置く（ベルトアクションの定番）
+            if (z.leader == EnemyKind.BOSS) pickups += Pickup(false, (player.x + 160).coerceAtMost(zoneEnd - 200), DEPTH * 0.5)
             fx += Fx.Banner("${z.leaderTitle} 登場！", if (z.leader == EnemyKind.BOSS) "地響きに注意！ Space で回避" else "大技（4段目・K・L）でしかひるまない")
         }
         spawnTimer -= dt
@@ -340,7 +346,8 @@ class Battle(val stage: StageDef, seed: Int = 1) {
             hits++
             e.hp -= m.dmg
             val dir = if (dx == 0.0) p.facing else sign(dx)
-            fx += Fx.Hit(e.x, e.y, m.heavy)
+            fx += Fx.Hit(e.x, e.y, m.heavy, dir)
+            e.flash = 0.1
             if (e.hp <= 0) {
                 knockOut(e, dir, max(m.launch, 6.0), max(m.push, 6.0))
             } else if (!e.kind.armor || m.heavy) {
@@ -426,6 +433,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
     private fun updateEnemy(e: Enemy, dt: Double) {
         e.t += dt
         e.age += dt
+        e.flash -= dt
         e.attackCd -= dt
         e.specialCd -= dt
         val p = player
@@ -496,6 +504,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
                 if (e.z <= 0 && e.t > 0.05) {
                     e.z = 0.0
                     e.vx *= 0.3
+                    fx += Fx.Dust(e.x, e.y)
                     if (e.hp <= 0) { e.state = EState.LYING; e.t = 0.0 } else { e.state = EState.HIT; e.t = 0.0 }
                 }
             }

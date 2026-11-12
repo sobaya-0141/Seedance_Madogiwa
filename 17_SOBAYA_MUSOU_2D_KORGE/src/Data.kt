@@ -15,6 +15,9 @@ const val DEPTH = 270.0
 const val ZONE_W = 1700.0
 /** そば屋の表示倍率。アトラスは立ち姿の身長が約438px、画面では約270px（主役なので敵より大きく） */
 const val PLAYER_SCALE = 0.62
+/** 手描きの絵の大きさの補正（絵の中の身長の比がデザインと少しずれたキャラ）。警部は一番大きく見せる */
+val HAND_DRAWN_SIZE = mapOf("boss" to 1.05)
+
 /** 背景の一枚絵を画面より横に何割広く敷くか（カメラに合わせてずらす分） */
 const val BACKDROP_OVERSCAN = 0.12
 
@@ -141,7 +144,7 @@ val STAGES = listOf(
         listOf(
             Zone("ロビー", 24, mapOf(EnemyKind.GUARD to 1.0), EnemyKind.CAPTAIN, "本社警備隊長", 11),
             Zone("オフィスフロア", 30, mapOf(EnemyKind.GUARD to 0.6, EnemyKind.POLICE to 0.4), EnemyKind.SERGEANT, "警備主任", 14),
-            Zone("窓際エリア", 36, mapOf(EnemyKind.GUARD to 0.7, EnemyKind.POLICE to 0.3), EnemyKind.BOSS, "本社警備部長", 0, 1.35),
+            Zone("窓際エリア", 36, mapOf(EnemyKind.GUARD to 0.7, EnemyKind.POLICE to 0.3), EnemyKind.BOSS, "本社警備部長", 0, 1.2),
         ),
         "窓際の立ち飲み処", "F 長押しでビールを納品する", "立ち飲み処、開店！",
     ),

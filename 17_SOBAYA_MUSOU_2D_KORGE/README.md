@@ -24,7 +24,10 @@
 | ゴールで長押し | F |
 | ステージ選択（タイトル） | ← → |
 | スタート / 次のステージへ | Enter |
+| 一時停止 | P |
 | やり直し / タイトルへ | R / Esc |
+
+ゲームパッド（3D版と同じ割り当て）: 左スティック / 十字キーで移動、□（X）通常攻撃、△（Y）チャージ、○（B）無双乱舞、×（A）回避、R1 / R2 長押しでゴール、START で決定・一時停止、SELECT でやり直し。
 
 - 敵は同時に3人までしか殴りかかってこない（残りは周りを囲んで順番を待つ）
 - 隊長格（警備隊長・巡査部長・警部など）は、4段目・チャージ・無双乱舞でしかひるまない
@@ -49,13 +52,25 @@ KORGE_HEADLESS=true MADOGIWA_AUTO=1 MADOGIWA_SHOTS=/tmp/musou2d ./gradlew runJvm
 
 `AUTO: stage N clear ...` が3つ出て、最後に `ending.png` が書き出されれば、全ステージを通してクリアできています。
 
+- `MADOGIWA_NO_HEAL=1`: 自動回復を切る（難易度の確認用）。2026-11-12 時点で、ボットはステージ1・2を毎回、ステージ3を4回中3回クリアする
+- `MADOGIWA_START_STAGE=3`: 指定したステージから始める
+- `MADOGIWA_RECORD=<ディレクトリ>` と `MADOGIWA_RECORD_SECONDS=20`: ステージ1を1/30秒ずつ進めて全コマを書き出す（`ffmpeg -framerate 30 -i <ディレクトリ>/frame_%04d.png ...` で動画にする）
+
+## 手描きのコマを足すとき
+
+1. コマ（マゼンタ背景・1280×1280）を `art_prompts/generated_enemies/<名前>/` に置く（git には入れない）。プロンプトは `art_prompts/`
+2. 基準コマ `idle_01.png` の足元を測り、`04_GAME_ASSETS/musou2d/<名前>_anims.txt` の `pivot` に書く
+3. リポジトリのルートで `sh 04_GAME_ASSETS/musou2d/tools/pack_all.sh` を実行する。コマが全部そろったキャラだけアトラス（`04_GAME_ASSETS/musou2d/sprites/`）が作られ、ゲームは起動時に自動でそれを使う（無いキャラは採用3Dモデルを描いた絵のまま）
+
 ## 素材
 
 - キャラクターは、採用3Dモデル（`04_GAME_ASSETS/models3d/`）のアニメーションを横向きに描いたスプライトシート `04_GAME_ASSETS/models3d/sprites/sheets/` を `resources/sheets` から相対symlinkで参照しています（コピーしません）。作り直しは `04_GAME_ASSETS/models3d/README.md` を参照
   - そば屋: `sobaya.glb`＋ジョッキ（NG変更要素。右手の `PropSocket.R` に持たせて描いている）。コンボは `Hybrid_MugPunch` / `Hybrid_MugHook` / `Hybrid_MugSmash`、チャージは `MugAttack`、回避は `Procedural_RollForward`
   - 敵: CC0 のマネキン素体に、3D版と同じ方法で制服の色・帽子・警棒を付けて描いている
   - シートは右向きだけで、左向きは左右反転して表示する
-- 背景・ゲート・ゴール・アイテムは図形で描いています（画像なし）
+- そば屋・警備員・警備隊長は手描きアニメ（`04_GAME_ASSETS/musou2d/`。デザイン画と照合チェックリストは `designs/`）。警察官・巡査部長・警部はまだ採用3Dモデルを描いたシート
+- ステージ1の背景は工場正門の背景ラフ（`04_GAME_ASSETS/musou2d/backgrounds/`）。ほかのステージ・ゲート・ゴール・アイテムは図形で描いています
+- 火花・ビールの泡・土ぼこり・無双ゲージのジョッキは、手描きのエフェクト素材が届くまでコードで描いています（`src/Particles.kt`）。攻撃が当たった瞬間は一瞬だけ時間を止めて（ヒットストップ）重さを出す
 - フォントは `04_GAME_ASSETS/fonts/MPLUSRounded1c-ExtraBold.ttf`（OFL）を `resources/fonts/` から symlink で参照しています
 
 ## 構成
@@ -69,4 +84,4 @@ KORGE_HEADLESS=true MADOGIWA_AUTO=1 MADOGIWA_SHOTS=/tmp/musou2d ./gradlew runJvm
 
 - カメラの回転と奥行きの移動範囲は無く、横スクロールの床の帯の上で戦う
 - エリアごとの人数は3D版より少なめ（2Dの画面に収まるテンポにしている）
-- 効果音・BGMなし、ゲームパッド・タッチ操作は未対応
+- 効果音・BGMなし、タッチ操作は未対応

@@ -1,0 +1,10 @@
+# 警察官の動作一覧（PackSprites.java が読む）。pivot は基準コマ idle_01 が届いたら測って直す
+anim idle 6 8 loop
+anim walk 8 12 loop
+anim attack 7 12 once hit=4
+anim hit 3 12 once
+anim fly 6 10 hold
+anim dizzy 4 6 loop
+
+pivot 640 1236
+scale 0.45
