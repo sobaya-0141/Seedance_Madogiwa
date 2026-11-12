@@ -37,8 +37,18 @@ class Sheet(val name: String, val anims: Map<String, Anim>, val handDrawn: Boole
     override fun toString() = "Sheet($name)"
 
     companion object {
+        /**
+         * 同じ名前の .webp があればそれを読む（PNG の数分の1の大きさ。Web・スマホ向け）。
+         * WebP を読めない環境（PC版の JVM など）では .png を読む
+         */
+        suspend fun readImage(path: String): Bitmap {
+            // Android の resourcesVfs は exists() が当てにならないので、読んでみて失敗したら PNG にする
+            try { return resourcesVfs[path.substringBeforeLast('.') + ".webp"].readBitmap() } catch (_: Throwable) { }
+            return resourcesVfs[path].readBitmap()
+        }
+
         suspend fun load(name: String): Sheet {
-            val bmp = resourcesVfs["sheets/$name.png"].readBitmap().mipmaps(true)
+            val bmp = readImage("sheets/$name.png").mipmaps(true)
             var cellW = 0; var cellH = 0; var px = 0.0; var py = 0.0
             val anims = linkedMapOf<String, Anim>()
             var row = 0
@@ -62,7 +72,7 @@ class Sheet(val name: String, val anims: Map<String, Anim>, val handDrawn: Boole
         suspend fun loadAtlas(name: String): Sheet {
             val lines = resourcesVfs["musou2d/$name.txt"].readString().lines().map { it.trim().split(" ") }.filter { it.isNotEmpty() && it[0].isNotEmpty() && !it[0].startsWith("#") }
             val pages = mutableMapOf<Int, Bitmap>()
-            for (f in lines) if (f[0] == "page") pages[f[1].toInt()] = resourcesVfs["musou2d/${f[2]}"].readBitmap().mipmaps(true)
+            for (f in lines) if (f[0] == "page") pages[f[1].toInt()] = readImage("musou2d/${f[2]}").mipmaps(true)
             class Info(val count: Int, val fps: Int, val mode: String, val hit: Int)
             val infos = linkedMapOf<String, Info>()
             for (f in lines) if (f[0] == "anim") infos[f[1]] = Info(f[2].toInt(), f[3].toInt(), f[4], f[5].toInt())

@@ -7,9 +7,14 @@ plugins {
 korge {
 	id = "jp.madogiwa.sobayamusou2d"
 	name = "そば屋無双2D"
+	// 横スクロールのベルトアクションなので、スマホでは横向きに固定する
+	orientation = Orientation.LANDSCAPE
 
-	// 試作はPC（JVM）のみ。Web版にするときは targetJs() / targetWasm() を足す
+	// PC（JVM）・Web（JS）・Android・iOS
 	targetJvm()
+	targetJs()
+	targetAndroid()
+	targetIos()
 }
 
 dependencies {

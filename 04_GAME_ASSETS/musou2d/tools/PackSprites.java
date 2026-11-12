@@ -124,7 +124,8 @@ public class PackSprites {
         }
         meta.append(frameLines);
         Files.writeString(out.resolve(name + ".txt"), meta.toString());
-        Files.writeString(out.resolve(name + "_pack_log.txt"), log.toString());
+        Files.createDirectories(out.resolve("logs"));
+        Files.writeString(out.resolve("logs").resolve(name + "_pack_log.txt"), log.toString());
         System.out.println("packed " + frames.size() + " frames into " + pages.size() + " page(s)");
     }
 

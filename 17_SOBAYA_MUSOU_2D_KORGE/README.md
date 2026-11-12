@@ -1,4 +1,4 @@
-# そば屋無双 2D 〜ビール工場強奪作戦〜（KorGE 版・PC）
+# そば屋無双 2D 〜ビール工場強奪作戦〜（KorGE 版）
 
 3Dアクション「そば屋無双」（`12_SOBAYA_MUSOU_GODOT`）を、KorGE（Kotlin製の2Dゲームエンジン）で横スクロールのベルトアクションに作り直したものです。ビールが足りないそば屋が、押し寄せる警備員や警察官をビールジョッキでなぎ倒しながら3つのステージを進みます。
 
@@ -41,6 +41,22 @@ Gradle 8.8 は JDK 17〜22 で動きます（JDK 25 では動きません）。J
 cd 17_SOBAYA_MUSOU_2D_KORGE
 JAVA_HOME=/path/to/jdk-21 ./gradlew runJvm
 ```
+
+## 各環境向けの書き出し
+
+Gradle 8.8 を動かすため、どれも JDK 21 を `JAVA_HOME` に指定する。
+
+| 環境 | コマンド | 出力 | 確認状況（2026-11-12） |
+| --- | --- | --- | --- |
+| PC | `./gradlew runJvm` | ウィンドウで起動 | 動作確認済み |
+| Web | `./gradlew jsBrowserDistribution --no-configuration-cache` | `build/dist/js/productionExecutable/`（約10MB） | ブラウザ・スマホ幅で動作確認済み。ゲームサイトへは `GAMES_PORTAL/games.json` の `"engine": "korge"` で載せる |
+| Android | `./gradlew assembleDebug` | `build/outputs/apk/debug/sobaya-musou2d-debug.apk` | エミュレーター（API 37）で起動・タッチ操作を確認済み |
+| iOS | `./gradlew packageIosSimulatorDebug --no-configuration-cache` | — | **未完了**（下記） |
+
+- Android: 署名用の鍵 `build/korge.keystore` が要る（開発用は `keytool -genkeypair -keystore build/korge.keystore -storepass password -keypass password -alias korge -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Madogiwa Dev"`）。ストア公開用の鍵は別に用意して `RELEASE_STORE_FILE` などのプロパティで渡す。画面は横向きに固定（`build.gradle.kts` の `orientation`）
+- iOS: KorGE が `~/.korge/XcodeGen-2.42.0` に XcodeGen を取得してビルドするが、2.42.0 は Xcode 27 の Swift でビルドできない。XcodeGen を新しい版（2.46.0 など）にしてビルドするか、`/usr/local/bin/xcodegen` に入れれば進められる
+- 画像は WebP（`04_GAME_ASSETS/musou2d/sprites/*.webp`）で入れている。PNG の数分の1で、PC・Web・Android で読めることを確認済み
+- スマホでは画面に触れるとタッチ操作が出る（左半分＝その場に出るスティック、右下＝攻撃・チャージ・回避・無双、ゴール付近で「ゴール」ボタン、右上＝一時停止）。`src/TouchControls.kt`
 
 ## 動作確認（自動プレイ）
 

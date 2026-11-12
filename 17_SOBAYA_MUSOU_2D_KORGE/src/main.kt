@@ -28,12 +28,13 @@ suspend fun main() = Korge(
     // 手描きアニメのアトラス（04_GAME_ASSETS/musou2d/sprites）があるキャラはそれを使い、
     // まだ無い敵は採用3Dモデルを描いたシートを使う（pack_all.sh でアトラスを作れば自動で切り替わる）
     val sheets = listOf("sobaya", "guard", "captain", "police", "sergeant", "boss").associateWith {
-        if (resourcesVfs["musou2d/$it.txt"].exists()) Sheet.loadAtlas(it) else Sheet.load(it)
+        // Android では exists() が当てにならないので、アトラスを読んでみて無ければ3Dモデルの絵にする
+        try { Sheet.loadAtlas(it) } catch (_: Throwable) { Sheet.load(it) }
     }
     for ((name, sheet) in sheets) sheet.anims["intro"]?.let { introLength[name] = it.length }
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
-    val stage1Backdrop = resourcesVfs["musou2d_bg/s1_a1_rough.png"].readBitmap().also { it.mipmaps = true }
+    val stage1Backdrop = Sheet.readImage("musou2d_bg/s1_a1_rough.png").also { it.mipmaps = true }
     sceneContainer().changeTo { MusouScene(font, sheets, stage1Backdrop) }
 }
 
@@ -98,11 +99,15 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private val padPressed = mutableSetOf<GameButton>()
     private var padX = 0.0
     private var padY = 0.0
+    private lateinit var touchControls: TouchControls
     private var pendingShot: String? = null
     private val shotsTaken = mutableSetOf<String>()
 
     override suspend fun SContainer.sceneMain() {
         ui = container()
+        // タッチ操作は画面が切り替わっても消えないよう、ui とは別の一番上の層に置く
+        touchControls = TouchControls(container(), font)
+        touchControls.attach(this) { screen == Screen.PLAY && battle?.phase == Phase.PLAY && !paused }
         showTitle()
         keys {
             down { held += it.key; pressed += it.key; onKey(it.key) }
@@ -175,6 +180,31 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         playerInput.musou = playerInput.musou || pp(GameButton.BUTTON_EAST)
         playerInput.dodge = playerInput.dodge || pp(GameButton.BUTTON_SOUTH)
         playerInput.interact = playerInput.interact || ph(GameButton.R1, GameButton.R2)
+        // タッチ
+        val tc = touchControls
+        if (tc.moveX != 0.0 || tc.moveY != 0.0) { playerInput.moveX = tc.moveX; playerInput.moveY = tc.moveY }
+        playerInput.attack = playerInput.attack || TouchControls.Btn.ATTACK in tc.pressed
+        playerInput.charge = playerInput.charge || TouchControls.Btn.CHARGE in tc.pressed
+        playerInput.musou = playerInput.musou || TouchControls.Btn.MUSOU in tc.pressed
+        playerInput.dodge = playerInput.dodge || TouchControls.Btn.DODGE in tc.pressed
+        playerInput.interact = playerInput.interact || TouchControls.Btn.GOAL in tc.held
+    }
+
+    /** タイトル・リザルト・一時停止の画面でのタップを、キー操作に置き換える */
+    private fun handleMenuTap() {
+        val p = touchControls.tappedAt ?: return
+        touchControls.tappedAt = null
+        val b = battle
+        when {
+            screen == Screen.TITLE -> when {
+                p.y in 250.0..400.0 && p.x in 70.0..350.0 -> onKey(Key.LEFT)
+                p.y in 250.0..400.0 && p.x in 350.0..630.0 -> onKey(Key.RIGHT)
+                else -> onKey(Key.ENTER)
+            }
+            screen == Screen.ENDING -> onKey(Key.ENTER)
+            screen == Screen.PLAY && paused -> togglePause()
+            screen == Screen.PLAY && b != null && resultShown -> onKey(if (b.phase == Phase.WIN) Key.ENTER else Key.R)
+        }
     }
 
     private fun togglePause() {
@@ -200,6 +230,15 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
 
     private fun step(d: Double, steps: Int) {
         clock += d
+        handleMenuTap()
+        if (TouchControls.Btn.PAUSE in touchControls.pressed && screen == Screen.PLAY) { touchControls.clearPressed(); togglePause() }
+        val tb = battle
+        touchControls.update(
+            inPlay = screen == Screen.PLAY && tb?.phase == Phase.PLAY && !paused,
+            musouReady = tb != null && tb.player.musou >= MUSOU_MAX,
+            nearGoal = tb != null && tb.goalOpen && abs(tb.player.x - tb.goalX) < 200,
+            clock = clock,
+        )
         updateFloating(d)
         if (screen == Screen.TITLE) animateTitle()
         val b = battle
@@ -213,6 +252,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             b.update(d, playerInput)
             pressed.clear()
             padPressed.clear()
+            touchControls.clearPressed()
             consumeFx(b)
         }
         render(b)
@@ -247,6 +287,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             "無双乱舞（ゲージ満タン）  L / C",
             "回避  Space　　ゴールで長押し  F",
             "やり直し  R　　タイトルへ  Esc",
+            "スマホ: 画面の左で移動、右下のボタンで攻撃（画面をタップでスタート）",
         )
         help.forEachIndexed { i, s -> ui.text(s, 17, Pal.dim, font) { position(80, 478 + i * 30) } }
         titleSobaya = ui.image(sheets.getValue("sobaya").frameAt("idle", 0.0).slice) { smoothing = true }

@@ -46,6 +46,11 @@ for (const game of manifest.games) {
     if (game.extraDir) {
       await cp(path.resolve(sourceDir, game.extraDir), distDir, { recursive: true, filter: (src) => !src.endsWith(".gdignore") });
     }
+  } else if (game.engine === "korge") {
+    // KorGE製（Kotlin）: Gradle で JS 版を書き出す（JDK 17〜22 が必要。CI では setup-java で 21 を入れる）
+    run("./gradlew", ["jsBrowserDistribution", "--console=plain", "--no-configuration-cache"], sourceDir);
+    await rm(path.join(distDir, `${game.jsName}.js.map`), { force: true });
+    if (game.extraDir) await cp(path.resolve(sourceDir, game.extraDir), distDir, { recursive: true });
   } else {
     run("npm", ["ci"], sourceDir);
     run("npm", ["run", game.buildScript], sourceDir);

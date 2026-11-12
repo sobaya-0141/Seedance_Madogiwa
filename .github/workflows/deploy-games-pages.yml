@@ -14,6 +14,8 @@ on:
       - "09_VOXEL_BATTLE_GAME/**"
       - "10_GYUN_GYUN_QUEST_GAME/**"
       - "12_SOBAYA_MUSOU_GODOT/**"
+      - "17_SOBAYA_MUSOU_2D_KORGE/**"
+      - "04_GAME_ASSETS/musou2d/**"
       - "04_GAME_ASSETS/models3d/**"
       - "04_GAME_ASSETS/fonts/**"
   workflow_dispatch:
@@ -46,6 +48,13 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+
+      # KorGE製ゲーム（17_SOBAYA_MUSOU_2D_KORGE）の JS 書き出し用。Gradle 8.8 は JDK 17〜22 で動く
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
 
       # Godot製ゲーム（12_SOBAYA_MUSOU_GODOT）の Web 書き出し用。公式リリースから取得し、SHA512-SUMS で照合する
       - name: Restore Godot

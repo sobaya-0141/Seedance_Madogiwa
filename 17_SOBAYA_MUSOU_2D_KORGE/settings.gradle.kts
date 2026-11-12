@@ -22,4 +22,4 @@ buildscript {
 
 apply(plugin = "com.soywiz.korge.settings")
 
-rootProject.name = "sobaya-musou-2d"
+rootProject.name = "sobaya-musou2d"
