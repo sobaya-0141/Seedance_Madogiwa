@@ -130,3 +130,4 @@ Frame: rage, frame 8 of 8. Same as frame 7, with comic white steam puffing from 
 | sergeant/idle・walk・attack_01〜04 | walk_08 だけ**不合格**: ほかのコマより約1割大きく、足元が浮いている（人物の高さ 1074px、ほかは 960〜990px） | walk_08 を作り直す。指示の末尾に `Keep exactly the same character size and foot line as Image C (the figure must not be larger or higher than Image C).` を足す |
 | sergeant/attack_05〜07・hit・fly・dizzy | 合格（全34コマのうち walk_08 以外は合格。walk を7コマにしてゲームに組み込み済み） | walk_08 が届いたら `sergeant_anims.txt` の walk を 8 に戻して pack_all.sh |
 | sergeant/walk_08（作り直し） | 合格（大きさ・足元がほかのコマとそろった）。歩きを8コマに戻して組み込み済み | — |
+| police/idle_01（作り直し） | 合格（帽章が円なしの6つ星になった。ほかの項目も合格） | 残り33コマを、この idle_01 を C にして作り直す（既存のコマは5つ星なので全部置き換え） |

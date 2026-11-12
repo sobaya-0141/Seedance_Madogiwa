@@ -6,5 +6,5 @@ anim hit 3 12 once
 anim fly 6 10 hold
 anim dizzy 4 6 loop
 
-pivot 640 1236
+pivot 625 1230
 scale 0.45
