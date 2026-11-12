@@ -1,0 +1,43 @@
+# PackSprites.java が書き出した。手で編集しない
+scale 0.45
+anim idle 6 8 loop 0
+anim walk 8 12 loop 0
+anim attack 7 12 once 4
+anim hit 3 12 once 0
+anim fly 6 10 hold 0
+anim dizzy 4 6 loop 0
+page 0 police_0.png
+frame fly 0 0 0 0 459 481 -217 -478
+frame attack 0 0 461 0 270 479 -129 -476
+frame walk 3 0 733 0 245 465 -130 -461
+frame walk 7 0 980 0 255 460 -138 -456
+frame hit 0 0 1237 0 357 440 -226 -436
+frame idle 3 0 1596 0 238 439 -118 -435
+frame idle 0 0 1836 0 238 437 -118 -433
+frame idle 5 0 2076 0 238 437 -118 -433
+frame attack 4 0 2316 0 240 437 -119 -433
+frame attack 5 0 2558 0 240 437 -119 -433
+frame attack 6 0 2800 0 238 437 -118 -433
+frame idle 4 0 3040 0 237 436 -118 -433
+frame attack 2 0 3279 0 303 436 -118 -433
+frame hit 1 0 3584 0 249 435 -140 -432
+frame idle 1 0 3835 0 238 433 -118 -429
+frame walk 6 0 0 483 259 431 -149 -428
+frame idle 2 0 261 483 238 430 -118 -427
+frame walk 0 0 501 483 282 430 -170 -426
+frame walk 2 0 785 483 199 430 -106 -426
+frame walk 4 0 986 483 256 430 -148 -426
+frame attack 3 0 1244 483 390 430 -137 -427
+frame walk 1 0 1636 483 267 422 -144 -419
+frame hit 2 0 1905 483 243 421 -119 -417
+frame fly 1 0 2150 483 486 421 -243 -418
+frame attack 1 0 2638 483 334 418 -167 -414
+frame walk 5 0 2974 483 248 389 -127 -385
+frame dizzy 1 0 3224 483 543 353 -265 -349
+frame dizzy 2 0 0 916 540 346 -262 -342
+frame fly 5 0 542 916 543 345 -265 -342
+frame dizzy 0 0 1087 916 543 345 -265 -342
+frame dizzy 3 0 1632 916 543 343 -265 -339
+frame fly 2 0 2177 916 526 302 -267 -298
+frame fly 4 0 2705 916 439 261 -224 -257
+frame fly 3 0 3146 916 517 232 -253 -229

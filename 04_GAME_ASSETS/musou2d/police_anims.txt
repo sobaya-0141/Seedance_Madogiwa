@@ -1,4 +1,4 @@
-# 警察官の動作一覧（PackSprites.java が読む）。pivot は基準コマ idle_01 が届いたら測って直す
+# 警察官の動作一覧（PackSprites.java が読む）。書式は sobaya_anims.txt と同じ
 anim idle 6 8 loop
 anim walk 8 12 loop
 anim attack 7 12 once hit=4

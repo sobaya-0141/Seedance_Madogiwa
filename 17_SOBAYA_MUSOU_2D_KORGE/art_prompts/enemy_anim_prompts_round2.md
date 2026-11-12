@@ -132,3 +132,4 @@ Frame: rage, frame 8 of 8. Same as frame 7, with comic white steam puffing from 
 | sergeant/walk_08（作り直し） | 合格（大きさ・足元がほかのコマとそろった）。歩きを8コマに戻して組み込み済み | — |
 | police/idle_01（作り直し） | 合格（帽章が円なしの6つ星になった。ほかの項目も合格） | 残り33コマを、この idle_01 を C にして作り直す（既存のコマは5つ星なので全部置き換え） |
 | police の残り33コマ（作り直し） | 31コマ合格。attack_03（白い軌跡）と fly_05（床から浮いている）が不合格 | `police_redo_prompts.md` 末尾のプロンプトで2コマだけ作り直す |
+| police/attack_03・fly_05（作り直し） | 合格。警察官34コマすべて合格し、ゲームに組み込み済み | — |
