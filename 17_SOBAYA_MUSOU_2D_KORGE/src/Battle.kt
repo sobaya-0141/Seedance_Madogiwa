@@ -86,6 +86,9 @@ class Enemy(val kind: EnemyKind, val title: String?, hpScale: Double) : Actor() 
     var ringY = 0.0
     val isLeader get() = kind.armor
     val enraged get() = kind == EnemyKind.BOSS && hp < maxHp * 0.5
+    /** 怒った瞬間の age（まだなら負）。怒りの切り替えの間は止まる */
+    var rageAt = -1.0
+    val raging get() = rageAt >= 0 && age - rageAt < RAGE_TIME
 
     companion object {
         val animLength = mutableMapOf<String, Double>()
@@ -98,6 +101,9 @@ class Pickup(val beer: Boolean, val x: Double, val y: Double) {
     var taken = false
     var t = 0.0
 }
+
+/** 怒りの切り替え（手描きの警部の intro 7・8コマ目）を見せる秒数 */
+const val RAGE_TIME = 0.7
 
 /** 登場ポーズ（intro）のある敵の、その長さ（秒）。シーンが起動時に入れる */
 val introLength = mutableMapOf<String, Double>()
@@ -433,6 +439,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
     private fun updateEnemy(e: Enemy, dt: Double) {
         e.t += dt
         e.age += dt
+        if (e.enraged && e.rageAt < 0) { e.rageAt = e.age; fx += Fx.Banner("${e.title ?: e.kind.title} が怒った！", "動きが速くなり、地響きが2連発に"); fx += Fx.Shake(10.0) }
         e.flash -= dt
         e.attackCd -= dt
         e.specialCd -= dt
@@ -442,7 +449,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
         val speedMul = if (e.enraged) 1.3 else 1.0
         when (e.state) {
             EState.CHASE -> {
-                if (phase != Phase.PLAY || p.state == PState.DOWN || e.age < (introLength[e.kind.sheet] ?: 0.0)) {
+                if (phase != Phase.PLAY || p.state == PState.DOWN || e.age < (introLength[e.kind.sheet] ?: 0.0) || e.raging) {
                     e.facing = sign(dx).takeIf { it != 0.0 } ?: e.facing
                     return
                 }

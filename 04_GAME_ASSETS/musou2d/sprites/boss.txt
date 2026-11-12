@@ -1,0 +1,66 @@
+# PackSprites.java が書き出した。手で編集しない
+scale 0.45
+anim idle 6 8 loop 0
+anim walk 8 10 loop 0
+anim attack 8 12 once 5
+anim hit 3 12 once 0
+anim fly 6 10 hold 0
+anim dizzy 4 6 loop 0
+anim intro 8 8 once 0
+anim special 12 12 once 6
+page 0 boss_0.png
+frame fly 1 0 0 0 524 549 -263 -546
+frame special 0 0 526 0 331 544 -168 -541
+frame walk 3 0 859 0 322 541 -157 -538
+frame walk 7 0 1183 0 338 522 -158 -519
+frame fly 0 0 1523 0 508 517 -243 -514
+frame special 1 0 2033 0 363 517 -184 -514
+frame hit 0 0 2398 0 367 488 -194 -485
+frame special 2 0 2767 0 294 482 -146 -479
+frame hit 1 0 3063 0 311 480 -167 -477
+frame hit 2 0 3376 0 307 477 -157 -474
+frame intro 1 0 3685 0 292 475 -147 -472
+frame attack 6 0 0 551 276 468 -146 -465
+frame intro 0 0 278 551 317 459 -146 -456
+frame special 8 0 597 551 245 448 -127 -445
+frame intro 3 0 844 551 383 446 -144 -443
+frame special 10 0 1229 551 262 446 -134 -443
+frame attack 2 0 1493 551 287 444 -150 -441
+frame attack 4 0 1782 551 499 444 -231 -441
+frame special 6 0 2283 551 378 443 -184 -440
+frame idle 0 0 2663 551 269 442 -134 -439
+frame idle 4 0 2934 551 269 442 -134 -439
+frame idle 5 0 3205 551 269 442 -134 -439
+frame attack 3 0 3476 551 285 442 -145 -439
+frame attack 7 0 3763 551 269 442 -134 -439
+frame intro 2 0 0 1021 269 442 -135 -439
+frame intro 4 0 271 1021 269 442 -134 -439
+frame intro 5 0 542 1021 270 442 -135 -439
+frame intro 6 0 814 1021 269 442 -134 -439
+frame intro 7 0 1085 1021 269 442 -134 -439
+frame special 11 0 1356 1021 269 442 -134 -439
+frame attack 0 0 1627 1021 341 440 -199 -437
+frame special 3 0 1970 1021 320 439 -169 -436
+frame special 9 0 2292 1021 303 439 -156 -436
+frame walk 0 0 2597 1021 362 438 -177 -435
+frame walk 4 0 2961 1021 329 438 -169 -435
+frame attack 1 0 3292 1021 452 438 -210 -435
+frame special 4 0 3746 1021 288 438 -154 -435
+frame special 7 0 0 1465 306 437 -152 -434
+frame walk 6 0 308 1465 293 436 -145 -433
+frame walk 2 0 603 1465 286 435 -152 -432
+frame idle 1 0 891 1465 269 434 -134 -431
+frame idle 2 0 1162 1465 269 434 -134 -431
+frame idle 3 0 1433 1465 269 432 -134 -429
+frame attack 5 0 1704 1465 510 425 -242 -422
+frame special 5 0 2216 1465 324 424 -177 -421
+frame walk 1 0 2542 1465 308 421 -166 -418
+frame dizzy 1 0 2852 1465 555 393 -273 -390
+frame walk 5 0 3409 1465 306 391 -169 -388
+frame dizzy 2 0 0 1904 555 390 -273 -387
+frame dizzy 3 0 557 1904 555 387 -273 -384
+frame fly 5 0 1114 1904 555 382 -273 -379
+frame dizzy 0 0 1671 1904 555 382 -273 -379
+frame fly 3 0 2228 1904 489 380 -233 -377
+frame fly 2 0 2719 1904 479 360 -229 -357
+frame fly 4 0 3200 1904 539 334 -261 -331

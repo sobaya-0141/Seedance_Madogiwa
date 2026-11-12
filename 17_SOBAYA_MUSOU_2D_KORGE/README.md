@@ -88,7 +88,7 @@ KORGE_HEADLESS=true MADOGIWA_AUTO=1 MADOGIWA_SHOTS=/tmp/musou2d ./gradlew runJvm
   - そば屋: `sobaya.glb`＋ジョッキ（NG変更要素。右手の `PropSocket.R` に持たせて描いている）。コンボは `Hybrid_MugPunch` / `Hybrid_MugHook` / `Hybrid_MugSmash`、チャージは `MugAttack`、回避は `Procedural_RollForward`
   - 敵: CC0 のマネキン素体に、3D版と同じ方法で制服の色・帽子・警棒を付けて描いている
   - シートは右向きだけで、左向きは左右反転して表示する
-- そば屋・警備員・警備隊長は手描きアニメ（`04_GAME_ASSETS/musou2d/`。デザイン画と照合チェックリストは `designs/`）。警察官・巡査部長・警部はまだ採用3Dモデルを描いたシート
+- そば屋・警備員・警備隊長・警部は手描きアニメ（`04_GAME_ASSETS/musou2d/`。デザイン画と照合チェックリストは `designs/`）。警部は登場時に intro の01〜06、体力が半分を切って怒った瞬間に07〜08（顔が真っ赤）を使う。警察官・巡査部長はまだ採用3Dモデルを描いたシート（警察官はコマが届いているが照合待ち。`generated_enemies/police/HOLD.txt` がある間はアトラスを作らない）
 - ステージ1の背景は工場正門の背景ラフ（`04_GAME_ASSETS/musou2d/backgrounds/`）。ほかのステージ・ゲート・ゴール・アイテムは図形で描いています
 - 火花・ビールの泡・土ぼこり・無双ゲージのジョッキは、手描きのエフェクト素材が届くまでコードで描いています（`src/Particles.kt`）。攻撃が当たった瞬間は一瞬だけ時間を止めて（ヒットストップ）重さを出す
 - フォントは `04_GAME_ASSETS/fonts/MPLUSRounded1c-ExtraBold.ttf`（OFL）を `resources/fonts/` から symlink で参照しています

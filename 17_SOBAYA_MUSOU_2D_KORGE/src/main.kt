@@ -31,12 +31,16 @@ suspend fun main() = Korge(
         // Android では exists() が当てにならないので、アトラスを読んでみて無ければ3Dモデルの絵にする
         try { Sheet.loadAtlas(it) } catch (_: Throwable) { Sheet.load(it) }
     }
-    for ((name, sheet) in sheets) sheet.anims["intro"]?.let { introLength[name] = it.length }
+    // 手描きの警部の intro は8コマで、7・8コマ目は怒りへの切り替え。登場では1〜6コマ目だけを使う
+    for ((name, sheet) in sheets) sheet.anims["intro"]?.let { introLength[name] = it.length * introFrames(name, sheet) / it.frames.size }
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
     val stage1Backdrop = Sheet.readImage("musou2d_bg/s1_a1_rough.png").also { it.mipmaps = true }
     sceneContainer().changeTo { MusouScene(font, sheets, stage1Backdrop) }
 }
+
+/** 登場ポーズに使う intro のコマ数（手描きの警部だけ、最後の2コマは怒りの切り替え） */
+fun introFrames(name: String, sheet: Sheet): Int = sheet.anim("intro").frames.size - (if (name == "boss" && sheet.handDrawn) 2 else 0)
 
 private object Pal {
     val text = Colors["#fff7e8"]
@@ -373,7 +377,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             v.lastX = e.x; v.lastY = e.y
             val f = when (e.state) {
                 EState.CHASE -> when {
-                    sh.anims.containsKey("intro") && e.age < sh.anim("intro").length -> sh.frameAt("intro", e.age)
+                    e.raging && sh.handDrawn && sh.anims.containsKey("intro") -> sh.anim("intro").let { a -> a.frames[min(a.frames.size - 1, introFrames(e.kind.sheet, sh) + ((e.age - e.rageAt) / RAGE_TIME * 2).toInt())] }
+                    sh.anims.containsKey("intro") && e.age < (introLength[e.kind.sheet] ?: 0.0) -> sh.anim("intro").let { a -> a.frames[min(introFrames(e.kind.sheet, sh) - 1, (e.age / a.length * a.frames.size).toInt())] }
                     moving -> sh.frameAt("walk", clock + e.ringX)
                     else -> sh.frameAt("idle", clock + e.ringY)
                 }
@@ -641,6 +646,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
                 b.time > 1.5 && b.koTotal == 0 -> requestShot("s${n}_start")
                 b.enemies.size >= 9 -> requestShot("s${n}_crowd")
                 b.player.state == PState.MUSOU && b.player.t > 0.6 -> requestShot("s${n}_musou")
+                b.enemies.any { it.raging && it.age - it.rageAt > 0.4 } -> requestShot("s${n}_boss_rage")
+                b.enemies.any { it.kind == EnemyKind.BOSS && it.age in 0.3..0.5 } -> requestShot("s${n}_boss_intro")
                 b.enemies.any { it.state == EState.SPECIAL && it.hitDone } -> requestShot("s${n}_boss_pound")
                 b.goalOpen && b.grab > 0.5 -> requestShot("s${n}_goal")
             }

@@ -13,7 +13,9 @@ for name in sobaya guard captain police sergeant boss; do
   if [ "$name" = sobaya ]; then dir=$SRC/generated; else dir=$SRC/generated_enemies/$name; fi
   # 動作一覧のコマが全部そろっているキャラだけをまとめる（途中まで届いたキャラは飛ばす）
   missing=$(awk '$1=="anim"{for(i=1;i<=$3;i++) printf "%s_%02d.png\n", $2, i}' $M/${name}_anims.txt | while read f; do [ -f "$dir/$f" ] || echo "$f"; done | wc -l | tr -d ' ')
-  if [ "$missing" = 0 ]; then
+  if [ -f "$dir/HOLD.txt" ]; then
+    echo "-- $name: 照合待ち・不合格のため飛ばす（$(cat "$dir/HOLD.txt")）"
+  elif [ "$missing" = 0 ]; then
     echo "== $name"
     "$JAVA" $M/tools/PackSprites.java "$dir" $M/${name}_anims.txt $M/sprites $name
     # ゲームには WebP だけを入れる（PNG の数分の1。Web・スマホでも軽い）
