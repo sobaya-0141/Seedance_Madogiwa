@@ -11,6 +11,7 @@ walk_04 floor_shift=5 size=271x448
 walk_05 floor_shift=9 size=273x446
 walk_06 floor_shift=7 size=263x440
 walk_07 floor_shift=5 size=235x445
+walk_08 floor_shift=3 size=254x449
 attack_01 floor_shift=0 size=378x509
 attack_02 floor_shift=9 size=343x483
 attack_03 floor_shift=2 size=372x441

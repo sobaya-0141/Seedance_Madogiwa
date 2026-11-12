@@ -1,7 +1,7 @@
 # PackSprites.java が書き出した。手で編集しない
 scale 0.45
 anim idle 6 8 loop 0
-anim walk 7 12 loop 0
+anim walk 8 12 loop 0
 anim attack 7 12 once 4
 anim hit 3 12 once 0
 anim fly 6 10 hold 0
@@ -19,24 +19,25 @@ frame attack 5 0 3051 0 246 450 -126 -446
 frame idle 0 0 3299 0 247 449 -120 -446
 frame idle 3 0 3548 0 247 449 -120 -445
 frame walk 2 0 3797 0 250 449 -133 -446
-frame attack 6 0 0 511 247 449 -120 -446
-frame walk 3 0 249 511 271 448 -140 -445
-frame walk 4 0 522 511 273 446 -143 -442
-frame idle 1 0 797 511 247 445 -120 -442
-frame walk 6 0 1046 511 235 445 -117 -442
-frame idle 2 0 1283 511 247 441 -120 -438
-frame attack 2 0 1532 511 372 441 -186 -437
-frame walk 0 0 1906 511 281 440 -143 -436
-frame walk 5 0 2189 511 263 440 -125 -437
-frame walk 1 0 2454 511 249 437 -125 -434
-frame attack 4 0 2705 511 411 436 -152 -433
-frame hit 2 0 3118 511 304 435 -133 -432
-frame attack 3 0 3424 511 417 434 -195 -431
-frame fly 3 0 0 962 428 432 -206 -428
-frame fly 4 0 430 962 539 414 -264 -411
-frame fly 1 0 971 962 398 378 -191 -375
-frame fly 5 0 1371 962 526 373 -251 -370
-frame dizzy 0 0 1899 962 526 373 -251 -369
-frame dizzy 1 0 2427 962 526 373 -251 -369
-frame dizzy 3 0 2955 962 526 373 -251 -369
-frame dizzy 2 0 3483 962 526 367 -251 -363
+frame walk 7 0 0 511 254 449 -131 -445
+frame attack 6 0 256 511 247 449 -120 -446
+frame walk 3 0 505 511 271 448 -140 -445
+frame walk 4 0 778 511 273 446 -143 -442
+frame idle 1 0 1053 511 247 445 -120 -442
+frame walk 6 0 1302 511 235 445 -117 -442
+frame idle 2 0 1539 511 247 441 -120 -438
+frame attack 2 0 1788 511 372 441 -186 -437
+frame walk 0 0 2162 511 281 440 -143 -436
+frame walk 5 0 2445 511 263 440 -125 -437
+frame walk 1 0 2710 511 249 437 -125 -434
+frame attack 4 0 2961 511 411 436 -152 -433
+frame hit 2 0 3374 511 304 435 -133 -432
+frame attack 3 0 0 962 417 434 -195 -431
+frame fly 3 0 419 962 428 432 -206 -428
+frame fly 4 0 849 962 539 414 -264 -411
+frame fly 1 0 1390 962 398 378 -191 -375
+frame fly 5 0 1790 962 526 373 -251 -370
+frame dizzy 0 0 2318 962 526 373 -251 -369
+frame dizzy 1 0 2846 962 526 373 -251 -369
+frame dizzy 3 0 3374 962 526 373 -251 -369
+frame dizzy 2 0 0 1398 526 367 -251 -363
