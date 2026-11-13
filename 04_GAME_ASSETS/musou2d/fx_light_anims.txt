@@ -1,0 +1,12 @@
+# 光のエフェクト（黒背景・加算合成）の一覧。コマは 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_fx/（effect_prompts.md）
+# 位置はキャンバスの中心（640,640）からのずれで保つ。musou_aura は01が立ち上がり、02〜06がループ
+background black
+align none
+anim hit_small 4 24 once
+anim hit_large 5 20 once
+anim shockwave 6 12 once
+anim musou_wave 6 12 once
+anim musou_aura 6 14 loop
+
+pivot 640 640
+scale 0.4

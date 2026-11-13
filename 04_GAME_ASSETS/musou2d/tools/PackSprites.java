@@ -22,6 +22,10 @@ import java.util.Set;
  * 2. ジョッキの空いた部分などに透けたマゼンタの色味を抜く（ガラスは青みのグレーになる）
  * 3. 床に触れているコマは、一番下の点を床の線（pivot の y）に合わせる（動作一覧の airborne は動かさない）
  * 4. 倍率 scale で縮小し、余白を切り詰めて1枚のアトラスに詰める
+ * エフェクトは動作一覧に次を書く:
+ *   background black … 黒背景の光の素材（加算合成用）。明るさを透明度にして色を戻す
+ *   align none       … 床の線に合わせない（キャンバス上の位置をそのまま保つ。pivot はキャンバスの中心など）
+ * 1枚だけの素材（コマ数1）は <名前>.png でもよい（擬音・アイテム）
  * 出力: <名前>_0.png（アトラス）と <名前>.txt（各コマの位置と、足元からのずれ）
  */
 public class PackSprites {
@@ -41,6 +45,7 @@ public class PackSprites {
         List<Anim> anims = new ArrayList<>();
         Set<String> airborne = new HashSet<>();
         int pivotX = 640, pivotY = 1180;
+        boolean black = false, alignFloor = true;
         double scale = 0.5;
         for (String line : Files.readAllLines(Path.of(args[1]))) {
             String[] f = line.trim().split("\\s+");
@@ -54,6 +59,8 @@ public class PackSprites {
                 case "airborne" -> { for (int i = 1; i < f.length; i++) airborne.add(f[i]); }
                 case "pivot" -> { pivotX = Integer.parseInt(f[1]); pivotY = Integer.parseInt(f[2]); }
                 case "scale" -> scale = Double.parseDouble(f[1]);
+                case "background" -> black = f[1].equals("black");
+                case "align" -> alignFloor = !f[1].equals("none");
                 default -> throw new IllegalArgumentException("unknown line: " + line);
             }
         }
@@ -64,11 +71,12 @@ public class PackSprites {
             for (int i = 1; i <= a.count; i++) {
                 String file = String.format("%s_%02d", a.name, i);
                 File f = src.resolve(file + ".png").toFile();
+                if (!f.exists() && a.count == 1) f = src.resolve(a.name + ".png").toFile();
                 if (!f.exists()) throw new IOException("missing frame: " + f);
                 BufferedImage raw = ImageIO.read(f);
-                BufferedImage keyed = key(raw);
+                BufferedImage keyed = black ? keyBlack(raw) : key(raw);
                 int shift = 0;
-                if (!airborne.contains(file)) {
+                if (alignFloor && !airborne.contains(file)) {
                     int lowest = lowestRow(keyed);
                     shift = pivotY - lowest;
                     keyed = shiftDown(keyed, shift);
@@ -148,6 +156,27 @@ public class PackSprites {
                 if (e > 0.03) { cr -= e; cb -= e; }
                 int A = (int) Math.round(a * 255);
                 out.setRGB(xx, yy, (A << 24) | ((int) Math.round(clamp(cr) * 255) << 16) | ((int) Math.round(clamp(cg) * 255) << 8) | (int) Math.round(clamp(cb) * 255));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * 黒背景の光の素材。一番明るい色成分を透明度にし、色を割り戻す（黒＝透明、白＝不透明の白）。
+     * 加算合成で描けば元の絵と同じ光り方になる。生成のノイズで黒が少し浮くので、暗い部分は切り捨てる
+     */
+    static BufferedImage keyBlack(BufferedImage raw) {
+        int w = raw.getWidth(), h = raw.getHeight();
+        BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        for (int yy = 0; yy < h; yy++) {
+            for (int xx = 0; xx < w; xx++) {
+                int p = raw.getRGB(xx, yy);
+                double r = ((p >> 16) & 255) / 255.0, gg = ((p >> 8) & 255) / 255.0, b = (p & 255) / 255.0;
+                double mx = Math.max(r, Math.max(gg, b));
+                double a = clamp((mx - 0.05) / 0.95);
+                if (a <= 0.004) { out.setRGB(xx, yy, 0); continue; }
+                int A = (int) Math.round(a * 255);
+                out.setRGB(xx, yy, (A << 24) | ((int) Math.round(clamp(r / mx) * 255) << 16) | ((int) Math.round(clamp(gg / mx) * 255) << 8) | (int) Math.round(clamp(b / mx) * 255));
             }
         }
         return out;

@@ -1,0 +1,24 @@
+# PackSprites.java が書き出した。手で編集しない
+scale 0.4
+anim foam 5 14 once 0
+anim dust 4 10 once 0
+anim sfx_doka 1 1 hold 0
+anim sfx_bashi 1 1 hold 0
+anim sfx_gogogo 1 1 hold 0
+anim item_beer 1 1 hold 0
+anim item_edamame 1 1 hold 0
+page 0 fx_art_0.png
+frame foam 2 0 0 0 399 284 -193 -154
+frame sfx_gogogo 0 0 401 0 463 280 -229 -117
+frame foam 1 0 866 0 381 262 -149 -187
+frame item_beer 0 0 1249 0 155 259 -78 -43
+frame foam 3 0 1406 0 383 256 -189 -112
+frame sfx_doka 0 0 1791 0 450 241 -221 -111
+frame sfx_bashi 0 0 2243 0 431 224 -213 -105
+frame item_edamame 0 0 2676 0 279 184 -143 23
+frame foam 0 0 2957 0 233 176 -113 -103
+frame dust 2 0 3192 0 486 163 -243 -80
+frame dust 1 0 0 286 446 160 -223 -77
+frame dust 0 0 448 286 349 119 -176 -47
+frame foam 4 0 799 286 325 86 -174 59
+frame dust 3 0 1126 286 465 49 -232 21

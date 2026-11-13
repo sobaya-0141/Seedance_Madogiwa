@@ -9,10 +9,14 @@ command -v cwebp >/dev/null || { echo "cwebp が必要です（brew install webp
 M=04_GAME_ASSETS/musou2d
 SRC=17_SOBAYA_MUSOU_2D_KORGE/art_prompts
 JAVA=${JAVA:-java}
-for name in sobaya guard captain police sergeant boss; do
-  if [ "$name" = sobaya ]; then dir=$SRC/generated; else dir=$SRC/generated_enemies/$name; fi
+for name in sobaya guard captain police sergeant boss fx_light fx_art; do
+  case $name in
+    sobaya) dir=$SRC/generated ;;
+    fx_*) dir=$SRC/generated_fx ;;  # エフェクト・擬音・アイテム（effect_prompts.md）
+    *) dir=$SRC/generated_enemies/$name ;;
+  esac
   # 動作一覧のコマが全部そろっているキャラだけをまとめる（途中まで届いたキャラは飛ばす）
-  missing=$(awk '$1=="anim"{for(i=1;i<=$3;i++) printf "%s_%02d.png\n", $2, i}' $M/${name}_anims.txt | while read f; do [ -f "$dir/$f" ] || echo "$f"; done | wc -l | tr -d ' ')
+  missing=$(awk '$1=="anim"{for(i=1;i<=$3;i++) printf "%s_%02d.png %s.png\n", $2, i, ($3==1 ? $2 : $2 "_" i)}' $M/${name}_anims.txt | while read f g; do [ -f "$dir/$f" ] || [ -f "$dir/$g" ] || echo "$f"; done | wc -l | tr -d ' ')
   if [ -f "$dir/HOLD.txt" ]; then
     echo "-- $name: 照合待ち・不合格のため飛ばす（$(cat "$dir/HOLD.txt")）"
   elif [ "$missing" = 0 ]; then

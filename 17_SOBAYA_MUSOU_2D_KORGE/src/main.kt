@@ -36,7 +36,9 @@ suspend fun main() = Korge(
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
     val stage1Backdrop = Sheet.readImage("musou2d_bg/s1_a1_rough.png").also { it.mipmaps = true }
-    sceneContainer().changeTo { MusouScene(font, sheets, stage1Backdrop) }
+    // 手描きのエフェクト・擬音・アイテム（無ければ図形で描く）
+    val fxSprites = FxSprites.load()
+    sceneContainer().changeTo { MusouScene(font, sheets, stage1Backdrop, fxSprites) }
 }
 
 /** 登場ポーズに使う intro のコマ数（手描きの警部だけ、最後の2コマは怒りの切り替え） */
@@ -57,7 +59,7 @@ private object Pal {
  * タイトル → ステージ → リザルト（→ 次のステージ / エンディング）を1つのシーンで切り替える。
  * ルールと数値は Battle / Data、ここは描画と入力だけを持つ。
  */
-class MusouScene(private val font: TtfFont, private val sheets: Map<String, Sheet>, private val stage1Backdrop: korlibs.image.bitmap.Bitmap) : Scene() {
+class MusouScene(private val font: TtfFont, private val sheets: Map<String, Sheet>, private val stage1Backdrop: korlibs.image.bitmap.Bitmap, private val fxs: FxSprites) : Scene() {
     private enum class Screen { TITLE, PLAY, ENDING }
 
     private var screen = Screen.TITLE
@@ -81,6 +83,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private lateinit var goalGlow: View
     private lateinit var hud: Hud
     private val floating = mutableListOf<Floating>()
+    private var lastSfx = -1.0
     private var shake = 0.0
     private var resultShown = false
 
@@ -249,6 +252,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         if (screen != Screen.PLAY || b == null) { pressed.clear(); padPressed.clear(); return }
         if (paused) { pressed.clear(); padPressed.clear(); return }
         particles.update(d)
+        fxs.update(d)
         repeat(steps) {
             // ヒットストップ: 当たった瞬間だけ時間を止めて重さを出す（演出だけは動かす）
             if (hitStop > 0) { hitStop -= d; return@repeat }
@@ -271,7 +275,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         screen = Screen.TITLE
         battle = null
         ui.removeChildren()
-        floating.clear()
+        floating.clear(); fxs.clear()
         if (STAGES[stageIndex].scenery == Scenery.FACTORY) ui.image(stage1Backdrop) { smoothing = true; fitBackdrop(this) }
         else drawScenery(ui, STAGES[stageIndex].scenery, SCREEN_W.toDouble(), title = true)
         ui.solidRect(SCREEN_W, SCREEN_H, Colors["#0c0d12aa"])
@@ -323,7 +327,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         paused = false; pauseView = null; hitStop = 0.0
         battle = b
         ui.removeChildren()
-        enemyViews.clear(); pickupViews.clear(); gateViews.clear(); floating.clear()
+        enemyViews.clear(); pickupViews.clear(); gateViews.clear(); floating.clear(); fxs.clear()
 
         // ステージ1は工場正門の背景ラフ（04_GAME_ASSETS/musou2d/backgrounds）を画面いっぱいに敷く。
         // 層に分けた清書が届くまでの仮置きで、カメラに合わせて少しだけ横にずらして奥行きを出す
@@ -364,7 +368,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             PState.WIN -> sobaya.frameAt("win", p.t)
         }
         playerView.update(p, frame, if (p.invuln > 0 && p.state == PState.HURT && (clock * 20).toInt() % 2 == 0) 0.5 else 1.0)
-        playerView.aura(p.state == PState.MUSOU, clock)
+        playerView.aura(p.state == PState.MUSOU, p.t)
 
         for (e in b.enemies) {
             val v = enemyViews.getOrPut(e) {
@@ -417,22 +421,42 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private fun fx(f: Fx) {
         when (f) {
             is Fx.Hit -> {
-                particles.hit(f.x, FLOOR_TOP + f.y - 120, f.heavy, f.dir)
+                val hx = f.x; val hy = FLOOR_TOP + f.y - 120
+                val light = fxs.light; val art = fxs.art
+                if (light != null) fxs.play(fxLayer, light, if (f.heavy) "hit_large" else "hit_small", hx, hy, if (f.heavy) 0.6 else 0.5, f.dir, add = true)
+                else particles.hit(hx, hy, f.heavy, f.dir)
+                // 大技はジョッキのビールが飛ぶ
+                if (f.heavy && art != null) fxs.play(fxLayer, art, "foam", hx - f.dir * 30, hy + 10, 0.38, f.dir)
                 hitStop = max(hitStop, if (f.heavy) 0.085 else 0.035)
-                val t = fxLayer.text(if (f.heavy) "ドカッ！" else "バシッ", if (f.heavy) 34 else 24, Pal.gold, font,
-                    stroke = korlibs.image.paint.Stroke(Colors["#2a1606"], korlibs.math.geom.vector.StrokeInfo(thickness = 5.0))) { position(f.x - 34, FLOOR_TOP + f.y - 210) }
-                floating += Floating(t, 0.35, rise = 40.0, grow = 1.3)
+                // 何人も同時に当たったときに擬音が重ならないよう、0.15秒に1つだけ出す
+                if (clock - lastSfx < 0.15) Unit
+                else if (art != null) { lastSfx = clock; fxs.play(fxLayer, art, if (f.heavy) "sfx_doka" else "sfx_bashi", f.x, FLOOR_TOP + f.y - 230, if (f.heavy) 0.3 else 0.22, rise = 40.0) }
+                else {
+                    lastSfx = clock
+                    val t = fxLayer.text(if (f.heavy) "ドカッ！" else "バシッ", if (f.heavy) 34 else 24, Pal.gold, font,
+                        stroke = korlibs.image.paint.Stroke(Colors["#2a1606"], korlibs.math.geom.vector.StrokeInfo(thickness = 5.0))) { position(f.x - 34, FLOOR_TOP + f.y - 210) }
+                    floating += Floating(t, 0.35, rise = 40.0, grow = 1.3)
+                }
             }
-            is Fx.Dust -> particles.dust(f.x, FLOOR_TOP + f.y)
+            is Fx.Dust -> fxs.art?.let { art -> fxs.play(fxLayer, art, "dust", f.x, FLOOR_TOP + f.y - fxs.bottom(art, "dust") * 0.34, 0.34) } ?: particles.dust(f.x, FLOOR_TOP + f.y)
             is Fx.Text -> {
                 val t = fxLayer.text(f.text, if (f.big) 24 else 26, if (f.big) Pal.green else Pal.red, font) { position(f.x - 20, FLOOR_TOP + f.y - 230) }
                 floating += Floating(t, 0.9, rise = 60.0)
             }
             is Fx.Wave -> {
-                val e = fxLayer.ellipse(Size(f.radius, f.radius * 0.42), Colors.TRANSPARENT, if (f.enemy) Pal.red else Pal.gold, 6.0) {
-                    position(f.x - f.radius, FLOOR_TOP + f.y - f.radius * 0.42)
+                val light = fxs.light
+                if (light != null) {
+                    // 輪の幅を当たり範囲（半径の2倍）に合わせて拡大する。警部の地響きは赤、そば屋の無双は金
+                    val name = if (f.enemy) "shockwave" else "musou_wave"
+                    // 無双は0.3秒ごとに出て重なるので薄めにする
+                    fxs.play(fxLayer, light, name, f.x, FLOOR_TOP + f.y, 2 * f.radius / fxs.width(light, name), add = true, alpha = if (f.enemy) 0.85 else 0.45)
+                    if (f.enemy) fxs.art?.let { fxs.play(fxLayer, it, "sfx_gogogo", f.x, FLOOR_TOP + f.y - 260, 0.32, rise = 30.0) }
+                } else {
+                    val e = fxLayer.ellipse(Size(f.radius, f.radius * 0.42), Colors.TRANSPARENT, if (f.enemy) Pal.red else Pal.gold, 6.0) {
+                        position(f.x - f.radius, FLOOR_TOP + f.y - f.radius * 0.42)
+                    }
+                    floating += Floating(e, 0.45)
                 }
-                floating += Floating(e, 0.45)
             }
             is Fx.Banner -> hud.banner(f.text, f.sub)
             is Fx.Speech -> hud.speech(f.text)
@@ -463,7 +487,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         screen = Screen.ENDING
         battle = null
         ui.removeChildren()
-        floating.clear()
+        floating.clear(); fxs.clear()
         drawScenery(ui, Scenery.OFFICE, SCREEN_W.toDouble(), title = true)
         drawStandingBar(ui, 760.0)
         val feet = 600.0
@@ -590,6 +614,15 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private fun drawPickup(c: Container, pk: Pickup): View = c.container {
         position(pk.x, FLOOR_TOP + pk.y)
         ellipse(Size(22, 8), Pal.shadow) { position(-22, -6) }
+        // 手描きのアイテム（缶ビール・枝豆）があれば、絵の下端を床に置いて描く
+        val art = fxs.art
+        val itemName = if (pk.beer) "item_beer" else "item_edamame"
+        if (art != null && art.anims.containsKey(itemName)) {
+            val fr = art.anim(itemName).frames[0]
+            val k = if (pk.beer) 0.26 else 0.27
+            image(fr.slice) { smoothing = true; scale(k); position(fr.offX * k, -(fr.slice.height + 0.0) * k + 2) }
+            return@container
+        }
         if (pk.beer) {
             solidRect(24, 34, Pal.beer) { position(-12, -44) }
             solidRect(24, 8, Colors["#fff6e0"]) { position(-12, -50) }
@@ -699,6 +732,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         val root = parent.container()
         val shadow = root.ellipse(Size(shadowW, shadowW * 0.3), Pal.shadow) { position(-shadowW, -shadowW * 0.3) }
         val auraView = root.ellipse(Size(130.0, 40.0), Colors["#ffc23d55"], Pal.gold, 4.0) { position(-130, -40); visible = false }
+        // 手描きの無双のオーラ（体の後ろに加算合成で重ねる）。無ければ上の楕円
+        val auraSprite = fxs.light?.let { root.image(it.anim("musou_aura").frames[0].slice) { smoothing = true; blendMode = BlendMode.ADD; visible = false } }
         val image = root.image(sheet.frameAt(sheet.anims.keys.first(), 0.0).slice) { smoothing = true }
         private val standTop = sheet.frameAt(sheet.anims.keys.first(), 0.0).offY
         val label = if (name != null && labelFont != null) root.text(name, 18, Pal.gold, labelFont) { position(-36, standTop * scaleK * 0.72 - 30) } else null
@@ -726,6 +761,20 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         }
 
         fun aura(on: Boolean, t: Double) {
+            val sprite = auraSprite
+            val fr = if (on) fxs.auraFrame(t) else null
+            if (sprite != null && fxs.light != null) {
+                sprite.visible = fr != null
+                if (fr != null) {
+                    // 絵の下端（足元の炎）をそば屋の足元に合わせる
+                    val k = 0.78
+                    val base = fxs.bottom(fxs.light, "musou_aura")
+                    sprite.bitmap = fr.slice
+                    sprite.scale(k)
+                    sprite.position(fr.offX * k, (fr.offY - base) * k + 6)
+                }
+                return
+            }
             auraView.visible = on
             if (on) auraView.alpha = 0.6 + 0.4 * sin(t * 18)
         }

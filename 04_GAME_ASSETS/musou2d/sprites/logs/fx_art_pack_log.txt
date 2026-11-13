@@ -1,0 +1,14 @@
+foam_01 floor_shift=0 size=233x176
+foam_02 floor_shift=0 size=381x262
+foam_03 floor_shift=0 size=399x284
+foam_04 floor_shift=0 size=383x256
+foam_05 floor_shift=0 size=325x86
+dust_01 floor_shift=0 size=349x119
+dust_02 floor_shift=0 size=446x160
+dust_03 floor_shift=0 size=486x163
+dust_04 floor_shift=0 size=465x49
+sfx_doka_01 floor_shift=0 size=450x241
+sfx_bashi_01 floor_shift=0 size=431x224
+sfx_gogogo_01 floor_shift=0 size=463x280
+item_beer_01 floor_shift=0 size=155x259
+item_edamame_01 floor_shift=0 size=279x184

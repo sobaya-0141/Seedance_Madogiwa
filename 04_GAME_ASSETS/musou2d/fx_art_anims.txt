@@ -1,0 +1,13 @@
+# 普通の絵のエフェクト（マゼンタ背景）・擬音・アイテムの一覧。コマは 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_fx/（effect_prompts.md）
+# 位置はキャンバスの中心（640,640）からのずれで保つ（アイテムはゲーム側で絵の下端を床に置く）
+align none
+anim foam 5 14 once
+anim dust 4 10 once
+anim sfx_doka 1 1 hold
+anim sfx_bashi 1 1 hold
+anim sfx_gogogo 1 1 hold
+anim item_beer 1 1 hold
+anim item_edamame 1 1 hold
+
+pivot 640 640
+scale 0.4

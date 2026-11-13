@@ -1,0 +1,35 @@
+# PackSprites.java が書き出した。手で編集しない
+scale 0.4
+anim hit_small 4 24 once 0
+anim hit_large 5 20 once 0
+anim shockwave 6 12 once 0
+anim musou_wave 6 12 once 0
+anim musou_aura 6 14 loop 0
+page 0 fx_light_0.png
+frame hit_large 2 0 0 0 505 510 -252 -256
+frame hit_large 3 0 507 0 503 509 -251 -256
+frame hit_large 1 0 1012 0 492 491 -246 -246
+frame hit_small 2 0 1506 0 472 481 -231 -246
+frame musou_aura 0 0 1980 0 279 458 -141 -239
+frame musou_aura 1 0 2261 0 277 456 -142 -251
+frame musou_aura 2 0 2540 0 280 454 -142 -252
+frame musou_aura 4 0 2822 0 284 443 -143 -255
+frame musou_aura 5 0 3108 0 283 442 -144 -255
+frame musou_aura 3 0 3393 0 283 441 -143 -252
+frame hit_small 1 0 3678 0 411 437 -204 -228
+frame hit_large 4 0 0 512 476 399 -238 -238
+frame hit_small 3 0 478 512 460 348 -219 -191
+frame hit_large 0 0 940 512 335 335 -168 -171
+frame musou_wave 2 0 1277 512 504 265 -252 -182
+frame shockwave 0 0 1783 512 441 250 -223 -148
+frame musou_wave 3 0 2226 512 436 247 -220 -170
+frame musou_wave 4 0 2664 512 428 242 -214 -168
+frame musou_wave 1 0 3094 512 479 203 -238 -113
+frame hit_small 0 0 3575 512 180 200 -91 -113
+frame musou_wave 0 0 0 913 437 183 -221 -99
+frame shockwave 1 0 439 913 452 139 -227 -34
+frame shockwave 2 0 893 913 440 131 -222 -31
+frame shockwave 3 0 1335 913 429 122 -217 -25
+frame shockwave 4 0 1766 913 409 117 -205 -22
+frame shockwave 5 0 2177 913 385 89 -193 0
+frame musou_wave 5 0 2564 913 415 48 -211 3
