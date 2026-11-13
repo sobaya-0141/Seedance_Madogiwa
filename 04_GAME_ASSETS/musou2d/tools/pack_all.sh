@@ -9,10 +9,11 @@ command -v cwebp >/dev/null || { echo "cwebp が必要です（brew install webp
 M=04_GAME_ASSETS/musou2d
 SRC=17_SOBAYA_MUSOU_2D_KORGE/art_prompts
 JAVA=${JAVA:-java}
-for name in sobaya guard captain police sergeant boss fx_light fx_art; do
+for name in sobaya guard captain police sergeant boss fx_light fx_art gates; do
   case $name in
     sobaya) dir=$SRC/generated ;;
     fx_*) dir=$SRC/generated_fx ;;  # エフェクト・擬音・アイテム（effect_prompts.md）
+    gates) dir=$SRC/generated_bg ;;  # エリアの境目のゲート（gate_prompts.md）
     *) dir=$SRC/generated_enemies/$name ;;
   esac
   # 動作一覧のコマが全部そろっているキャラだけをまとめる（途中まで届いたキャラは飛ばす）

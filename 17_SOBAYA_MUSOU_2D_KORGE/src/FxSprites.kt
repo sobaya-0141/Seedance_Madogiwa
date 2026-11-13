@@ -7,10 +7,11 @@ import kotlin.math.min
  * 手描きのエフェクト・擬音・アイテム（04_GAME_ASSETS/musou2d の fx_light / fx_art アトラス）を出す。
  * - light: 黒背景の光の素材（当たり・衝撃波・無双のオーラ）。加算合成で描く
  * - art: マゼンタ背景の普通の絵（ビールの泡・土ぼこり・擬音・アイテム）
+ * - gates: エリアの境目のゲート
  * アトラスが無いときは null で、呼び出し側が図形の演出（Particles.kt）を使う。
  * 位置は素材のキャンバスの中心からのずれで持っているので、(x, y) が素材の中心になる。
  */
-class FxSprites(val light: Sheet?, val art: Sheet?) {
+class FxSprites(val light: Sheet?, val art: Sheet?, val gates: Sheet? = null) {
     private class Play(val view: Image, val anim: Anim, val x: Double, val y: Double, val scale: Double, val flip: Double, val rise: Double) {
         var t = 0.0
     }
@@ -71,6 +72,8 @@ class FxSprites(val light: Sheet?, val art: Sheet?) {
         suspend fun load(): FxSprites = FxSprites(
             try { Sheet.loadAtlas("fx_light") } catch (_: Throwable) { null },
             try { Sheet.loadAtlas("fx_art") } catch (_: Throwable) { null },
+            // エリアの境目のゲート（ステージごとに1枚。gate_prompts.md）
+            try { Sheet.loadAtlas("gates") } catch (_: Throwable) { null },
         )
     }
 }

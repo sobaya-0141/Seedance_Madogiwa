@@ -1,0 +1,8 @@
+# エリアの境目のゲート（ステージごとに1枚）。コマは 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_bg/（gate_prompts.md）
+# 下端をキャンバスの下（pivot の y）にそろえ、横はキャンバスの中心を基準にする
+anim gate_s1 1 1 hold
+anim gate_s2 1 1 hold
+anim gate_s3 1 1 hold
+
+pivot 470 1640
+scale 0.4

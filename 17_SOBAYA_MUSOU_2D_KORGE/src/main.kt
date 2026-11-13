@@ -92,6 +92,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private lateinit var goalGlow: View
     private lateinit var hud: Hud
     private val floating = mutableListOf<Floating>()
+    private val gateOpenedAt = mutableListOf<Double>()
     private var lastSfx = -1.0
     private var shake = 0.0
     private var resultShown = false
@@ -348,7 +349,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         updateBackdrop(b)
         world = ui.container()
         if (backdrop == null) drawScenery(world, b.stage.scenery, b.stageLength, title = false)
-        for (i in 0 until b.stage.zones.size - 1) gateViews += drawGate(world, (i + 1) * ZONE_W)
+        for (i in 0 until b.stage.zones.size - 1) gateViews += drawGate(world, (i + 1) * ZONE_W, b.stage.number)
+        gateOpenedAt.clear(); repeat(gateViews.size) { gateOpenedAt += -1.0 }
         goalGlow = drawGoal(world, b)
         actors = world.container()
         fxLayer = world.container()
@@ -423,7 +425,15 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         for (pk in b.pickups) pickupViews.getOrPut(pk) { drawPickup(actors, pk) }.also { it.zIndex = pk.y; it.y = FLOOR_TOP + pk.y - 6 * abs(sin(clock * 4)) }
         for ((pk, v) in pickupViews.entries.toList()) if (pk !in b.pickups) { v.removeFromParent(); pickupViews.remove(pk) }
 
-        gateViews.forEachIndexed { i, g -> g.visible = !b.gateOpen[i] }
+        // ゲートは開くと0.5秒で上に引き上げながら消える
+        gateViews.forEachIndexed { i, g ->
+            if (!b.gateOpen[i]) { g.visible = true; g.y = 0.0; g.alpha = 1.0; return@forEachIndexed }
+            if (gateOpenedAt[i] < 0) gateOpenedAt[i] = clock
+            val t = (clock - gateOpenedAt[i]) / 0.5
+            g.visible = t < 1.0
+            g.y = -420.0 * t * t
+            g.alpha = 1.0 - t
+        }
         goalGlow.visible = b.goalOpen
         goalGlow.alpha = 0.5 + 0.4 * sin(clock * 5)
         hud.update(b, clock)
@@ -607,7 +617,14 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         }
     }
 
-    private fun drawGate(c: Container, x: Double): View = c.container {
+    private fun drawGate(c: Container, x: Double, stage: Int): View = c.container {
+        // 手描きのゲート（そば屋の約1.5倍の高さ）を、下端を画面の手前の床に合わせて立てる
+        val fr = fxs.gates?.anims?.get("gate_s$stage")?.frames?.get(0)
+        if (fr != null) {
+            val k = 0.7
+            image(fr.slice) { smoothing = true; scale(k); position(x + fr.offX * k, SCREEN_H - 6 + fr.offY * k) }
+            return@container
+        }
         position(x - 30, 0)
         solidRect(60, SCREEN_H, Colors["#3a3f47"])
         var yy = 0.0
@@ -724,6 +741,9 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
                 b.enemies.any { it.kind == EnemyKind.POLICE && it.state == EState.ATTACK } -> requestShot("s${n}_police_attack")
                 b.enemies.any { it.kind == EnemyKind.POLICE && it.state == EState.FLY } -> requestShot("s${n}_police_fly")
             }
+            // ゲートの確認用（閉じたゲートの手前と、開き始め）
+            if (b.zone < b.gateOpen.size && !b.gateOpen[b.zone] && b.zoneEnd - b.player.x < 420) requestShot("s${n}_gate${b.zone + 1}")
+            if (gateOpenedAt.any { it >= 0 && clock - it in 0.15..0.3 }) requestShot("s${n}_gate_open")
             // エリアごとの背景の確認用（エリア2・3に入って少ししたところ）
             if (backdropZone >= 1 && b.time - backdropSince > 2.0) requestShot("s${n}_area${backdropZone + 1}")
             if (b.time - lastLog > 30) {

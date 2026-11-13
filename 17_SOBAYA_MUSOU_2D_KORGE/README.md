@@ -89,7 +89,7 @@ KORGE_HEADLESS=true MADOGIWA_AUTO=1 MADOGIWA_SHOTS=/tmp/musou2d ./gradlew runJvm
   - 敵（手描きのアトラスが無いときの代わり）: CC0 のマネキン素体に、3D版と同じ方法で制服の色・帽子・警棒を付けて描いている
   - シートは右向きだけで、左向きは左右反転して表示する
 - そば屋と敵5種（警備員・警備隊長・警察官・巡査部長・警部）はすべて手描きアニメ（`04_GAME_ASSETS/musou2d/`。デザイン画と照合チェックリストは `designs/`）。警部は登場時に intro の01〜06、体力が半分を切って怒った瞬間に07〜08（顔が真っ赤）を使う。照合に通らないコマがあるキャラは、`generated_enemies/<名前>/HOLD.txt` を置くと pack_all.sh がアトラスを作らない（ゲームは下の採用3Dモデルの絵を使う）
-- 背景はエリアごとの手描きの1枚絵（全9枚。`04_GAME_ASSETS/musou2d/backgrounds/`、プロンプトは `art_prompts/background_prompts.md`）。画面が次のエリアへ進むと0.6秒で切り替え、エリアの中ではカメラに合わせて少しだけ横にずらして奥行きを出す。各ステージ最後のエリアは絵の右端にゴール（ビールのタンク・本社ビルの入口・立ち飲み処）が描いてある。ゲートは図形で描いている
+- 背景はエリアごとの手描きの1枚絵（全9枚。`04_GAME_ASSETS/musou2d/backgrounds/`、プロンプトは `art_prompts/background_prompts.md`）。画面が次のエリアへ進むと0.6秒で切り替え、エリアの中ではカメラに合わせて少しだけ横にずらして奥行きを出す。各ステージ最後のエリアは絵の右端にゴール（ビールのタンク・本社ビルの入口・立ち飲み処）が描いてある。エリアの境目のゲートもステージごとの手描き（`gates_anims.txt`、プロンプトは `art_prompts/gate_prompts.md`）で、開くと上に引き上げながら消える
 - 当たりの光・衝撃波（警部の地響きは赤、無双は金）・無双のオーラ・ビールの泡・土ぼこり・擬音（ドカッ！／バシッ／ゴゴゴ）・アイテム（缶ビール・枝豆）は手描き素材（`04_GAME_ASSETS/musou2d/fx_light_anims.txt`・`fx_art_anims.txt`、プロンプトは `art_prompts/effect_prompts.md`、表示は `src/FxSprites.kt`）。光の素材は黒背景で描き、加算合成で重ねる。素材が無いときは `src/Particles.kt` の図形で描く。攻撃が当たった瞬間は一瞬だけ時間を止めて（ヒットストップ）重さを出す
 - フォントは `04_GAME_ASSETS/fonts/MPLUSRounded1c-ExtraBold.ttf`（OFL）を `resources/fonts/` から symlink で参照しています
 
