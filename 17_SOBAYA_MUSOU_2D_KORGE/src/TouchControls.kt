@@ -18,7 +18,7 @@ class TouchControls(private val layer: Container, private val font: TtfFont) {
         ATTACK("攻撃", 1150.0, 610.0, 74.0),
         CHARGE("チャージ", 1010.0, 640.0, 54.0),
         DODGE("回避", 1170.0, 470.0, 50.0),
-        MUSOU("無双", 1030.0, 505.0, 54.0),
+        MUSOU("必殺", 1030.0, 505.0, 54.0),
         GOAL("ゴール\n長押し", 880.0, 600.0, 58.0),
         PAUSE("Ⅱ", 1235.0, 128.0, 30.0),
     }

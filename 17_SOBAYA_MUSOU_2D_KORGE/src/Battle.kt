@@ -330,7 +330,6 @@ class Battle(val stage: StageDef, seed: Int = 1) {
         player.state = PState.MUSOU
         player.t = 0.0
         player.musouTick = 0.0
-        fx += Fx.Banner("無双乱舞！", "")
         fx += Fx.Speech("ビールのために！")
         fx += Fx.Shake(14.0)
     }
@@ -569,7 +568,7 @@ class Battle(val stage: StageDef, seed: Int = 1) {
                 pk.taken = true
                 if (pk.beer) {
                     player.musou = min(MUSOU_MAX, player.musou + 30)
-                    fx += Fx.Text(pk.x, pk.y, "無双ゲージ+30", true)
+                    fx += Fx.Text(pk.x, pk.y, "必殺ゲージ+30", true)
                 } else {
                     player.hp = min(PLAYER_MAX_HP, player.hp + 200)
                     fx += Fx.Text(pk.x, pk.y, "体力+200", true)

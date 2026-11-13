@@ -303,7 +303,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             "移動  WASD / 矢印キー",
             "通常攻撃（4段コンボ）  J / Z",
             "チャージ攻撃（周りを吹っ飛ばす）  K / X",
-            "無双乱舞（ゲージ満タン）  L / C",
+            "必殺技（ゲージ満タン）  L / C",
             "回避  Space　　ゴールで長押し  F",
             "やり直し  R　　タイトルへ  Esc",
             "スマホ: 画面の左で移動、右下のボタンで攻撃（画面をタップでスタート）",
@@ -849,7 +849,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         val hpLabel = c.text("体力", 18, Pal.text, font) { position(20, 12) }
         val hpBack = c.solidRect(360, 18, Colors["#3a2a2a"]) { position(80, 16) }
         val hpBar = c.solidRect(360, 18, Pal.green) { position(80, 16) }
-        val musouLabel = c.text("無双", 18, Pal.gold, font) { position(20, 46) }
+        val musouLabel = c.text("必殺", 18, Pal.gold, font) { position(20, 46) }
         val musouBack = c.solidRect(360, 18, Colors["#3a3020"]) { position(80, 50) }
         val musouBar = c.solidRect(0, 18, Pal.beer) { position(80, 50) }
         val musouHint = c.text("", 16, Pal.gold, font) { position(560, 48) }
@@ -910,7 +910,7 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
             hpBar.color = if (p.hp < PLAYER_MAX_HP * 0.3) Pal.red else Pal.green
             musouBar.width = 360 * (p.musou / MUSOU_MAX)
             val full = p.musou >= MUSOU_MAX && p.state != PState.MUSOU
-            musouHint.text = if (full) "L で無双乱舞！" else ""
+            musouHint.text = if (full) "L で必殺技！" else ""
             musouBar.color = if (full && (clock * 6).toInt() % 2 == 0) Colors["#ffe27a"] else Pal.beer
             val level = (p.musou / MUSOU_MAX).coerceIn(0.0, 1.0)
             mugBeer.height = 66 * level
