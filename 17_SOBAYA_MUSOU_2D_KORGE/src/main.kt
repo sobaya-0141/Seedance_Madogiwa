@@ -35,10 +35,16 @@ suspend fun main() = Korge(
     for ((name, sheet) in sheets) sheet.anims["intro"]?.let { introLength[name] = it.length * introFrames(name, sheet) / it.frames.size }
     sheets.getValue("sobaya").anims.values.forEach { Player.animLength[it.name] = it.length }
     for ((name, sheet) in sheets) sheet.anims.values.forEach { Enemy.animLength["$name/${it.name}"] = it.length }
-    val stage1Backdrop = Sheet.readImage("musou2d_bg/s1_a1_rough.png").also { it.mipmaps = true }
+    // エリアごとの背景の1枚絵（04_GAME_ASSETS/musou2d/backgrounds）。無いエリアは図形で描く
+    val backdrops = mutableMapOf<String, korlibs.image.bitmap.Bitmap>()
+    for (stage in 1..STAGES.size) for (area in 1..3) {
+        val key = "s${stage}_a$area"
+        val file = if (key == "s1_a1") "s1_a1_rough" else key
+        try { backdrops[key] = Sheet.readImage("musou2d_bg/$file.png").also { it.mipmaps = true } } catch (_: Throwable) { }
+    }
     // 手描きのエフェクト・擬音・アイテム（無ければ図形で描く）
     val fxSprites = FxSprites.load()
-    sceneContainer().changeTo { MusouScene(font, sheets, stage1Backdrop, fxSprites) }
+    sceneContainer().changeTo { MusouScene(font, sheets, backdrops, fxSprites) }
 }
 
 /** 登場ポーズに使う intro のコマ数（手描きの警部だけ、最後の2コマは怒りの切り替え） */
@@ -59,7 +65,7 @@ private object Pal {
  * タイトル → ステージ → リザルト（→ 次のステージ / エンディング）を1つのシーンで切り替える。
  * ルールと数値は Battle / Data、ここは描画と入力だけを持つ。
  */
-class MusouScene(private val font: TtfFont, private val sheets: Map<String, Sheet>, private val stage1Backdrop: korlibs.image.bitmap.Bitmap, private val fxs: FxSprites) : Scene() {
+class MusouScene(private val font: TtfFont, private val sheets: Map<String, Sheet>, private val backdrops: Map<String, korlibs.image.bitmap.Bitmap>, private val fxs: FxSprites) : Scene() {
     private enum class Screen { TITLE, PLAY, ENDING }
 
     private var screen = Screen.TITLE
@@ -77,6 +83,9 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
     private lateinit var fxLayer: Container
     private lateinit var playerView: ActorView
     private var backdrop: Image? = null
+    private var backdropZone = -1
+    private var backdropSince = 0.0
+    private lateinit var backdropLayer: Container
     private val enemyViews = mutableMapOf<Enemy, ActorView>()
     private val pickupViews = mutableMapOf<Pickup, View>()
     private val gateViews = mutableListOf<View>()
@@ -276,7 +285,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         battle = null
         ui.removeChildren()
         floating.clear(); fxs.clear()
-        if (STAGES[stageIndex].scenery == Scenery.FACTORY) ui.image(stage1Backdrop) { smoothing = true; fitBackdrop(this) }
+        val titleBg = backdrops["s${stageIndex + 1}_a1"]
+        if (titleBg != null) ui.image(titleBg) { smoothing = true; fitBackdrop(this, titleBg) }
         else drawScenery(ui, STAGES[stageIndex].scenery, SCREEN_W.toDouble(), title = true)
         ui.solidRect(SCREEN_W, SCREEN_H, Colors["#0c0d12aa"])
         ui.text("そば屋無双", 92, Pal.gold, font) { position(70, 60) }
@@ -331,7 +341,11 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
 
         // ステージ1は工場正門の背景ラフ（04_GAME_ASSETS/musou2d/backgrounds）を画面いっぱいに敷く。
         // 層に分けた清書が届くまでの仮置きで、カメラに合わせて少しだけ横にずらして奥行きを出す
-        backdrop = if (b.stage.scenery == Scenery.FACTORY) ui.image(stage1Backdrop) { smoothing = true; fitBackdrop(this) } else null
+        // エリアごとの背景の1枚絵。エリアが変わると切り替える（render の updateBackdrop）
+        backdropLayer = ui.container()
+        backdropZone = -1
+        backdrop = null
+        updateBackdrop(b)
         world = ui.container()
         if (backdrop == null) drawScenery(world, b.stage.scenery, b.stageLength, title = false)
         for (i in 0 until b.stage.zones.size - 1) gateViews += drawGate(world, (i + 1) * ZONE_W)
@@ -350,7 +364,9 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         val sy = if (shake > 0.5) (Random.nextDouble() - 0.5) * shake else 0.0
         world.x = -b.camX + sx
         world.y = sy
-        backdrop?.let { it.x = -BACKDROP_OVERSCAN * SCREEN_W * (b.camX / (b.stageLength - SCREEN_W).coerceAtLeast(1.0)) + sx * 0.3 }
+        updateBackdrop(b)
+        // エリアの中でカメラが進むぶん、背景を少しだけ横にずらして奥行きを出す
+        backdrop?.let { it.x = -BACKDROP_OVERSCAN * SCREEN_W * ((b.camX - backdropZone * ZONE_W) / (ZONE_W - SCREEN_W)).coerceIn(0.0, 1.0) + sx * 0.3 }
 
         val p = b.player
         val sobaya = sheets.getValue("sobaya")
@@ -488,16 +504,19 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
         battle = null
         ui.removeChildren()
         floating.clear(); fxs.clear()
-        drawScenery(ui, Scenery.OFFICE, SCREEN_W.toDouble(), title = true)
-        drawStandingBar(ui, 760.0)
+        val endBg = backdrops["s3_a3"]
+        if (endBg != null) ui.image(endBg) { smoothing = true; fitBackdrop(this, endBg); x = -BACKDROP_OVERSCAN * SCREEN_W }
+        else { drawScenery(ui, Scenery.OFFICE, SCREEN_W.toDouble(), title = true); drawStandingBar(ui, 760.0) }
         val feet = 600.0
         val sobaya = sheets.getValue("sobaya")
-        sobaya.frameAt("win", 1.2).let { f -> ui.image(f.slice) { scale(0.85); position(600 + f.offX * 0.85, feet + f.offY * 0.85) } }
+        sobaya.frameAt("win", 1.2).let { f -> ui.image(f.slice) { scale(0.85); position(900 + f.offX * 0.85, feet + f.offY * 0.85) } }
         // 警備員と警察官も、今日はお客さんとして店へ向かう
         val police = sheets.getValue("police")
-        police.frameAt("walk", 0.3).let { f -> ui.image(f.slice) { scale(1.2); position(200 + f.offX * 1.2, feet + f.offY * 1.2) } }
+        // 手描きの敵はそば屋と同じ倍率（絵の中で身長の比が決まっている）。採用3Dモデルのシートは従来の倍率
+        val ks = { sh: Sheet -> if (sh.handDrawn) 0.85 else 1.2 }
+        police.frameAt("walk", 0.3).let { f -> val k = ks(police); ui.image(f.slice) { scale(k); position(420 + f.offX * k, feet + f.offY * k) } }
         val guard = sheets.getValue("guard")
-        guard.frameAt("walk", 0.0).let { f -> ui.image(f.slice) { scale(1.2); position(360 + f.offX * 1.2, feet + 10 + f.offY * 1.2) } }
+        guard.frameAt("walk", 0.0).let { f -> val k = ks(guard); ui.image(f.slice) { scale(k); position(600 + f.offX * k, feet + 10 + f.offY * k) } }
         ui.solidRect(SCREEN_W, 112, Colors["#0c0d12dd"]) { y = SCREEN_H - 112.0 }
         ui.text("立ち飲み処、開店！", 44, Pal.gold, font) { position(60, SCREEN_H - 104) }
         ui.text("奪ったビールは窓際の立ち飲み処へ。警備員も警察官も、今日はお客さん。", 20, Pal.text, font) { position(470, SCREEN_H - 92) }
@@ -507,11 +526,27 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
 
     private fun formatTime(s: Double) = "${(s / 60).toInt()}:${(s % 60).toInt().toString().padStart(2, '0')}"
 
-    /** 背景ラフを画面の高さに合わせ、横は少し余らせる（カメラに合わせてずらす分） */
-    private fun fitBackdrop(img: Image) {
-        val k = maxOf(SCREEN_H / stage1Backdrop.height.toDouble(), SCREEN_W * (1 + BACKDROP_OVERSCAN) / stage1Backdrop.width.toDouble())
+    /** 背景の1枚絵を画面の高さに合わせ、横は少し余らせる（カメラに合わせてずらす分） */
+    private fun fitBackdrop(img: Image, bmp: korlibs.image.bitmap.Bitmap) {
+        val k = maxOf(SCREEN_H / bmp.height.toDouble(), SCREEN_W * (1 + BACKDROP_OVERSCAN) / bmp.width.toDouble())
         img.scale(k)
-        img.y = SCREEN_H - stage1Backdrop.height * k
+        img.y = SCREEN_H - bmp.height * k
+    }
+
+    /** カメラ（画面の中心）がいるエリア。ゲートが開いた時点ではなく、ゲートを抜けて画面が進んだときに変わる */
+    private fun cameraZone(b: Battle) = ((b.camX + SCREEN_W / 2) / ZONE_W).toInt().coerceIn(0, b.stage.zones.size - 1)
+
+    /** いまのエリアの背景を出す。エリアが変わったら、前の背景を0.6秒で薄くして切り替える */
+    private fun updateBackdrop(b: Battle) {
+        val zone = cameraZone(b)
+        if (zone == backdropZone) return
+        backdropZone = zone
+        backdropSince = b.time
+        val bmp = backdrops["s${b.stage.number}_a${zone + 1}"] ?: return
+        val old = backdrop
+        val img = backdropLayer.image(bmp) { smoothing = true; fitBackdrop(this, bmp) }
+        if (old != null) { old.removeFromParent(); backdropLayer.addChild(old); floating += Floating(old, 0.6) }
+        backdrop = img
     }
 
     // ---------------------------------------------------------------- 背景（図形で描く）
@@ -582,7 +617,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
 
     private fun drawGoal(c: Container, b: Battle): View {
         val gx = b.goalX
-        when (b.stage.scenery) {
+        // 背景の1枚絵がある最後のエリアは、絵の右端にゴール（タンク・入口・立ち飲み処）が描いてあるので、光る輪だけを出す
+        if (!backdrops.containsKey("s${b.stage.number}_a${b.stage.zones.size}")) when (b.stage.scenery) {
             Scenery.FACTORY -> {
                 c.solidRect(230, 330, Colors["#e6c35c"]) { position(gx - 115, FLOOR_TOP - 290) }
                 c.text("できたて", 30, Colors["#5a3a0a"], font) { position(gx - 60, FLOOR_TOP - 230) }
@@ -688,6 +724,8 @@ class MusouScene(private val font: TtfFont, private val sheets: Map<String, Shee
                 b.enemies.any { it.kind == EnemyKind.POLICE && it.state == EState.ATTACK } -> requestShot("s${n}_police_attack")
                 b.enemies.any { it.kind == EnemyKind.POLICE && it.state == EState.FLY } -> requestShot("s${n}_police_fly")
             }
+            // エリアごとの背景の確認用（エリア2・3に入って少ししたところ）
+            if (backdropZone >= 1 && b.time - backdropSince > 2.0) requestShot("s${n}_area${backdropZone + 1}")
             if (b.time - lastLog > 30) {
                 lastLog = b.time
                 println("AUTO: stage=$n zone=${b.zone} ko=${b.koTotal} hp=${b.player.hp.toInt()} enemies=${b.enemies.size} t=${b.time.toInt()}")
