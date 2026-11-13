@@ -79,6 +79,21 @@
       "image": "games/sobaya-musou/og.png",
       "accent": "orange",
       "controls": "PC（キーボード・ゲームパッド）"
+    },
+    {
+      "id": "sobaya-musou-2d",
+      "title": "そば屋無双 2D",
+      "subtitle": "ビール工場強奪作戦",
+      "description": "手描きアニメのそば屋が、押し寄せる警備員をビールジョッキでなぎ倒す横スクロールのベルトアクション。4段コンボ・チャージ・無双乱舞で工場・麻布十番・本社ビルの3ステージを突破せよ。",
+      "engine": "korge",
+      "sourceDir": "17_SOBAYA_MUSOU_2D_KORGE",
+      "jsName": "sobaya-musou2d",
+      "distDir": "build/dist/js/productionExecutable",
+      "extraDir": "web_assets",
+      "outputDir": "games/sobaya-musou-2d",
+      "image": "games/sobaya-musou-2d/og.png",
+      "accent": "orange",
+      "controls": "PC・スマホ対応（キーボード・ゲームパッド・タッチ）"
     }
   ]
 }

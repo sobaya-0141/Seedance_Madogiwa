@@ -1,0 +1,12 @@
+cell 288 288
+pivot 144 253
+anim idle 6 3.200 loop
+anim run 8 1.167 loop
+anim punch 8 1.133 once
+anim hook 8 1.333 once
+anim smash 10 1.600 once
+anim charge 10 1.400 once
+anim dodge 8 1.400 once
+anim hurt 5 0.400 once
+anim down 5 0.800 once
+anim win 10 6.467 loop

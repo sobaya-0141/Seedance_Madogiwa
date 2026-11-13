@@ -1,0 +1,10 @@
+# 警察官の動作一覧（PackSprites.java が読む）。書式は sobaya_anims.txt と同じ
+anim idle 6 8 loop
+anim walk 8 12 loop
+anim attack 7 12 once hit=4
+anim hit 3 12 once
+anim fly 6 10 hold
+anim dizzy 4 6 loop
+
+pivot 625 1230
+scale 0.45

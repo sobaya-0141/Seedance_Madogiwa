@@ -1,0 +1,43 @@
+# PackSprites.java が書き出した。手で編集しない
+scale 0.45
+anim idle 6 8 loop 0
+anim walk 8 12 loop 0
+anim attack 7 12 once 4
+anim hit 3 12 once 0
+anim fly 6 10 hold 0
+anim dizzy 4 6 loop 0
+page 0 guard_0.png
+frame fly 1 0 0 0 466 474 -235 -471
+frame fly 0 0 468 0 429 472 -204 -469
+frame hit 1 0 899 0 256 468 -136 -465
+frame walk 3 0 1157 0 247 444 -133 -442
+frame hit 0 0 1406 0 292 441 -162 -439
+frame walk 7 0 1700 0 247 437 -118 -434
+frame idle 0 0 1949 0 224 435 -112 -432
+frame idle 4 0 2175 0 224 435 -112 -432
+frame idle 5 0 2401 0 224 435 -112 -432
+frame attack 0 0 2627 0 306 435 -136 -432
+frame attack 2 0 2935 0 298 435 -111 -432
+frame attack 5 0 3235 0 224 435 -112 -432
+frame attack 6 0 3461 0 224 435 -112 -432
+frame idle 3 0 3687 0 224 433 -112 -430
+frame walk 6 0 0 476 195 432 -112 -429
+frame attack 1 0 197 476 317 432 -124 -429
+frame attack 4 0 516 476 318 432 -112 -430
+frame attack 3 0 836 476 375 431 -154 -428
+frame idle 1 0 1213 476 224 430 -112 -427
+frame walk 0 0 1439 476 231 430 -126 -427
+frame walk 4 0 1672 476 225 430 -119 -427
+frame walk 2 0 1899 476 214 429 -115 -426
+frame hit 2 0 2115 476 232 421 -120 -418
+frame idle 2 0 2349 476 223 420 -111 -418
+frame walk 1 0 2574 476 228 411 -129 -408
+frame walk 5 0 2804 476 223 403 -121 -401
+frame fly 2 0 3029 476 519 353 -253 -351
+frame fly 3 0 3550 476 498 299 -232 -296
+frame dizzy 2 0 0 910 535 299 -253 -296
+frame dizzy 1 0 537 910 535 294 -253 -292
+frame fly 5 0 1074 910 535 289 -253 -286
+frame dizzy 0 0 1611 910 535 289 -253 -286
+frame dizzy 3 0 2148 910 535 289 -253 -286
+frame fly 4 0 2685 910 474 281 -233 -278

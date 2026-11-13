@@ -1,0 +1,8 @@
+cell 288 288
+pivot 144 253
+anim idle 6 1.708 loop
+anim walk 8 1.167 loop
+anim attack 8 0.458 once
+anim hit 5 0.417 once
+anim fly 8 0.833 once
+anim dizzy 6 2.417 loop

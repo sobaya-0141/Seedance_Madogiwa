@@ -1,0 +1,3 @@
+gate_s1_01 floor_shift=56 size=267x595
+gate_s2_01 floor_shift=117 size=349x550
+gate_s3_01 floor_shift=67 size=260x600

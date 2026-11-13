@@ -1,0 +1,9 @@
+# PackSprites.java が書き出した。手で編集しない
+scale 0.4
+anim gate_s1 1 1 hold 0
+anim gate_s2 1 1 hold 0
+anim gate_s3 1 1 hold 0
+page 0 gates_0.png
+frame gate_s3 0 0 0 0 260 600 -130 -597
+frame gate_s1 0 0 262 0 267 595 -134 -592
+frame gate_s2 0 0 531 0 349 550 -176 -547

@@ -1,0 +1,12 @@
+# 警部の動作一覧（PackSprites.java が読む）。intro の7・8コマ目は怒りへの切り替え（ゲーム側で出し分ける）
+anim idle 6 8 loop
+anim walk 8 10 loop
+anim attack 8 12 once hit=5
+anim hit 3 12 once
+anim fly 6 10 hold
+anim dizzy 4 6 loop
+anim intro 8 8 once
+anim special 12 12 once hit=6
+
+pivot 620 1234
+scale 0.45

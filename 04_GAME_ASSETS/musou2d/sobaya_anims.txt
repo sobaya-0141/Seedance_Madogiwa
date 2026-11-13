@@ -1,0 +1,24 @@
+# そば屋の動作一覧（PackSprites.java が読む）
+# anim <名前> <コマ数> <1秒あたりのコマ数> <loop|once|hold> [hit=<当たりのコマ番号>]
+#   hold = 最後のコマで止める。hit は1始まり（ゲーム側が当たり判定の瞬間に使う）
+anim idle 8 8 loop
+anim run 8 12 loop
+anim combo1 7 12 once hit=4
+anim combo2 7 12 once hit=4
+anim combo3 7 12 once hit=4
+anim combo4 11 12 once hit=6
+anim charge 12 12 once hit=8
+anim musou 10 20 loop
+anim dodge 8 13 once
+anim hurt 4 12 once
+anim down 8 10 hold
+anim grab 6 8 loop
+anim win 12 10 loop
+
+# 宙に浮いている（床の線に合わせない）コマ
+airborne win_02 win_10
+
+# 元画像（1280×1280）での足元の位置。基準コマ idle_01 で測った値
+pivot 634 1238
+# ゲーム用に縮小する倍率（立ち姿の身長 974px → 約438px）
+scale 0.45
