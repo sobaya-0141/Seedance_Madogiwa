@@ -29,19 +29,16 @@ Three.js、React、vinextで構成されています。
 
 ## そば屋3Dモデル
 
-- Web用: `public/models/sobaya.glb`（共用アセット置き場 `../04_GAME_ASSETS/voxel/models/sobaya.glb` への相対symlink）
-- 改変用Blenderマスター: `../04_GAME_ASSETS/voxel/model_source/sobaya_voxel_master.blend`
-- ボクセル版: オリジナル形状（第三者素体なし）
+- Web用: `public/models/sobaya.glb`（共用アセット置き場 `../04_GAME_ASSETS/models3d/mobile/sobaya.glb` への相対symlink）。共同開発リポジトリ K9i-0/madogiwa-multimedia-universe の採用モデル（hazard_adopted）のスマホ軽量版で、骨格とアニメーション（104本）が入っている
+- ジョッキ: `public/models/beer_mug.glb`（`../04_GAME_ASSETS/models3d/props/beer_mug.glb` への相対symlink）。NG変更要素なので、右手の骨 `PropSocket.R` に必ず持たせる。持ち手の `Grip` ノードを骨の原点に合わせ、本体の `MugGrip` モーフで手を握らせる
+- 取得元とモデルの情報は `../04_GAME_ASSETS/models3d/README.md` を参照
 
-仮面・髪・服・ビールジョッキを大きなブロックで構成した、他ゲームへ
-流用しやすいボクセル版です。移動中は左右の脚と腕が交互に動き、
-スマッシュ時は肩を軸にビールジョッキを
-振りかぶって振り下ろします。破壊判定と効果音は振り下ろしの着弾に同期します。
-再生成手順と構成は `../04_GAME_ASSETS/voxel/README.md` を参照してください。
+## キャラクターの動かし方
 
-## 共通ボクセルキャラクターキット
+`app/characters/skinned-character-kit.ts` が共通部品、`app/characters/sobaya.ts` がそば屋の設定です。
 
-Blenderの形状生成、GLBの回転軸、Three.jsの歩行・スマッシュを共通部品へ
-分離しています。モデルとビルドスクリプトは全ゲーム共用の
-`../04_GAME_ASSETS/voxel/` に集約されています。二足キャラと触手キャラの
-追加手順は `../04_GAME_ASSETS/voxel/VOXEL_CHARACTER_KIT.md` を参照してください。
+- 待機は `CharacterSheet_MugStand`、移動中は `Hybrid_MugRun` をループ再生する
+- スマッシュは `Hybrid_MugSmash`（1.6秒）を0.42秒（肩口に振りかぶった姿勢）から再生し、ボタンを押してから0.17秒後（`SMASH_IMPACT_DELAY`）に0.9秒の振り下ろしのフレームが来るよう早回しする。破壊判定と効果音も同じ0.17秒後に起きる
+- GLBの読み込み前と読み込みに失敗したときは、コードで組んだ簡易モデルを表示する
+
+`npm test` の `tests/character-actions.test.mjs` で、着弾フレームの同期と待機・移動・スマッシュの切り替えを確かめています。
