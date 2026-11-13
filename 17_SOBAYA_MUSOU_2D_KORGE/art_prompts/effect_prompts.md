@@ -105,63 +105,37 @@ Change: the center is mostly empty; orange and amber shards and sparks scattered
 Change: only a few small, dim orange sparks remain at the outer edge; almost everything is black.
 ```
 
-## 3. shockwave（警部の地響き・6コマ・黒）
+## 3. shockwave（警部の地響き・6コマ・黒・**赤**）
 
-床に沿って広がる平たい楕円。ゲームでは横に引き伸ばして使う。
+床に沿って広がる平たい楕円。広がる大きさはゲーム側で拡大して出すので、**絵は全コマ同じ大きさ**のまま、輪の状態（勢い→細く→消える）だけを変える。無双の衝撃波（金色）と見分けられるよう、**赤〜赤橙**にする。
 
-**shockwave_01.png**（新しく生成）
+**shockwave_01.png**（新しく生成。1回目は金色だったので作り直し）
 ```
-Frame 1 of 6 of a ground shockwave from a heavy stomp, seen from a camera about 20 degrees above the floor, so the wave is a FLAT horizontal ellipse lying on the floor (about 3 times wider than tall). At the center of the canvas: a small bright ellipse ring about one quarter of the canvas width, orange-red and gold, with short jagged spikes of light bursting upward from the ring.
+Frame 1 of 6 of a dangerous ground shockwave from a villain's heavy stomp, seen from a camera about 20 degrees above the floor, so the wave is a FLAT horizontal ellipse lying on the floor (about 3 times wider than tall), about 70% of the canvas width, centered. Colors: hot RED and red-orange (#FF3B1F to #FF7A1A) with a white-hot inner edge — clearly red, NOT gold or yellow. A thick bright ring, jagged spikes of red-orange light bursting upward from the center, short cracks of light along the floor.
 ```
-**shockwave_02.png**（編集）
-```
-Change: the ellipse ring has grown to about half of the canvas width (still 3 times wider than tall, same center); the ring is thick and bright red-orange with a gold inner edge; jagged spikes of light rising from it.
-```
-**shockwave_03.png**（編集）
-```
-Change: the ellipse ring has grown to about 70% of the canvas width; it is slightly thinner; bright orange cracks of light run outward along the floor from the center.
-```
-**shockwave_04.png**（編集）
-```
-Change: the ellipse ring has grown to about 85% of the canvas width and is thinner; the cracks of light are fading to dim orange.
-```
-**shockwave_05.png**（編集）
-```
-Change: the ellipse ring has reached about 95% of the canvas width and is thin and faint orange; the cracks are almost gone.
-```
-**shockwave_06.png**（編集）
-```
-Change: only a very faint, broken thin orange ellipse remains at the outer edge; the rest is black.
-```
+**shockwave_02.png 〜 shockwave_06.png**（編集。Change の1行だけコマごとに変える）
 
-## 4. musou_wave（無双の衝撃波・6コマ・黒）
+| ファイル | Change: の後ろ |
+| --- | --- |
+| shockwave_02.png | `The ring stays exactly the same size and position. The spikes at the center have dropped down; the ring is at its brightest and thickest.` |
+| shockwave_03.png | `The ring stays exactly the same size and position. The center is empty now; the ring is a little thinner; the cracks are fading to dim red.` |
+| shockwave_04.png | `The ring stays exactly the same size and position. The ring is thinner and dimmer red-orange; the cracks are gone.` |
+| shockwave_05.png | `The ring stays exactly the same size and position. The ring is thin, faint red and starting to break into segments.` |
+| shockwave_06.png | `The ring stays exactly the same size and position. Only a few faint, thin broken red segments of the ring remain; the rest is black.` |
 
-地響きと同じ形で、色だけ金色（そば屋の技なので）。
+## 4. musou_wave（無双の衝撃波・6コマ・黒・金）
 
-**musou_wave_01.png**（新しく生成）
-```
-Frame 1 of 6 of a golden power shockwave released by a hero, seen from a camera about 20 degrees above the floor, so the wave is a FLAT horizontal ellipse lying on the floor (about 3 times wider than tall). At the center of the canvas: a small bright white-gold ellipse ring about one quarter of the canvas width, with a burst of golden light and small sparkles.
-```
-**musou_wave_02.png**（編集）
-```
-Change: the ellipse ring has grown to about half of the canvas width (same center, still 3 times wider than tall); thick bright gold with a white leading edge; golden sparkles and small beer-foam-like white bubbles of light around it.
-```
-**musou_wave_03.png**（編集）
-```
-Change: the ellipse ring has grown to about 70% of the canvas width and is slightly thinner; sparkles spreading outward.
-```
-**musou_wave_04.png**（編集）
-```
-Change: the ellipse ring has grown to about 85% of the canvas width and is thinner; the gold is fading to amber.
-```
-**musou_wave_05.png**（編集）
-```
-Change: the ellipse ring has reached about 95% of the canvas width, thin and faint amber; only a few sparkles remain.
-```
-**musou_wave_06.png**（編集）
-```
-Change: only a very faint, broken thin amber ellipse and a couple of tiny sparkles remain at the outer edge; the rest is black.
-```
+01 は合格。地響きと同じく、**絵は全コマ同じ大きさ**のまま輪の状態だけを変える（広がる大きさはゲーム側で拡大する）。
+
+**musou_wave_02.png 〜 musou_wave_06.png**（編集。Change の1行だけコマごとに変える）
+
+| ファイル | Change: の後ろ |
+| --- | --- |
+| musou_wave_02.png | `The ring stays exactly the same size and position. The burst of light at the center has dropped down; the golden ring is at its brightest and thickest, sparkles spreading outward.` |
+| musou_wave_03.png | `The ring stays exactly the same size and position. The center is empty now; the ring is a little thinner; sparkles spreading farther out.` |
+| musou_wave_04.png | `The ring stays exactly the same size and position. The ring is thinner and fading from gold to amber; fewer sparkles.` |
+| musou_wave_05.png | `The ring stays exactly the same size and position. The ring is thin, faint amber and starting to break into segments; only a couple of sparkles.` |
+| musou_wave_06.png | `The ring stays exactly the same size and position. Only a few faint, thin broken amber segments of the ring remain; the rest is black.` |
 
 ## 5. musou_aura（無双のオーラ・6コマ・ループ・黒）
 
@@ -255,3 +229,14 @@ A single game pickup item: a small round white dish holding a heap of bright gre
 2. 黒背景のものは黒以外の暗い色が入っていないか、マゼンタ背景のものは絵の中にピンクが入っていないかを確認する
 3. 擬音は文字が正しく読めるか（余計な文字・崩れがないか）を確認する
 4. 合格したらアトラスにまとめ、`src/Particles.kt` の図形の演出と置き換えて、録画で見てもらう
+
+---
+
+## 01の確認結果（2026-11-13）
+
+| ファイル | 結果 |
+| --- | --- |
+| hit_small_01・hit_large_01・musou_wave_01・musou_aura_01・foam_01・dust_01 | 合格。02 以降を編集で作ってよい |
+| sfx_doka・sfx_bashi・sfx_gogogo | 合格（文字が正しく読める）。完成 |
+| item_beer・item_edamame | 合格。完成 |
+| shockwave_01 | **作り直し**: 金色で、無双の衝撃波と区別がつかない。3章の新しいプロンプト（赤）で作る |
