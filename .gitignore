@@ -10,4 +10,5 @@ __pycache__/
 03_SCRIPTS/*/h3/*.zip
 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated/
 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_fx/
+17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_bg/
 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_enemies/
