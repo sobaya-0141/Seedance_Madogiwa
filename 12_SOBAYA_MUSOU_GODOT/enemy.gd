@@ -1,8 +1,10 @@
 extends Node3D
-## 敵: 警備員・警察官・警備隊長・警部。CC0 のマネキン素体に制服の色（頂点カラー）と帽子・警棒を付ける。
+## 敵: 警備員・警察官・白バイ隊員・本社警備隊と、各エリアの隊長。CC0 のマネキン素体に制服の色（頂点カラー）と帽子・警棒を付ける。
 ## 倒されると吹っ飛んで目を回し、床に沈んで退場する（流血・死亡表現はしない）。
 
 const BaseScene := preload("res://models/mannequin_base.glb")
+const Retarget := preload("res://retarget.gd")
+const TRIPO_HEIGHT := 1.8   # Tripo のモデル（身長約1m）をこの身長にそろえる（マネキンは1.83m）
 const GRAVITY := 22.0
 
 enum State { CHASE, ATTACK, HURT, AIR, GETUP, DIZZY, GONE }
@@ -20,6 +22,7 @@ var has_token := false
 var state_t := 0.0
 var attack_hit_done := false
 var special_cd := 6.0
+var enraged := false   # ボスは体力が半分を切ると怒る（速く動き、地響きを2連発する）
 var far_t := 0.0
 
 var body: Node3D
@@ -29,6 +32,10 @@ var skeleton: Skeleton3D
 var stars: Node3D
 var name_label: Label3D
 var current_anim := ""
+var retarget: RefCounted   # retarget.gd（Tripo のモデルを使う敵だけ）
+var look: Node3D           # Tripo の見た目のモデル
+var look_anim: AnimationPlayer   # Tripo のモデル自身のアニメーション（いーさんの土下座など）
+var retarget_paused := false     # true の間はリターゲットを止め、look_anim の動きをそのまま見せる
 
 
 func setup(p_game: Node, p_cfg: Dictionary, pos: Vector3) -> void:
@@ -51,9 +58,22 @@ func _ready() -> void:
 	skeleton = model.find_children("*", "Skeleton3D", true, false)[0]
 	anim.add_animation_library("addon", game.addon_library)
 	var mi: MeshInstance3D = model.find_children("*", "MeshInstance3D", true, false)[0]
-	mi.mesh = game.uniform_mesh(cfg)
-	mi.material_override = game.uniform_material
-	_add_props()
+	if cfg.has("model"):
+		# Tripo で作った見た目のモデルを重ね、マネキンは動きの元（非表示）にする
+		mi.visible = false
+		look = game.tripo_scene(cfg.model).instantiate()
+		body.add_child(look)
+		var aps := look.find_children("*", "AnimationPlayer", true, false)
+		if aps.size() > 0:
+			look_anim = aps[0]
+		var lmi: MeshInstance3D = look.find_children("*", "MeshInstance3D", true, false)[0]
+		look.scale = Vector3.ONE * TRIPO_HEIGHT / maxf(lmi.get_aabb().size.y, 0.1)
+		lmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		retarget = Retarget.new(skeleton, look.find_children("*", "Skeleton3D", true, false)[0])
+	else:
+		mi.mesh = game.uniform_mesh(cfg)
+		mi.material_override = game.uniform_material
+		_add_props()
 
 	stars = Node3D.new()
 	stars.position = Vector3(0.0, 2.05, 0.0) * cfg.get("scale", 1.0)
@@ -89,19 +109,32 @@ func _ready() -> void:
 
 func _add_props() -> void:
 	# 帽子（クラウン＋つば＋帽章）を頭の骨へ。骨の向きに関係なくまっすぐ載るよう、休止姿勢の逆行列で打ち消す
+	# helmet の敵（白バイ・機動隊）は半球のヘルメットにする
 	var cap := Node3D.new()
-	var crown := _part(CylinderMesh.new(), cfg.cap)
-	(crown.mesh as CylinderMesh).top_radius = 0.135
-	(crown.mesh as CylinderMesh).bottom_radius = 0.125
-	(crown.mesh as CylinderMesh).height = 0.11
-	cap.add_child(crown)
-	var brim := _part(BoxMesh.new(), cfg.cap.darkened(0.35))
-	(brim.mesh as BoxMesh).size = Vector3(0.22, 0.02, 0.1)
-	brim.position = Vector3(0.0, -0.045, 0.14)
-	cap.add_child(brim)
+	if cfg.get("helmet", false):
+		var dome := _part(SphereMesh.new(), cfg.cap)
+		(dome.mesh as SphereMesh).is_hemisphere = true
+		(dome.mesh as SphereMesh).radius = 0.155
+		(dome.mesh as SphereMesh).height = 0.155
+		dome.position = Vector3(0.0, -0.07, 0.0)
+		cap.add_child(dome)
+		var visor := _part(BoxMesh.new(), Color(0.1, 0.12, 0.16))
+		(visor.mesh as BoxMesh).size = Vector3(0.22, 0.05, 0.06)
+		visor.position = Vector3(0.0, -0.06, 0.14)
+		cap.add_child(visor)
+	else:
+		var crown := _part(CylinderMesh.new(), cfg.cap)
+		(crown.mesh as CylinderMesh).top_radius = 0.135
+		(crown.mesh as CylinderMesh).bottom_radius = 0.125
+		(crown.mesh as CylinderMesh).height = 0.11
+		cap.add_child(crown)
+		var brim := _part(BoxMesh.new(), cfg.cap.darkened(0.35))
+		(brim.mesh as BoxMesh).size = Vector3(0.22, 0.02, 0.1)
+		brim.position = Vector3(0.0, -0.045, 0.14)
+		cap.add_child(brim)
 	var badge := _part(BoxMesh.new(), cfg.badge, 0.6)
 	(badge.mesh as BoxMesh).size = Vector3(0.05, 0.05, 0.01)
-	badge.position = Vector3(0.0, 0.0, 0.132)
+	badge.position = Vector3(0.0, 0.0, 0.132) if not cfg.get("helmet", false) else Vector3(0.0, 0.0, 0.15)
 	cap.add_child(badge)
 	_attach(cap, "head", Vector3(0.0, 1.8, 0.0))
 
@@ -157,6 +190,10 @@ func update(delta: float, player: Node3D) -> void:
 	state_t += delta
 	attack_cd -= delta
 	special_cd -= delta
+	if cfg.has("special") and not enraged and hp > 0.0 and hp < cfg.hp * 0.5:
+		enraged = true
+		special_cd = 0.0   # 怒った直後に地響き
+		body.scale *= 1.08
 	var to_player := player.global_position - global_position
 	to_player.y = 0.0
 	var dist := to_player.length()
@@ -214,6 +251,8 @@ func update(delta: float, player: Node3D) -> void:
 				return
 	position += velocity * delta
 	body.rotation.y = lerp_angle(body.rotation.y, facing, 1.0 - exp(-delta * 10.0))
+	if retarget and not retarget_paused:
+		retarget.apply()
 
 
 func _update_chase(delta: float, player: Node3D, to_player: Vector3, dist: float) -> void:
@@ -232,7 +271,7 @@ func _update_chase(delta: float, player: Node3D, to_player: Vector3, dist: float
 		around = player.global_position - to_player.normalized() * want
 	var move := around - global_position
 	move.y = 0.0
-	var speed: float = cfg.speed * (1.6 if dist > 10.0 else 1.0)
+	var speed: float = cfg.speed * (1.6 if dist > 10.0 else 1.0) * (1.25 if enraged else 1.0)
 	var dir: Vector3 = game.steer(self, global_position, around)
 	var target_vel := dir * speed if move.length() > 0.35 else Vector3.ZERO
 	# 遠くで長く迷子になったら、プレイヤーの近くの搬入口から入り直す
@@ -246,7 +285,7 @@ func _update_chase(delta: float, player: Node3D, to_player: Vector3, dist: float
 		_start_attack()
 		return
 	if cfg.has("special") and special_cd <= 0.0 and dist < 5.0:
-		special_cd = cfg.special_cd
+		special_cd = cfg.special_cd * (0.65 if enraged else 1.0)
 		_start_special()
 		return
 	var spd := Vector2(velocity.x, velocity.z).length()
@@ -272,9 +311,15 @@ func _start_special() -> void:
 	_play("addon/Attack_Ground_Pound", 0.1, 1.0)
 	anim.seek(0.0, true)
 	var length: float = anim.get_animation("addon/Attack_Ground_Pound").length
+	var radius: float = cfg.get("special_radius", 4.5)
 	get_tree().create_timer(length * 0.55).timeout.connect(func() -> void:
 		if state == State.ATTACK and is_inside_tree():
-			game.enemy_shockwave(global_position, 4.5, cfg.special_dmg))
+			game.enemy_shockwave(global_position, radius, cfg.special_dmg))
+	if enraged:
+		# 怒っているときは、少し遅れてもう一回り大きい地響き
+		get_tree().create_timer(length * 0.55 + 0.45).timeout.connect(func() -> void:
+			if state == State.ATTACK and is_inside_tree():
+				game.enemy_shockwave(global_position, radius * 1.4, cfg.special_dmg * 0.7))
 
 
 func _end_attack() -> void:

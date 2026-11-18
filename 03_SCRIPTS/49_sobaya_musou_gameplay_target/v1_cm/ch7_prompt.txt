@@ -1,0 +1,26 @@
+subject_definitions:
+<Subject 1> is the masked brawler in <Picture 1>, a hulking 180 cm, 100 kg man with a thick, heavy, muscular build, whose face is fully covered by a hard glossy white mask with TWO large round black eye holes that are completely dark inside, ONE short horizontal black mouth slit, glossy red vertical markings running above and below each eye hole exactly as in the reference, and ONE small black dot centered on the forehead; short spiky black hair sticks out above and behind the mask, his neck, ears, arms and hands are neutral gray, and he wears a plain white short-sleeve T-shirt, dark charcoal jeans and white sneakers. In his right hand he holds a large clear glass beer mug with a handle, full of amber beer under a white foam head.
+<Subject 2> is the office workers whose faces, ages and clothes come from the seven different people in <Picture 2>: white and light-blue shirts with ties, a light-blue blouse, a beige cardigan, a gray vest, a navy jacket, each with a blank white ID card on a blue neck strap; exactly three of them stand at the counter as customers, each holding the same kind of clear glass beer mug full of beer.
+<Subject 3> is the do-it-yourself window-side hangout corner of the 12th-floor office in <Picture 3>: floor-to-ceiling glass windows with slim metal mullions, a wide Tokyo cityscape with the red-and-white Tokyo Tower beyond, a warm wooden plank floor, a wooden Japanese standing-bar stall with a shingled roof, a chrome beer server and glass mugs on its counter, three dark-navy noren curtain panels and two round red paper lanterns, plus wooden beer barrels, a chair made of stacked cardboard boxes, a green dome tent, a black kettle grill, a red-brown sofa with tall speakers, a floor lamp and stacked cardboard boxes.
+<Audio 1> is the voice-timbre reference for <Subject 1> (S1).
+
+summary:
+[reference generation + audio reuse] At the little standing-bar stall of <Subject 3>, <Subject 1> raises his beer mug behind the counter and declares his line in the voice of <Audio 1>; the red lanterns light up and three office workers of <Subject 2> raise their mugs in a toast.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1]): fully_preserved - the white mask with its two round eye holes, single mouth slit, red markings and forehead dot, the spiky black hair, gray skin, heavy build, white T-shirt and the clear glass beer mug are retained.
+<Subject 2> (appears in [Shot 1]): weak_reference - only the faces and office clothes of three of the people, with blank ID cards, are taken from the lineup.
+<Subject 3> (appears in [Shot 1]): fully_preserved - the stall with its navy noren and red lanterns, the beer server, the window wall and Tokyo Tower stay the same.
+<Audio 1>: reference - only the voice timbre of <Subject 1> is taken from it; the line is newly performed in that voice.
+Only identity, clothing and design come from the pictures, never their poses, gray studio backgrounds or panel layouts.
+
+detailed_description:
+The target video is real-time 3D gameplay footage from a modern AAA console action game, rendered in the same high-end game-CG style as the reference sheets: physically based materials, global illumination, soft contact shadows, crisp specular highlights, subtle motion blur on fast swings, rich saturated colors. There is no HUD and no interface: no health bars, no counters, no icons. <Subject 1> appears EXACTLY ONCE and exactly three office workers of <Subject 2> appear; nobody else.
+[Shot 1] A medium shot at eye level facing the counter of the standing-bar stall of <Subject 3> in low golden morning light, Tokyo Tower beyond the window behind it. <Subject 1> stands behind the counter under the three navy noren panels. At 00:00.300, he raises his full beer mug high and <Subject 1> (S1) declares cheerfully in a deep, gravelly, monster-like voice whose timbre follows <Audio 1>, the voice coming from behind his mask, <d>[Japanese] 快適です！</d> The mouth slit of his mask never moves. Right after the line, the two round red paper lanterns light up with a warm glow and the noren sway gently. In front of the counter, the three office workers of <Subject 2>, seen from behind and the side, lift their mugs, and all four clink their mugs together in a toast, foam splashing. The shot ends on the raised mugs. The camera pushes in with small amplitude at slow speed.
+In every frame his mask stays a rigid white mask with two black eye holes and one unchanging mouth slit, never human eyes, eyelids, a nose or lips; his hair stays short, black and spiky and his skin stays neutral gray. There is no readable text anywhere: no letters on signs, banners, trucks, uniforms or screens, no logos, no subtitles or captions.
+
+overall_soundscape:
+A soft morning hush by the windows and the hum of the beer server, his booming cheerful voice, a gentle whoosh as the lanterns glow, the rustle of the noren, then the bright clink of four glass mugs, laughter and fizzing foam.
+
+non_diegetic_music:
+N/A

@@ -1,0 +1,71 @@
+{
+ "ch1_line1_sobaya_irodori_1.2x.wav": {
+  "file": "03_SCRIPTS/49_sobaya_musou_gameplay_target/ch1_line1_sobaya_irodori_1.2x.wav",
+  "char": "Sobaya",
+  "text": "ビールが…足りない…！",
+  "voice": "Irodori-TTS (Irodori-TTS-v4-Large, seed 42, speed 1.2x) + monsterize",
+  "dur": 2.11,
+  "cer": 0.0,
+  "sim": 0.439,
+  "asr": "ビールが足りない",
+  "flags": [
+   "声ズレ?",
+   "途中無音0.8s"
+  ]
+ },
+ "ch7_line1_sobaya_irodori_1.2x.wav": {
+  "file": "03_SCRIPTS/49_sobaya_musou_gameplay_target/ch7_line1_sobaya_irodori_1.2x.wav",
+  "char": "Sobaya",
+  "text": "快適です！",
+  "voice": "Irodori-TTS (Irodori-TTS-v4-Large, seed 42, speed 1.2x) + monsterize",
+  "dur": 1.03,
+  "cer": 0.0,
+  "sim": 0.709,
+  "asr": "快適です",
+  "flags": []
+ },
+ "ch1_line1_sobaya_voxcpm2.wav": {
+  "file": "03_SCRIPTS/49_sobaya_musou_gameplay_target/ch1_line1_sobaya_voxcpm2.wav",
+  "char": "Sobaya",
+  "text": "ビールが…足りない…！",
+  "voice": "VoxCPM2 (seed 42) + monsterize",
+  "dur": 2.3,
+  "cer": 0.0,
+  "sim": 0.624,
+  "asr": "ビールが足りない",
+  "flags": []
+ },
+ "ch7_line1_sobaya_voxcpm2.wav": {
+  "file": "03_SCRIPTS/49_sobaya_musou_gameplay_target/ch7_line1_sobaya_voxcpm2.wav",
+  "char": "Sobaya",
+  "text": "快適です！",
+  "voice": "VoxCPM2 (seed 42) + monsterize",
+  "dur": 1.28,
+  "cer": 0.0,
+  "sim": 0.535,
+  "asr": "快適です",
+  "flags": []
+ },
+ "ch1_line1_sobaya_qwen3.wav": {
+  "file": "03_SCRIPTS/49_sobaya_musou_gameplay_target/ch1_line1_sobaya_qwen3.wav",
+  "char": "Sobaya",
+  "text": "ビールが…足りない…！",
+  "voice": "Qwen3-TTS-1.7B (seed 42) + monsterize",
+  "dur": 1.68,
+  "cer": 0.0,
+  "sim": 0.718,
+  "asr": "ビールが足りない!",
+  "flags": []
+ },
+ "ch7_line1_sobaya_qwen3.wav": {
+  "file": "03_SCRIPTS/49_sobaya_musou_gameplay_target/ch7_line1_sobaya_qwen3.wav",
+  "char": "Sobaya",
+  "text": "快適です！",
+  "voice": "Qwen3-TTS-1.7B (seed 42) + monsterize",
+  "dur": 0.71,
+  "cer": 0.0,
+  "sim": 0.773,
+  "asr": "快適です",
+  "flags": []
+ }
+}

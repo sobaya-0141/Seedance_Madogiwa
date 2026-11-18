@@ -1,11 +1,18 @@
 extends Node3D
 ## そば屋無双 〜ビール工場強奪作戦〜
-## そば屋がビール工場に乗り込み、警備員・警察官をジョッキでなぎ倒しながら3エリアを突破して、
-## 製造ラインのできたてビールを奪う。攻撃はドタバタ表現（吹っ飛んで目を回し、床に沈んで退場）。
+## そば屋がジョッキで警備員・警察官をなぎ倒しながら進む無双系アクション。ステージは3つ:
+##   1. ビール工場（できたてビールを奪う） 2. 麻布十番駅→本社ビル（ビールを運ぶ） 3. 本社ビル（窓際の立ち飲み処に届ける）
+## 各ステージは3エリアに分かれ、ゲート（シャッター・規制線・ガラスの仕切り）で区切られている。
+## 攻撃はドタバタ表現（吹っ飛んで目を回し、床に沈んで退場）。
 
 const PlayerScript := preload("res://player.gd")
 const EnemyScript := preload("res://enemy.gd")
-const StageScript := preload("res://stage.gd")
+const MusouFx := preload("res://musou_fx.gd")
+const SlamFx := preload("res://slam_fx.gd")
+const IisanBoss := preload("res://iisan_boss.gd")
+## 4番目は隠しステージ（屋上ヘリポートの隠しボス・いーさん）。タイトルでは選べず、ステージ3をクリアすると WARNING の後に始まる
+const STAGES := [preload("res://stage_factory.gd"), preload("res://stage_street.gd"), preload("res://stage_office.gd"), preload("res://stage_secret.gd")]
+const NORMAL_STAGES := 3
 const AddonScene := preload("res://models/mannequin_addon.glb")
 const BaseScene := preload("res://models/mannequin_base.glb")
 
@@ -18,31 +25,62 @@ const CAMERA_HEIGHT := 4.6
 
 # 敵の種類。色は制服（頂点カラー）、cap/badge は帽子
 const ENEMY_TYPES := {
-	"guard": {"key": "guard", "hp": 40.0, "speed": 3.3, "dmg": 28.0, "attack_anim": "Punch_Jab", "attack_speed": 1.4, "attack_hit": 0.42, "range": 1.5,
+	"guard": {"key": "guard", "model": "factory_guard", "hp": 40.0, "speed": 3.3, "dmg": 28.0, "attack_anim": "Punch_Jab", "attack_speed": 1.4, "attack_hit": 0.42, "range": 1.5,
 		"shirt": Color(0.55, 0.7, 0.88), "pants": Color(0.22, 0.24, 0.28), "glove": Color(0.93, 0.8, 0.66), "cap": Color(0.3, 0.33, 0.4), "badge": Color(0.8, 0.82, 0.86)},
-	"police": {"key": "police", "hp": 70.0, "speed": 3.7, "dmg": 38.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.85, "attack_hit": 0.5, "range": 1.8, "baton": true, "tie": true,
+	"police": {"key": "police", "model": "police", "hp": 70.0, "speed": 3.7, "dmg": 38.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.85, "attack_hit": 0.5, "range": 1.8, "baton": true, "tie": true,
 		"shirt": Color(0.13, 0.19, 0.38), "pants": Color(0.1, 0.13, 0.26), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.1, 0.14, 0.3), "badge": Color(1.0, 0.8, 0.25)},
-	"captain": {"key": "captain", "title": "警備隊長", "hp": 650.0, "speed": 3.2, "dmg": 70.0, "attack_anim": "Melee_Hook", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.0, "scale": 1.25, "armor": true,
+	"captain": {"key": "captain", "model": "factory_guard", "title": "警備隊長", "hp": 850.0, "speed": 3.2, "dmg": 70.0, "attack_anim": "Melee_Hook", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.0, "scale": 1.25, "armor": true,
 		"shirt": Color(0.3, 0.42, 0.65), "pants": Color(0.15, 0.17, 0.22), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.15, 0.2, 0.35), "badge": Color(1.0, 0.8, 0.25)},
-	"sergeant": {"key": "sergeant", "title": "巡査部長", "hp": 900.0, "speed": 3.5, "dmg": 75.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.2, "scale": 1.25, "armor": true, "baton": true, "tie": true,
+	"sergeant": {"key": "sergeant", "model": "police", "title": "巡査部長", "hp": 1150.0, "speed": 3.5, "dmg": 75.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.2, "scale": 1.25, "armor": true, "baton": true, "tie": true,
 		"shirt": Color(0.1, 0.15, 0.32), "pants": Color(0.08, 0.1, 0.22), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.08, 0.11, 0.25), "badge": Color(1.0, 0.8, 0.25)},
-	"boss": {"key": "boss", "title": "警部", "hp": 2000.0, "speed": 3.4, "dmg": 85.0, "attack_anim": "Punch_Cross", "attack_speed": 0.9, "attack_hit": 0.45, "range": 2.4, "scale": 1.4, "armor": true, "tie": true,
-		"special": true, "special_cd": 6.0, "special_dmg": 90.0,
+	"boss": {"key": "boss", "model": "inspector", "title": "警部", "hp": 3200.0, "speed": 3.7, "dmg": 95.0, "attack_anim": "Punch_Cross", "attack_speed": 1.05, "attack_hit": 0.45, "range": 2.4, "scale": 1.4, "armor": true, "tie": true,
+		"special": true, "special_cd": 4.5, "special_dmg": 100.0, "special_radius": 5.5,
 		"shirt": Color(0.18, 0.16, 0.2), "pants": Color(0.12, 0.11, 0.14), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.1, 0.1, 0.12), "badge": Color(1.0, 0.85, 0.3)},
+	# ステージ2: 麻布十番
+	"motor": {"key": "motor", "model": "motor_police", "hp": 60.0, "speed": 4.1, "dmg": 34.0, "attack_anim": "Punch_Jab", "attack_speed": 1.35, "attack_hit": 0.42, "range": 1.5, "helmet": true,
+		"shirt": Color(0.55, 0.66, 0.86), "pants": Color(0.12, 0.15, 0.3), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.96, 0.96, 0.96), "badge": Color(1.0, 0.8, 0.25)},
+	"koban": {"key": "koban", "model": "police", "title": "交番所長", "hp": 900.0, "speed": 3.3, "dmg": 72.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.2, "scale": 1.25, "armor": true, "baton": true, "tie": true,
+		"shirt": Color(0.16, 0.22, 0.42), "pants": Color(0.1, 0.13, 0.26), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.1, 0.14, 0.3), "badge": Color(1.0, 0.8, 0.25)},
+	"motor_chief": {"key": "motor_chief", "model": "motor_police", "title": "白バイ隊長", "hp": 1200.0, "speed": 3.9, "dmg": 76.0, "attack_anim": "Melee_Hook", "attack_speed": 0.65, "attack_hit": 0.5, "range": 2.1, "scale": 1.25, "armor": true, "helmet": true,
+		"shirt": Color(0.5, 0.62, 0.85), "pants": Color(0.1, 0.13, 0.28), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.98, 0.98, 0.98), "badge": Color(1.0, 0.8, 0.25)},
+	"riot_chief": {"key": "riot_chief", "model": "riot_chief", "title": "機動隊長", "hp": 3500.0, "speed": 3.7, "dmg": 95.0, "attack_anim": "Punch_Cross", "attack_speed": 1.05, "attack_hit": 0.45, "range": 2.4, "scale": 1.4, "armor": true, "helmet": true,
+		"special": true, "special_cd": 4.2, "special_dmg": 100.0, "special_radius": 5.5,
+		"shirt": Color(0.2, 0.24, 0.3), "pants": Color(0.16, 0.19, 0.24), "glove": Color(0.2, 0.2, 0.22), "cap": Color(0.25, 0.3, 0.38), "badge": Color(1.0, 0.85, 0.3)},
+	# ステージ3: 本社ビルの警備隊（グレーの制服）
+	"bldg_guard": {"key": "bldg_guard", "model": "hq_guard", "hp": 55.0, "speed": 3.6, "dmg": 32.0, "attack_anim": "Punch_Jab", "attack_speed": 1.4, "attack_hit": 0.42, "range": 1.5, "tie": true,
+		"shirt": Color(0.46, 0.48, 0.53), "pants": Color(0.2, 0.21, 0.24), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.24, 0.25, 0.28), "badge": Color(0.85, 0.87, 0.9)},
+	"bldg_baton": {"key": "bldg_baton", "model": "hq_guard", "hp": 75.0, "speed": 3.8, "dmg": 40.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.85, "attack_hit": 0.5, "range": 1.8, "baton": true, "tie": true,
+		"shirt": Color(0.36, 0.38, 0.43), "pants": Color(0.17, 0.18, 0.21), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.2, 0.21, 0.24), "badge": Color(1.0, 0.8, 0.25)},
+	"lobby_chief": {"key": "lobby_chief", "model": "hq_guard", "title": "警備主任", "hp": 950.0, "speed": 3.3, "dmg": 72.0, "attack_anim": "Melee_Hook", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.0, "scale": 1.25, "armor": true, "tie": true,
+		"shirt": Color(0.4, 0.42, 0.48), "pants": Color(0.18, 0.19, 0.22), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.2, 0.21, 0.24), "badge": Color(1.0, 0.8, 0.25)},
+	"floor_chief": {"key": "floor_chief", "model": "hq_guard", "title": "警備課長", "hp": 1300.0, "speed": 3.5, "dmg": 78.0, "attack_anim": "Sword_Regular_A", "attack_speed": 0.6, "attack_hit": 0.5, "range": 2.2, "scale": 1.25, "armor": true, "baton": true, "tie": true,
+		"shirt": Color(0.3, 0.32, 0.37), "pants": Color(0.15, 0.16, 0.19), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.16, 0.17, 0.2), "badge": Color(1.0, 0.8, 0.25)},
+	# 隠しボス: 土下座王いーさん（iisan_boss.gd）。土下座の技は iisan_boss.gd に書いてある
+	"iisan": {"key": "iisan", "model": "iisan_dogeza", "title": "土下座王 いーさん", "hp": 7000.0, "speed": 3.4, "dmg": 100.0, "attack_anim": "Punch_Cross", "attack_speed": 1.05, "attack_hit": 0.45, "range": 2.4, "scale": 1.45, "armor": true, "boss_script": true},
+	"security_head": {"key": "security_head", "model": "security_head", "title": "警備本部長", "hp": 3800.0, "speed": 3.8, "dmg": 100.0, "attack_anim": "Punch_Cross", "attack_speed": 1.05, "attack_hit": 0.45, "range": 2.4, "scale": 1.4, "armor": true, "tie": true,
+		"special": true, "special_cd": 4.0, "special_dmg": 105.0, "special_radius": 6.0,
+		"shirt": Color(0.14, 0.15, 0.2), "pants": Color(0.1, 0.11, 0.14), "glove": Color(0.95, 0.95, 0.95), "cap": Color(0.1, 0.1, 0.13), "badge": Color(1.0, 0.85, 0.3)},
 }
 
-const ZONES := [
-	{"name": "正門ヤード", "z_far": -30.0, "z_near": 8.0, "quota": 30, "mix": {"guard": 1.0}, "captain": "captain", "captain_at": 14},
-	{"name": "倉庫", "z_far": -62.0, "z_near": -30.0, "quota": 45, "mix": {"guard": 0.45, "police": 0.55}, "captain": "sergeant", "captain_at": 22},
-	{"name": "製造ライン", "z_far": -98.0, "z_near": -62.0, "quota": 55, "mix": {"guard": 0.15, "police": 0.85}, "captain": "boss", "captain_at": 0},
-]
+# 戦いに加わらない人（通行人・一般社員）の服の色。ステージの bystanders から参照する
+const BYSTANDER_TYPES := {
+	"commuter_a": {"key": "commuter_a", "shirt": Color(0.75, 0.45, 0.3), "pants": Color(0.25, 0.25, 0.3), "glove": Color(0.93, 0.8, 0.66)},
+	"commuter_b": {"key": "commuter_b", "shirt": Color(0.35, 0.55, 0.45), "pants": Color(0.55, 0.5, 0.42), "glove": Color(0.93, 0.8, 0.66)},
+	"commuter_c": {"key": "commuter_c", "shirt": Color(0.85, 0.75, 0.4), "pants": Color(0.2, 0.22, 0.3), "glove": Color(0.93, 0.8, 0.66)},
+	"vendor": {"key": "vendor", "shirt": Color(0.95, 0.95, 0.93), "pants": Color(0.2, 0.2, 0.22), "glove": Color(0.93, 0.8, 0.66)},
+	"office_a": {"key": "office_a", "shirt": Color(0.93, 0.94, 0.96), "pants": Color(0.2, 0.22, 0.28), "glove": Color(0.93, 0.8, 0.66), "tie": true},
+	"office_b": {"key": "office_b", "shirt": Color(0.7, 0.8, 0.93), "pants": Color(0.25, 0.25, 0.3), "glove": Color(0.93, 0.8, 0.66), "tie": true},
+	"office_c": {"key": "office_c", "shirt": Color(0.92, 0.82, 0.84), "pants": Color(0.3, 0.27, 0.3), "glove": Color(0.93, 0.8, 0.66)},
+}
 
 const KO_LINES := {50: "快適です！", 100: "メリットでもあります！", 150: "ビールが呼んでいます！", 200: "まだまだいけます！"}
 
-enum Phase { TITLE, PLAY, WIN, LOSE }
+enum Phase { TITLE, PLAY, WIN, LOSE, WARNING }
 
 var phase := Phase.TITLE
-var stage: Node3D
+var stage: Node3D            # stage_base.gd を継承したステージ（エリア・寸法・文言もここから読む）
+var stage_index := 0
+var nav_region: NavigationRegion3D
 var player: Node3D
 var enemies: Array[Node3D] = []
 var tokens: Array[Node3D] = []
@@ -76,13 +114,12 @@ var jp_font: Font
 # FX
 var burst_pool: Array[CPUParticles3D] = []
 var burst_index := 0
-var musou_aura: CPUParticles3D
+var musou_fx: MusouFx
 
 # UI
 var hp_bar: ProgressBar
 var musou_bar: ProgressBar
 var musou_fill: StyleBoxFlat
-var musou_label: Label
 var ko_label: Label
 var time_label: Label
 var objective_label: Label
@@ -93,7 +130,16 @@ var boss_name: Label
 var boss_bar: ProgressBar
 var grab_bar: ProgressBar
 var damage_flash: ColorRect
+var warn_root: Control         # 隠しボスの前の WARNING 表示
+var warn_tint: ColorRect
+var warn_label: Label
+var sfx_warning: AudioStreamPlayer
+var sfx_boom: AudioStreamPlayer
 var title_panel: Control
+var title_head: Label
+var title_sub: Label
+var title_desc: Label
+var stage_label: Label
 var result_label: Label
 var speech: Label3D
 var speech_timer := 0.0
@@ -108,7 +154,11 @@ var bot_interact := false
 var nav_cache := {}
 var snap_frames: Array[int] = []
 var musou_test_frame := 0
+var bot_charge := false
+var secret_test := false
 var quit_after_end := -1.0     # 勝敗が決まってから終了するまでの秒数（動画撮影用）
+var ui_layer: CanvasLayer
+var view_index := -1           # 見た目の確認用: ステージの定点カメラ（stage.views）の番号。カメラをそこに固定する
 
 
 func _ready() -> void:
@@ -117,10 +167,6 @@ func _ready() -> void:
 	jp_font = load("res://fonts/MPLUSRounded1c-ExtraBold.ttf")
 	_setup_input()
 	_load_enemy_resources()
-	stage = StageScript.new()
-	add_child(stage)
-	stage.build(jp_font)
-	_build_navigation()
 	player = PlayerScript.new()
 	player.game = self
 	add_child(player)
@@ -130,7 +176,8 @@ func _ready() -> void:
 	_build_fx()
 	_build_ui()
 	_parse_debug_args()
-	_reset()
+	_load_stage(stage_index)
+	_show_title()
 	if auto_play:
 		_start_game()
 
@@ -151,6 +198,9 @@ func _setup_input() -> void:
 	_add_action("grab", [_key(KEY_F), _button(JOY_BUTTON_RIGHT_SHOULDER)])
 	_add_action("start", [_key(KEY_ENTER), _button(JOY_BUTTON_START)])
 	_add_action("restart", [_key(KEY_R), _button(JOY_BUTTON_BACK)])
+	_add_action("to_title", [_key(KEY_ESCAPE)])
+	_add_action("stage_prev", [_key(KEY_LEFT), _key(KEY_A), _button(JOY_BUTTON_DPAD_LEFT), _button(JOY_BUTTON_LEFT_SHOULDER)])
+	_add_action("stage_next", [_key(KEY_RIGHT), _key(KEY_D), _button(JOY_BUTTON_DPAD_RIGHT), _button(JOY_BUTTON_RIGHT_SHOULDER)])
 
 
 func _add_action(action: StringName, events: Array) -> void:
@@ -185,16 +235,26 @@ func _axis(axis: JoyAxis, value: float) -> InputEventJoypadMotion:
 	return ev
 
 
+var tripo_cache := {}
+
+
+## Tripo で作った敵の見た目（models/tripo/<名前>.glb → 04_GAME_ASSETS/models3d/tripo/）。動きはマネキンから retarget.gd で写す
+func tripo_scene(model_name: String) -> PackedScene:
+	if not tripo_cache.has(model_name):
+		tripo_cache[model_name] = load("res://models/tripo/%s.glb" % model_name)
+	return tripo_cache[model_name]
+
+
 func _load_enemy_resources() -> void:
 	var addon: Node = AddonScene.instantiate()
 	var addon_ap: AnimationPlayer = addon.find_children("*", "AnimationPlayer", true, false)[0]
 	addon_library = addon_ap.get_animation_library("")
 	addon.free()
-	for a: String in ["addon/Dizzy", "addon/Fighting Idle"]:
+	for a: String in ["addon/Dizzy", "addon/Fighting Idle", "addon/Idle_Subtle", "addon/Idle Listening"]:
 		addon_library.get_animation(a.trim_prefix("addon/")).loop_mode = Animation.LOOP_LINEAR
 	var base: Node = BaseScene.instantiate()
 	var base_ap: AnimationPlayer = base.find_children("*", "AnimationPlayer", true, false)[0]
-	for a: String in ["Walk", "Jog", "Idle_A"]:
+	for a: String in ["Walk", "Jog", "Idle_A", "Sitting_Idle", "Sitting_Talking", "Idle_Talking", "Idle_TalkingPhone", "Idle_FoldArms"]:
 		base_ap.get_animation(a).loop_mode = Animation.LOOP_LINEAR
 	base_mesh = (base.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D).mesh
 	base.free()
@@ -238,6 +298,8 @@ func _uniform_color(v: Vector3, cfg: Dictionary) -> Color:
 	if v.y < 0.99 and ax < 0.3:
 		return Color(0.08, 0.07, 0.06)                  # ベルト
 	if cfg.get("tie", false) and ax < 0.035 and v.z > 0.05 and v.y > 1.1 and v.y < 1.47:
+		if not cfg.has("cap"):
+			return Color(0.6, 0.15, 0.15)                # 一般社員のネクタイ
 		return Color(0.12, 0.1, 0.12)                    # ネクタイ
 	return cfg.shirt
 
@@ -269,35 +331,14 @@ func _build_fx() -> void:
 		p.scale_amount_max = 1.4
 		add_child(p)
 		burst_pool.append(p)
-	musou_aura = CPUParticles3D.new()
-	var gold := StandardMaterial3D.new()
-	gold.albedo_color = Color(1.0, 0.75, 0.2)
-	gold.emission_enabled = true
-	gold.emission = Color(1.0, 0.65, 0.1)
-	gold.emission_energy_multiplier = 2.5
-	var spark := SphereMesh.new()
-	spark.radius = 0.08
-	spark.height = 0.16
-	spark.material = gold
-	musou_aura.mesh = spark
-	musou_aura.amount = 120
-	musou_aura.lifetime = 0.6
-	musou_aura.emission_shape = CPUParticles3D.EMISSION_SHAPE_RING
-	musou_aura.emission_ring_axis = Vector3.UP
-	musou_aura.emission_ring_radius = 1.6
-	musou_aura.emission_ring_inner_radius = 0.8
-	musou_aura.emission_ring_height = 0.2
-	musou_aura.direction = Vector3.UP
-	musou_aura.initial_velocity_min = 2.0
-	musou_aura.initial_velocity_max = 5.0
-	musou_aura.gravity = Vector3(0, -3, 0)
-	musou_aura.emitting = false
-	player.add_child(musou_aura)
-	musou_aura.position.y = 0.6
+	# ビール無双の演出（ビールの渦・光の輪・しぶき・泡。musou_fx.gd）
+	musou_fx = MusouFx.new()
+	player.add_child(musou_fx)
 
 
 func _build_ui() -> void:
 	var layer := CanvasLayer.new()
+	ui_layer = layer
 	add_child(layer)
 	var root := Control.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -322,10 +363,8 @@ func _build_ui() -> void:
 	var name_l := _label("そば屋", 26, Color(1.0, 0.9, 0.6))
 	vb.add_child(name_l)
 	hp_bar = _bar(vb, "体力", Color(0.35, 0.85, 0.35), 320)
-	musou_bar = _bar(vb, "無双", Color(1.0, 0.7, 0.15), 320)
+	musou_bar = _bar(vb, "必殺", Color(1.0, 0.7, 0.15), 320)
 	musou_fill = musou_bar.get_theme_stylebox("fill") as StyleBoxFlat
-	musou_label = _label("", 18, Color(1.0, 0.85, 0.4))
-	vb.add_child(musou_label)
 
 	# 右上: 撃破数・時間
 	var rp := _panel(root, Vector2.ZERO)
@@ -391,7 +430,7 @@ func _build_ui() -> void:
 	grab_bar.visible = false
 	root.add_child(grab_bar)
 
-	var hint := _label("移動 WASD　攻撃 J/左クリック　チャージ K/右クリック　無双 L　回避 Space　奪う F　カメラ Q/E　（パッド: □攻撃 △チャージ ○無双 ×回避）", 16, Color(1, 1, 1, 0.85))
+	var hint := _label("移動 WASD　攻撃 J/左クリック　チャージ K/右クリック　必殺 L　回避 Space　ゴール F長押し　カメラ Q/E　（パッド: □攻撃 △チャージ ○必殺 ×回避 R1ゴール）", 16, Color(1, 1, 1, 0.85))
 	hint.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	hint.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	hint.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -410,19 +449,25 @@ func _build_ui() -> void:
 	tvb.grow_vertical = Control.GROW_DIRECTION_BOTH
 	tvb.add_theme_constant_override("separation", 18)
 	title_panel.add_child(tvb)
-	var t1 := _label("そば屋無双", 110, Color(1.0, 0.8, 0.25))
-	t1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_outline(t1, 24)
-	tvb.add_child(t1)
-	var t2 := _label("〜ビール工場強奪作戦〜　体験版", 44, Color(1, 1, 1))
-	t2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tvb.add_child(t2)
-	var t3 := _label("ビールが足りない。ならば工場から直接いただくまで。\n警備員と警察官をジョッキでなぎ倒し、製造ラインのできたてビールを奪え！", 24, Color(0.9, 0.9, 0.9))
-	t3.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tvb.add_child(t3)
-	result_label = _label("Enter / Start でスタート", 30, Color(1.0, 0.9, 0.5))
+	title_head = _label("", 110, Color(1.0, 0.8, 0.25))
+	title_head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_outline(title_head, 24)
+	tvb.add_child(title_head)
+	title_sub = _label("", 44, Color(1, 1, 1))
+	title_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tvb.add_child(title_sub)
+	stage_label = _label("", 40, Color(1.0, 0.9, 0.55))
+	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_outline(stage_label, 10)
+	tvb.add_child(stage_label)
+	title_desc = _label("", 24, Color(0.9, 0.9, 0.9))
+	title_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tvb.add_child(title_desc)
+	result_label = _label("", 30, Color(1.0, 0.9, 0.5))
 	result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tvb.add_child(result_label)
+
+	_build_warning(root)
 
 	speech = Label3D.new()
 	speech.font = jp_font
@@ -435,6 +480,101 @@ func _build_ui() -> void:
 	speech.render_priority = 10
 	speech.visible = false
 	add_child(speech)
+
+
+## 隠しボスの前の WARNING: 赤く明滅する画面、上下を流れる警告帯、点滅する「WARNING」と警告音
+func _build_warning(root: Control) -> void:
+	warn_root = Control.new()
+	warn_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	warn_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	warn_root.visible = false
+	root.add_child(warn_root)
+	warn_tint = ColorRect.new()
+	warn_tint.set_anchors_preset(Control.PRESET_FULL_RECT)
+	warn_tint.color = Color(0.6, 0.0, 0.0, 0.3)
+	warn_tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	warn_root.add_child(warn_tint)
+	var band_shader := Shader.new()
+	band_shader.code = """
+shader_type canvas_item;
+uniform float dir = 1.0;
+void fragment() {
+	// 赤と黒の斜めの縞が横へ流れる警告帯
+	float s = step(0.5, fract((UV.x * 18.0 + UV.y * 1.5) + TIME * 1.2 * dir));
+	vec3 col = mix(vec3(0.05, 0.0, 0.0), vec3(0.85, 0.05, 0.03), s);
+	float edge = step(0.92, abs(UV.y - 0.5) * 2.0);
+	COLOR = vec4(mix(col, vec3(1.0, 0.75, 0.1), edge), 0.92);
+}
+"""
+	for i in 2:
+		var band := ColorRect.new()
+		band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		band.anchor_left = 0.0
+		band.anchor_right = 1.0
+		band.anchor_top = 0.18 if i == 0 else 0.72
+		band.anchor_bottom = band.anchor_top + 0.1
+		var bm := ShaderMaterial.new()
+		bm.shader = band_shader
+		bm.set_shader_parameter("dir", 1.0 if i == 0 else -1.0)
+		band.material = bm
+		warn_root.add_child(band)
+	warn_label = _label("WARNING", 190, Color(1.0, 0.12, 0.08))
+	warn_label.set_anchors_preset(Control.PRESET_CENTER)
+	warn_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	warn_label.grow_vertical = Control.GROW_DIRECTION_BOTH
+	warn_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	warn_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	warn_label.add_theme_color_override("font_outline_color", Color(1.0, 0.95, 0.85))
+	warn_label.add_theme_constant_override("outline_size", 18)
+	warn_root.add_child(warn_label)
+	var sub := _label("土下座王が 接近中", 40, Color(1.0, 0.9, 0.8))
+	sub.anchor_left = 0.0
+	sub.anchor_right = 1.0
+	sub.anchor_top = 0.62
+	sub.anchor_bottom = 0.68
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_outline(sub, 12)
+	warn_root.add_child(sub)
+	sfx_warning = AudioStreamPlayer.new()
+	sfx_warning.stream = load("res://sounds/warning.wav")
+	sfx_warning.volume_db = -4.0
+	add_child(sfx_warning)
+	sfx_boom = AudioStreamPlayer.new()
+	sfx_boom.stream = load("res://sounds/boom.wav")
+	sfx_boom.volume_db = -2.0
+	sfx_boom.max_polyphony = 4
+	add_child(sfx_boom)
+
+
+func _update_warning() -> void:
+	if not warn_root.visible:
+		return
+	var k := 0.5 + 0.5 * sin(t * 10.5)
+	warn_tint.color.a = 0.18 + 0.22 * k
+	warn_label.modulate.a = 1.0 if fmod(t, 0.6) < 0.42 else 0.25
+	warn_label.scale = Vector2.ONE * (1.0 + 0.03 * k)
+	warn_label.pivot_offset = warn_label.size * 0.5
+
+
+## ステージ3のクリア後: WARNING（警告音）を出してから、隠しステージの屋上でいーさんと対決する
+func _secret_sequence() -> void:
+	await get_tree().create_timer(2.6).timeout
+	if phase != Phase.WIN:
+		return
+	phase = Phase.WARNING
+	title_panel.visible = false
+	if auto_play:
+		print("WARNING at frame %d" % frame_count)
+	banner_label.text = ""
+	warn_root.visible = true
+	sfx_warning.play()
+	shake = maxf(shake, 0.3)
+	await get_tree().create_timer(3.8).timeout
+	warn_root.visible = false
+	if phase != Phase.WARNING:
+		return
+	_load_stage(NORMAL_STAGES)
+	_start_game()
 
 
 func _panel(parent: Control, pos: Vector2) -> PanelContainer:
@@ -494,15 +634,66 @@ func _make_bar(color: Color, width: int) -> ProgressBar:
 
 # ---------------------------------------------------------------- 進行
 
-func _reset() -> void:
+## ステージを作り直す（タイトルでの選択・次のステージへ進むとき）
+func _load_stage(i: int) -> void:
+	_clear_actors()
+	stage_index = i
+	if stage:
+		stage.free()
+	stage = STAGES[i].new()
+	add_child(stage)
+	stage.build(jp_font)
+	_spawn_bystanders()
+	_preload_enemy_models()
+	_build_navigation()
+	# 強攻撃の演出を、ステージの開始時に画面の外（床の下）で一度だけ出しておく。
+	# 初めて使うシェーダーの準備で、最初の叩きつけの瞬間にカクつくのを防ぐ
+	var warm := SlamFx.new()
+	warm.position = Vector3(0.0, -40.0, stage.start_z)
+	stage.add_child(warm)
+	_reset()
+
+
+func _clear_actors() -> void:
 	for e in enemies:
 		e.queue_free()
 	enemies.clear()
 	tokens.clear()
+	nav_cache.clear()
 	for p in pickups:
 		p.node.queue_free()
 	pickups.clear()
-	player.reset(Vector3(0.0, 0.0, 4.0))
+
+
+## このステージに出る敵の Tripo モデルを先に読み込む（最初の1体が出た瞬間に読み込みで止まらないように）
+func _preload_enemy_models() -> void:
+	for z: Dictionary in stage.zones:
+		for k: String in z.mix.keys() + [z.captain]:
+			var cfg: Dictionary = ENEMY_TYPES[k]
+			if cfg.has("model"):
+				tripo_scene(cfg.model)
+
+
+## 通行人・一般社員（戦いに加わらず、騒ぎにも動じない）。ステージの子にして、作り直すときに一緒に消す
+func _spawn_bystanders() -> void:
+	for b: Dictionary in stage.bystanders:
+		var cfg: Dictionary = BYSTANDER_TYPES[b.cfg]
+		var m: Node3D = BaseScene.instantiate()
+		var mi: MeshInstance3D = m.find_children("*", "MeshInstance3D", true, false)[0]
+		mi.mesh = uniform_mesh(cfg)
+		mi.material_override = uniform_material
+		var ap: AnimationPlayer = m.find_children("*", "AnimationPlayer", true, false)[0]
+		ap.add_animation_library("addon", addon_library)
+		ap.play(b.anim)
+		ap.seek(randf() * ap.current_animation_length, true)
+		m.position = b.pos
+		m.rotation.y = b.yaw
+		stage.add_child(m)
+
+
+func _reset() -> void:
+	_clear_actors()
+	player.reset(Vector3(0.0, 0.0, stage.start_z - 4.0))
 	stage.close_all()
 	stage.light_goal(false)
 	zone = 0
@@ -527,8 +718,35 @@ func _start_game() -> void:
 	_reset()
 	phase = Phase.PLAY
 	title_panel.visible = false
-	_banner(ZONES[0].name, 2.0)
-	_say("ビールが…足りない…！", 2.5)
+	if stage_index >= NORMAL_STAGES:
+		_banner("SECRET STAGE　%s" % stage.zones[0].name, 2.4)
+	else:
+		_banner("STAGE %d　%s" % [stage_index + 1, stage.zones[0].name], 2.0)
+	_say(stage.start_line, 2.5)
+
+
+func _show_title() -> void:
+	phase = Phase.TITLE
+	title_panel.visible = true
+	(title_panel as ColorRect).color.a = 0.72
+	title_head.text = "そば屋無双"
+	title_head.add_theme_color_override("font_color", Color(1.0, 0.8, 0.25))
+	title_head.add_theme_font_size_override("font_size", 110)
+	title_sub.text = "〜ビール工場強奪作戦〜　体験版"
+	_update_stage_label()
+	result_label.text = "← → でステージ選択　Enter / Start でスタート"
+	banner_label.text = ""
+	speech.visible = false
+
+
+func _update_stage_label() -> void:
+	stage_label.text = "◀　STAGE %d / %d　%s　▶" % [stage_index + 1, NORMAL_STAGES, stage.stage_title]
+	title_desc.text = stage.stage_tagline
+
+
+func _select_stage(step: int) -> void:
+	_load_stage(wrapi(stage_index + step, 0, NORMAL_STAGES))
+	_update_stage_label()
 
 
 func _process(raw_delta: float) -> void:
@@ -538,7 +756,24 @@ func _process(raw_delta: float) -> void:
 	if phase == Phase.TITLE:
 		if Input.is_action_just_pressed("start") or Input.is_action_just_pressed("attack"):
 			_start_game()
-	elif Input.is_action_just_pressed("restart") or (phase != Phase.PLAY and Input.is_action_just_pressed("start")):
+		elif Input.is_action_just_pressed("stage_prev"):
+			_select_stage(-1)
+		elif Input.is_action_just_pressed("stage_next"):
+			_select_stage(1)
+	elif Input.is_action_just_pressed("to_title"):
+		_show_title()
+		_reset()
+	elif Input.is_action_just_pressed("restart"):
+		_start_game()
+	elif phase == Phase.WIN and Input.is_action_just_pressed("start") and stage_index != NORMAL_STAGES - 1:
+		# 次のステージへ（最後のステージならタイトルへ）
+		if stage_index + 1 < NORMAL_STAGES:
+			_load_stage(stage_index + 1)
+			_start_game()
+		else:
+			_load_stage(0)
+			_show_title()
+	elif phase == Phase.LOSE and Input.is_action_just_pressed("start"):
 		_start_game()
 
 	if phase == Phase.PLAY:
@@ -555,6 +790,7 @@ func _process(raw_delta: float) -> void:
 	stage.update(delta)
 	_update_camera(delta)
 	_update_ui(delta)
+	_update_warning()
 	_debug(delta)
 
 
@@ -577,14 +813,14 @@ func _handle_player_input() -> void:
 
 func _try_musou() -> void:
 	if player.press_musou():
-		_banner("ビール無双！", 1.4)
-		_say("快適ですっ！！", 1.6)
-		musou_aura.emitting = true
-		get_tree().create_timer(PlayerScript.MUSOU_TIME + 0.3).timeout.connect(func() -> void: musou_aura.emitting = false)
+		if auto_play:
+			print("musou used at frame %d stage=%d" % [frame_count, stage_index + 1])
+		musou_fx.start()
+		get_tree().create_timer(PlayerScript.MUSOU_TIME).timeout.connect(func() -> void: musou_fx.finale())
 
 
 func _update_zone(delta: float) -> void:
-	var z: Dictionary = ZONES[zone]
+	var z: Dictionary = stage.zones[zone]
 	if not zone_active:
 		# 前のエリアのシャッターをくぐったら次の敵が出始める
 		if player.position.z < z.z_near - 1.0 or zone == 0:
@@ -598,7 +834,9 @@ func _update_zone(delta: float) -> void:
 	# 出現
 	spawn_timer -= delta
 	var alive := _alive_count()
-	if spawn_timer <= 0.0 and zone_spawned < z.quota and alive < MAX_ACTIVE and not goal_open:
+	# 雑魚は隊長（最後のエリアはボス）を倒すまで出続ける
+	var captain_down: bool = captain_spawned and (captain == null or not is_instance_valid(captain) or not captain.is_alive())
+	if spawn_timer <= 0.0 and not captain_down and alive < MAX_ACTIVE and not goal_open and not z.mix.is_empty():
 		spawn_timer = SPAWN_INTERVAL
 		_spawn(_pick_type(z.mix), z)
 		zone_spawned += 1
@@ -606,23 +844,28 @@ func _update_zone(delta: float) -> void:
 		captain_spawned = true
 		captain = _spawn(z.captain, z, true)
 		_banner(ENEMY_TYPES[z.captain].title + " 出現！", 1.8)
-	# 制圧判定
-	var captain_down: bool = captain_spawned and (captain == null or not is_instance_valid(captain) or not captain.is_alive())
-	if zone < ZONES.size() - 1:
-		if captain_down and zone_spawned >= z.quota and alive == 0:
-			stage.open_shutter(zone)
+	# 制圧判定: 隊長を倒したら、残りの雑魚はまとめて吹っ飛んで退場し、次のエリアへのゲートが開く
+	if captain_down and alive > 0:
+		_rout_minions()
+	if zone < stage.zones.size() - 1:
+		if captain_down:
+			stage.open_gate(zone)
 			_banner(z.name + " 制圧！", 2.0)
 			_say("次です！", 1.5)
 			zone += 1
 			zone_active = false
+	elif captain_down and stage.get("win_on_boss"):
+		# 隠しステージ: ボスを倒したらそのままクリア
+		_win()
+		return
 	elif captain_down and not goal_open:
 		goal_open = true
 		stage.light_goal(true)
-		_banner("警部 撃破！", 2.0)
-		_say("ビールは目の前です！", 2.0)
+		_banner(stage.goal_banner, 2.0)
+		_say(stage.goal_line, 2.0)
 
 	if goal_open:
-		var near := player.position.distance_to(StageScript.GOAL_POS) < 3.8
+		var near := player.position.distance_to(stage.goal_pos) < 3.8
 		var holding := Input.is_action_pressed("grab") or bot_interact
 		grab_bar.visible = near
 		if near and holding:
@@ -632,6 +875,21 @@ func _update_zone(delta: float) -> void:
 		else:
 			grab_t = maxf(grab_t - delta * 2.0, 0.0)
 		grab_bar.value = grab_t / GRAB_TIME
+
+
+## 隊長・ボスが倒れたとき: 残っている雑魚を、そば屋から外向きに一斉に吹き飛ばす（目を回して退場。撃破数にも数える）
+func _rout_minions() -> void:
+	for e in enemies:
+		if not is_instance_valid(e) or not e.is_alive():
+			continue
+		var d: Vector3 = e.global_position - player.global_position
+		d.y = 0.0
+		var dir := d.normalized() if d.length() > 0.05 else Vector3.FORWARD
+		e.take_hit(99999.0, dir, 9.0, 8.0)
+		_burst(e.global_position + Vector3(0.0, 1.2, 0.0))
+		_on_ko(e)
+	_shockwave(Vector3(player.position.x, 0.05, player.position.z), 9.0)
+	shake = maxf(shake, 0.4)
 
 
 func _pick_type(mix: Dictionary) -> String:
@@ -644,22 +902,16 @@ func _pick_type(mix: Dictionary) -> String:
 
 
 func _spawn(type: String, z: Dictionary, near_player := false) -> Node3D:
-	var e := EnemyScript.new()
+	var e: Node3D = (IisanBoss if ENEMY_TYPES[type].get("boss_script", false) else EnemyScript).new()
 	var pos: Vector3
 	if near_player:
-		# 隊長・警部はプレイヤーの前方に現れる
+		# 隊長はプレイヤーの前方に、最後のエリアのボスはゴールの前に現れる
 		var zc: float = clampf(player.position.z - 7.0, z.z_far + 3.0, z.z_near - 3.0)
-		pos = Vector3(clampf(player.position.x, -8.0, 8.0), 0.0, zc)
-		if type == "boss":
-			pos = StageScript.GOAL_POS + Vector3(0.0, 0.0, 4.0)
+		pos = stage.free_point(Vector3(clampf(player.position.x, -8.0, 8.0), 0.0, zc))
+		if zone == stage.zones.size() - 1:
+			pos = stage.goal_pos + Vector3(0.0, 0.0, 4.0)
 	else:
-		# 左右の壁際の搬入口から走り込んでくる
-		var side := -1.0 if randf() < 0.5 else 1.0
-		var zz := randf_range(z.z_far + 2.0, z.z_near - 2.0)
-		pos = Vector3(side * 12.6, 0.0, zz)
-		if zone == 2:
-			pos.x = side * randf_range(1.0, 3.0)
-			pos.z = randf_range(z.z_far + 6.0, z.z_far + 12.0)
+		pos = stage.spawn_point(zone, z)
 	e.setup(self, ENEMY_TYPES[type], pos)
 	add_child(e)
 	enemies.append(e)
@@ -670,9 +922,7 @@ func _spawn(type: String, z: Dictionary, near_player := false) -> Node3D:
 
 
 func respawn_near_player(e: Node3D) -> void:
-	var side := -1.0 if player.position.x > 0.0 else 1.0
-	var z: Dictionary = ZONES[zone]
-	e.position = Vector3(side * 12.6, 0.0, clampf(player.position.z - 4.0, z.z_far + 2.0, z.z_near - 2.0))
+	e.position = stage.respawn_point(player.position, stage.zones[zone])
 
 
 func _alive_count() -> int:
@@ -687,12 +937,15 @@ func _win() -> void:
 	phase = Phase.WIN
 	grab_bar.visible = false
 	player.win()
-	_banner("できたてビール、確保！", 999.0)
+	_banner(stage.win_banner, 999.0)
 	_say("快適です！", 3.0)
 	for e in enemies:
 		if e.is_alive():
 			e.take_hit(9999.0, (e.global_position - player.global_position).normalized(), 12.0, 10.0)
-	_show_result("ビール工場 制圧完了", Color(1.0, 0.85, 0.35))
+	if stage_index == NORMAL_STAGES - 1:
+		_secret_sequence()   # 本当の最後はまだ先
+	else:
+		_show_result(stage.win_result, Color(1.0, 0.85, 0.35))
 
 
 func _lose() -> void:
@@ -708,12 +961,23 @@ func _show_result(head: String, color: Color) -> void:
 		return
 	title_panel.visible = true
 	(title_panel as ColorRect).color.a = 0.4   # 後ろで踊るそば屋が見えるよう薄く
-	(title_panel.get_child(0).get_child(0) as Label).text = head
-	(title_panel.get_child(0).get_child(0) as Label).add_theme_color_override("font_color", color)
-	(title_panel.get_child(0).get_child(0) as Label).add_theme_font_size_override("font_size", 72)
-	(title_panel.get_child(0).get_child(1) as Label).text = "撃破数 %d　最大コンボ %d HIT　タイム %s" % [ko_total, max_combo, _fmt_time(play_time)]
-	(title_panel.get_child(0).get_child(2) as Label).text = ""
-	result_label.text = "Enter / Start でもう一度"
+	title_head.text = head
+	title_head.add_theme_color_override("font_color", color)
+	title_head.add_theme_font_size_override("font_size", 72)
+	title_sub.text = "撃破数 %d　最大コンボ %d HIT　タイム %s" % [ko_total, max_combo, _fmt_time(play_time)]
+	stage_label.text = "STAGE %d　%s" % [stage_index + 1, stage.stage_title]
+	title_desc.text = ""
+	if phase == Phase.LOSE:
+		result_label.text = "Enter / Start でもう一度　Esc でタイトルへ"
+	elif stage_index + 1 < NORMAL_STAGES:
+		result_label.text = "Enter / Start で次のステージへ　R でもう一度　Esc でタイトルへ"
+	elif stage_index >= NORMAL_STAGES:
+		stage_label.text = "SECRET STAGE　%s" % stage.stage_title
+		title_desc.text = "隠しボス撃破！ 完全制覇！ 窓際の立ち飲み処、本日も営業中です！"
+		result_label.text = "Enter / Start でタイトルへ　R でもう一度"
+	else:
+		title_desc.text = "全ステージクリア！ 窓際の立ち飲み処、本日も営業中です！"
+		result_label.text = "Enter / Start でタイトルへ　R でもう一度"
 	banner_label.text = ""
 
 
@@ -786,6 +1050,47 @@ func damage_player(dmg: float, from: Vector3) -> void:
 			_lose()
 
 
+## いーさんの土下座の着地: 地響き（範囲の中はダメージ）・ひび割れの演出・低い「ドーン」・大きな画面の揺れ
+func dogeza_impact(pos: Vector3, radius: float, dmg: float) -> void:
+	var fx := SlamFx.new()
+	fx.position = Vector3(pos.x, 0.0, pos.z)
+	add_child(fx)
+	_shockwave(Vector3(pos.x, 0.05, pos.z), radius, Color(1.0, 0.25, 0.1))
+	sfx_boom.play()
+	shake = maxf(shake, 0.85)
+	landing_dust(pos)
+	var d := player.global_position - pos
+	d.y = 0.0
+	if d.length() < radius:
+		damage_player(dmg, pos)
+
+
+## いーさんの連続土下座の衝撃波: 外へ広がる輪。輪の線（外周の帯）がそば屋のいる所を通る瞬間に当たる
+func dogeza_ring(pos: Vector3, radius: float, dmg: float) -> void:
+	var expand := 0.45
+	_shockwave(Vector3(pos.x, 0.05, pos.z), radius, Color(1.0, 0.3, 0.15))
+	sfx_boom.play()
+	shake = maxf(shake, 0.35)
+	var d := player.global_position - pos
+	d.y = 0.0
+	var dist := d.length()
+	if dist > radius + 0.4:
+		return
+	var delay := expand * clampf(dist / radius, 0.0, 1.0)
+	get_tree().create_timer(delay).timeout.connect(func() -> void:
+		var d2 := player.global_position - pos
+		d2.y = 0.0
+		var r_now := radius * clampf(delay / expand, 0.0, 1.0)
+		if absf(d2.length() - r_now) < 1.3:
+			damage_player(dmg, pos))
+
+
+func boss_enraged(_e: Node3D) -> void:
+	_banner("いーさん 本気の土下座！", 2.0)
+	shake = maxf(shake, 0.6)
+	sfx_boom.play()
+
+
 func enemy_shockwave(pos: Vector3, radius: float, dmg: float) -> void:
 	_shockwave(Vector3(pos.x, 0.05, pos.z), radius, Color(1.0, 0.4, 0.2))
 	shake = maxf(shake, 0.4)
@@ -823,9 +1128,9 @@ func landing_dust(pos: Vector3) -> void:
 
 func _collide(n: Node3D, radius: float) -> void:
 	var p := n.position
-	var z_far: float = ZONES[zone].z_far + 0.8   # 閉じているシャッター（最後のエリアは奥の壁）
-	p.x = clampf(p.x, -StageScript.HALF_WIDTH + 0.8, StageScript.HALF_WIDTH - 0.8)
-	p.z = clampf(p.z, z_far, StageScript.START_Z)
+	var z_far: float = stage.zones[zone].z_far + 0.8   # 閉じているシャッター（最後のエリアは奥の壁）
+	p.x = clampf(p.x, -stage.half_width + 0.8, stage.half_width - 0.8)
+	p.z = clampf(p.z, z_far, stage.start_z)
 	for r: Rect2 in stage.obstacles:
 		var g := r.grow(radius)
 		if p.x > g.position.x and p.x < g.end.x and p.z > g.position.y and p.z < g.end.y:
@@ -870,9 +1175,9 @@ func _build_navigation() -> void:
 	nm.cell_size = 0.25
 	nm.cell_height = 0.25
 	var faces := PackedVector3Array()
-	var w := StageScript.HALF_WIDTH - 0.3
-	var z0 := StageScript.START_Z + 0.5
-	var z1 := StageScript.END_Z
+	var w: float = stage.half_width - 0.3
+	var z0: float = stage.start_z + 0.5
+	var z1: float = stage.end_z
 	# Godot の面は時計回りが表（上から見て時計回り＝上向き）
 	faces.append_array([Vector3(-w, 0, z0), Vector3(w, 0, z1), Vector3(w, 0, z0), Vector3(-w, 0, z0), Vector3(-w, 0, z1), Vector3(w, 0, z1)])
 	for r: Rect2 in stage.obstacles:
@@ -882,9 +1187,10 @@ func _build_navigation() -> void:
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	if OS.get_cmdline_user_args().has("--auto"):
 		print("navmesh polygons=", nm.get_polygon_count())
-	var region := NavigationRegion3D.new()
-	region.navigation_mesh = nm
-	add_child(region)
+	if nav_region == null:
+		nav_region = NavigationRegion3D.new()
+		add_child(nav_region)
+	nav_region.navigation_mesh = nm
 
 
 func _box_faces(r: Rect2, h: float) -> PackedVector3Array:
@@ -936,11 +1242,11 @@ func _update_pickups(delta: float) -> void:
 		if phase == Phase.PLAY and node.position.distance_to(player.position + Vector3(0, 0.5, 0)) < 1.4:
 			if p.kind == "jug":
 				player.heal(player.MAX_HP * 0.5)
-				player.add_musou(100.0)
+				player.add_musou(50.0)
 				_say("大ジョッキ！ 快適です！", 1.6)
 			else:
 				player.heal(150.0)
-				player.add_musou(25.0)
+				player.add_musou(10.0)
 				_say("うまい！", 1.0)
 			_burst(node.position)
 			node.queue_free()
@@ -983,6 +1289,16 @@ func _next_burst() -> CPUParticles3D:
 	return p
 
 
+## 強攻撃でジョッキを地面に叩きつけた瞬間: 閃光・地面のひび割れ・衝撃波・ビールの王冠しぶき・泡の柱・土煙・破片（slam_fx.gd）
+## と、短いヒットストップ・強めの画面の揺れ
+func slam_impact(pos: Vector3) -> void:
+	var fx := SlamFx.new()
+	fx.position = Vector3(pos.x, 0.0, pos.z)
+	add_child(fx)
+	_hitstop(0.07)
+	shake = maxf(shake, 0.7)
+
+
 func _burst(pos: Vector3) -> void:
 	var p := _next_burst()
 	p.position = pos
@@ -1022,7 +1338,13 @@ func _banner(text: String, duration: float) -> void:
 	create_tween().tween_property(banner_label, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK)
 
 
+## そば屋のセリフ（「快適です！」など）。画面に文字を出さない設定（SHOW_SPEECH = false）にしてある
+const SHOW_SPEECH := false
+
+
 func _say(text: String, duration: float) -> void:
+	if not SHOW_SPEECH:
+		return
 	speech.text = text
 	speech.visible = true
 	speech_timer = duration
@@ -1034,6 +1356,9 @@ func _update_camera(delta: float) -> void:
 	var target := player.position + back + Vector3(0.0, CAMERA_HEIGHT, 0.0)
 	if phase == Phase.WIN:
 		target = player.position + Vector3(0.0, 2.2, 4.5).rotated(Vector3.UP, cam_yaw)
+	var cx: float = stage.half_width - stage.camera_wall_margin
+	target.x = clampf(target.x, -cx, cx)
+	target.z = minf(target.z, stage.start_z + 1.0)   # スタート地点の門・駅の屋根より後ろへ下がらない
 	# 棚やタンクがそば屋との間に入ったら、遮られない位置までカメラを寄せる
 	var focus := player.position + Vector3(0.0, 1.2, 0.0)
 	var steps := 24
@@ -1044,6 +1369,11 @@ func _update_camera(delta: float) -> void:
 			break
 	camera.position = camera.position.lerp(target, 1.0 - exp(-delta * 6.0))
 	camera.look_at(player.position + Vector3(0.0, 1.2, 0.0), Vector3.UP)
+	if view_index >= 0:
+		var v: Array = stage.views[view_index]
+		camera.position = v[0]
+		camera.look_at(v[1], Vector3.UP)
+		return
 	if shake > 0.0:
 		camera.position += Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1)) * shake * 0.35
 		shake = maxf(shake - delta * 1.6, 0.0)
@@ -1054,7 +1384,6 @@ func _update_ui(delta: float) -> void:
 	musou_bar.value = player.musou / player.MUSOU_MAX
 	var ready: bool = player.is_musou_ready()
 	musou_fill.bg_color = Color(1.0, 0.85, 0.3).lerp(Color(1.0, 0.45, 0.1), 0.5 + 0.5 * sin(t * 8.0)) if ready else Color(1.0, 0.7, 0.15)
-	musou_label.text = "無双乱舞 準備OK！（L / ○）" if ready else "ジョッキのビール＝無双ゲージ"
 	ko_label.text = "撃破 %d" % ko_total
 	time_label.text = _fmt_time(play_time)
 	combo_timer -= delta
@@ -1062,14 +1391,17 @@ func _update_ui(delta: float) -> void:
 		combo = 0
 	combo_label.text = ("%d HIT" % combo) if combo >= 3 else ""
 	if phase == Phase.PLAY:
-		var z: Dictionary = ZONES[zone]
+		var z: Dictionary = stage.zones[zone]
 		if goal_open:
-			objective_label.text = "製造ラインのできたてビールを奪え！（出荷口で F 長押し）"
+			objective_label.text = stage.goal_objective
 		elif not zone_active:
 			objective_label.text = "シャッターが開いた！ 奥へ進め"
 		else:
-			var rest: int = maxi(z.quota - zone_spawned, 0) + _alive_count()
-			objective_label.text = "【%s】 敵を蹴散らせ（残り %d）" % [z.name, rest]
+			var boss_up: bool = captain_spawned and captain != null and is_instance_valid(captain) and captain.is_alive()
+			if boss_up:
+				objective_label.text = "【%s】 %sを倒せ！" % [z.name, ENEMY_TYPES[z.captain].title]
+			else:
+				objective_label.text = "【%s】 敵を蹴散らせ" % z.name
 	else:
 		objective_label.text = ""
 	if captain and is_instance_valid(captain) and captain.is_alive():
@@ -1104,6 +1436,14 @@ func _parse_debug_args() -> void:
 			shot_frame = a.substr(9).to_int()
 		elif a.begins_with("--quit-after-end="):
 			quit_after_end = a.substr(17).to_float()
+		elif a.begins_with("--view="):
+			view_index = a.substr(7).to_int() - 1
+		elif a.begins_with("--stage="):
+			stage_index = clampi(a.substr(8).to_int() - 1, 0, STAGES.size() - 1)
+		elif a == "--secret-test":
+			secret_test = true   # 撮影用: ステージ3を始めてすぐクリア扱いにし、WARNING と隠しボス戦を見る
+		elif a == "--bot-charge":
+			bot_charge = true   # 撮影用: 自動プレイで強攻撃を多めに出す
 		elif a.begins_with("--musou-at="):
 			musou_test_frame = a.substr(11).to_int()
 		elif a.begins_with("--snap="):
@@ -1113,7 +1453,7 @@ func _parse_debug_args() -> void:
 
 
 func _debug(delta: float) -> void:
-	if quit_after_end >= 0.0 and phase in [Phase.WIN, Phase.LOSE]:
+	if quit_after_end >= 0.0 and phase in [Phase.WIN, Phase.LOSE] and not (phase == Phase.WIN and stage_index == NORMAL_STAGES - 1):
 		quit_after_end -= delta
 		if quit_after_end < 0.0:
 			get_tree().quit()
@@ -1125,11 +1465,15 @@ func _debug(delta: float) -> void:
 	if shot_path.is_empty():
 		return
 	frame_count += 1
+	if secret_test and frame_count == 90 and phase == Phase.PLAY and stage_index == NORMAL_STAGES - 1:
+		_win()
 	if frame_count % 120 == 0:
 		for e in enemies:
 			if e.is_alive() and _alive_count() <= 2:
 				print("   alive enemy: %s state=%s hp=%d pos=%s targetable=%s tokens=%d" % [e.cfg.key, e.State.keys()[e.state], e.hp, e.position.snapped(Vector3.ONE * 0.1), e.is_targetable(), tokens.size()])
-		print("frame=%d phase=%s zone=%d goal=%s ko=%d hp=%d musou=%d alive=%d combo=%d pos=%s" % [frame_count, Phase.keys()[phase], zone, goal_open, ko_total, player.hp, player.musou, _alive_count(), combo, player.position.snapped(Vector3.ONE * 0.1)])
+		print("fps=%d frame=%d phase=%s zone=%d goal=%s ko=%d hp=%d musou=%d alive=%d combo=%d pos=%s" % [Engine.get_frames_per_second(), frame_count, Phase.keys()[phase], zone, goal_open, ko_total, player.hp, player.musou, _alive_count(), combo, player.position.snapped(Vector3.ONE * 0.1)])
+	if view_index >= 0:
+		ui_layer.visible = false
 	if frame_count in snap_frames:
 		get_viewport().get_texture().get_image().save_png(shot_path.get_basename() + "_%d.png" % frame_count)
 	if frame_count == shot_frame:
@@ -1142,12 +1486,12 @@ func _bot() -> void:
 	var target_pos: Vector3
 	var e := nearest_enemy(player.position, 60.0)
 	if goal_open:
-		target_pos = StageScript.GOAL_POS + Vector3(0, 0, 2.2)
-		bot_interact = player.position.distance_to(StageScript.GOAL_POS) < 3.6
+		target_pos = stage.goal_pos + Vector3(0, 0, 2.2)
+		bot_interact = player.position.distance_to(stage.goal_pos) < 3.6
 	elif e:
 		target_pos = e.position
 	else:
-		target_pos = Vector3(0.0, 0.0, ZONES[zone].z_far + 4.0)
+		target_pos = Vector3(0.0, 0.0, stage.zones[zone].z_far + 4.0)
 	var d := target_pos - player.position
 	d.y = 0.0
 	var stop := 0.4 if goal_open else 1.8
@@ -1156,7 +1500,7 @@ func _bot() -> void:
 		if player.is_musou_ready() and _alive_count() >= 6:
 			_try_musou()
 		elif frame_count % 9 == 0:
-			if randf() < 0.15:
+			if randf() < (0.6 if bot_charge else 0.15):
 				player.press_charge()
 			else:
 				player.press_attack()

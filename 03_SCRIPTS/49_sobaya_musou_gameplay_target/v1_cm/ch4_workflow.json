@@ -1,0 +1,206 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "video/MiniMax_H3",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Sobaya_gamecg_sheet.png"
+    }
+  },
+  "201": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_riot_chief_sheet.png"
+    }
+  },
+  "202": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_police_sheet.png"
+    }
+  },
+  "203": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Loc_hq_plaza_sheet.png"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "subject_definitions:\n<Subject 1> is the masked brawler in <Picture 1>, a hulking 180 cm, 100 kg man with a thick, heavy, muscular build, whose face is fully covered by a hard glossy white mask with TWO large round black eye holes that are completely dark inside, ONE short horizontal black mouth slit, glossy red vertical markings running above and below each eye hole exactly as in the reference, and ONE small black dot centered on the forehead; short spiky black hair sticks out above and behind the mask, his neck, ears, arms and hands are neutral gray, and he wears a plain white short-sleeve T-shirt, dark charcoal jeans and white sneakers. In his right hand he holds a large clear glass beer mug with a handle, full of amber beer under a white foam head; he swings it as his weapon, and it never breaks or spills.\n<Subject 2> is the riot squad captain in <Picture 2>, a huge, broad Japanese man in his forties with a square jaw and a fierce scowl, in a dark-navy riot uniform with black plate armor on his chest, shoulders, forearms, knees and shins, black gloves and boots, and a dark-navy riot helmet with its clear visor raised, carrying a tall clear transparent riot shield.\n<Subject 3> is the police-officer uniform in <Picture 3>: a dark-navy uniform jacket with gold buttons and a plain gold shield badge, a white shirt with a navy tie, a black duty belt, white gloves, black shoes, a dark-navy peaked cap with a plain round gold emblem, and a black baton in the right hand; exactly two officers wear it.\n<Subject 4> is the paved plaza in front of the corporate headquarters tower in <Picture 4> just after sunset: a sky fading from orange to deep blue, a tall dark-blue glass curtain-wall skyscraper with scattered warm lit windows, a glass entrance under a white steel canopy, large gray stone paving tiles, stone planters with trees lit from below, low bollard lights, and the red-and-white Tokyo Tower glowing in the right distance.\n\nsummary:\n[reference generation] At dusk on the headquarters plaza of <Subject 4>, the boss <Subject 2> blocks the entrance with his riot shield beside two officers of <Subject 3>; <Subject 1> slams his beer mug into the ground, launching all three high into the air, and walks toward the glass entrance with Tokyo Tower glowing beyond.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the white mask with its two round eye holes, single mouth slit, red markings and forehead dot, the spiky black hair, gray skin, heavy build, white T-shirt, charcoal jeans, white sneakers and the clear glass beer mug are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - his huge build, square jaw, navy riot uniform with black armor, raised-visor helmet and clear riot shield are retained.\n<Subject 3> (appears in [Shot 1], [Shot 2]): partially_preserved - the navy uniform, gold badge, white gloves, navy cap and baton are retained on two men.\n<Subject 4> (appears in [Shot 1], [Shot 2]): fully_preserved - the dusk sky, dark-blue glass tower, canopy entrance, stone paving, lit planters and Tokyo Tower stay the same.\nOnly identity, clothing and design come from the pictures, never their poses, gray studio backgrounds or panel layouts.\n\ndetailed_description:\nThe target video is real-time 3D gameplay footage from a modern AAA console action game, rendered in the same high-end game-CG style as the reference sheets: physically based materials, global illumination, soft contact shadows, crisp specular highlights, subtle motion blur on fast swings, rich saturated colors. There is no HUD and no interface: no health bars, no counters, no icons. <Subject 1> and <Subject 2> each appear EXACTLY ONCE; exactly two officers of <Subject 3> appear and nobody else. Tokyo Tower appears once, in the distance only.\n[Shot 1] An elevated third-person game camera about 8 meters behind <Subject 1> and 4.5 meters above the ground, looking down over his back at about 25 degrees, so he is seen from behind in the lower center of frame, like an action game's chase camera, looking across the stone plaza of <Subject 4> toward the glass entrance just after sunset. In front of the entrance, <Subject 2> stands planted with his clear riot shield raised, one officer of <Subject 3> on each side of him with batons ready. <Subject 1> walks toward them with his beer mug. The camera holds steady behind him.\n[Shot 2] At 00:03.500, the shot cuts to a low-angle shot from just behind and beside <Subject 1>, the glowing glass tower above and Tokyo Tower in the right distance against the orange-to-blue sky. He swings the beer mug high and slams it into the paving; a golden shockwave ring explodes outward and <Subject 2>, still clutching his shield, and both officers are launched high into the dusk sky, spinning. <Subject 1> rises and walks toward the glass entrance. The shot ends with the three tumbling in mid-air and him walking away from camera. The camera tilts up with small amplitude at slow speed.\nEvery enemy who is hit is knocked flying in a comical, cartoon way, tumbles across the floor and ends up lying dazed with three small yellow stars circling above his head; there is no blood and nobody is seriously hurt. In every frame his mask stays a rigid white mask with two black eye holes and one unchanging mouth slit, never human eyes, eyelids, a nose or lips; his hair stays short, black and spiky and his skin stays neutral gray. Nobody speaks. There is no readable text anywhere: no letters on signs, banners, trucks, uniforms or screens, no logos, no subtitles or captions.\n\noverall_soundscape:\nA calm evening breeze, distant city traffic and a faint train, then steady footsteps on stone, a tense thud of the shield, the whoosh of the mug and a huge booming ground slam with a rolling shockwave, a clatter of the shield and comical fading yells as they fly away.\n\nnon_diegetic_music:\nN/A",
+      "width": 1344,
+      "height": 768,
+      "length": 192,
+      "audio_vae": [
+        "120",
+        0
+      ],
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "200",
+        0
+      ],
+      "ref_images.ref_image_1": [
+        "201",
+        0
+      ],
+      "ref_images.ref_image_2": [
+        "202",
+        0
+      ],
+      "ref_images.ref_image_3": [
+        "203",
+        0
+      ]
+    }
+  }
+}

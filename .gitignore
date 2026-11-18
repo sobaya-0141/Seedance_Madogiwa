@@ -12,3 +12,6 @@ __pycache__/
 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_fx/
 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_bg/
 17_SOBAYA_MUSOU_2D_KORGE/art_prompts/generated_enemies/
+
+# Tripo の Free プランで作った試作（権利が Tripo 側のため入れない）
+04_GAME_ASSETS/models3d/tripo_free/

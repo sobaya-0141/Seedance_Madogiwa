@@ -4,6 +4,7 @@ extends Node3D
 
 const ModelScene := preload("res://models/sobaya_hq.glb")
 const MugScene := preload("res://models/beer_mug.glb")
+const AttackPose := preload("res://attack_pose.gd")
 
 const RUN_SPEED := 6.0
 const RUN_ANIM_SPEED := 4.2      # Hybrid_MugRun 1倍速に相当する移動速度
@@ -13,15 +14,24 @@ const DODGE_TIME := 0.62
 const DODGE_DISTANCE := 4.2
 const DODGE_IFRAMES := 0.45
 const MUSOU_TIME := 3.2
+## 無双ゲージの貯まり方: 敵1人に当てるごと（回転攻撃は 65%）／受けたダメージ1あたり
+const MUSOU_PER_HIT := 0.6
+const MUSOU_PER_DAMAGE := 0.03
 
 # コンボ各段: アニメ・再生速度・打点・次段受付・終了（いずれもクリップ長に対する割合）・威力・範囲
 const COMBO := [
-	{"anim": "Hybrid_MugPunch", "speed": 1.9, "hit": 0.46, "cancel": 0.6, "end": 0.85, "dmg": 34.0, "range": 2.5, "cone": 120.0, "push": 3.0, "launch": 0.0, "lunge": 1.2},
-	{"anim": "Hybrid_MugHook", "speed": 2.1, "hit": 0.46, "cancel": 0.6, "end": 0.85, "dmg": 34.0, "range": 2.7, "cone": 170.0, "push": 3.5, "launch": 0.0, "lunge": 1.0},
-	{"anim": "Hybrid_MugPunch", "speed": 2.3, "hit": 0.46, "cancel": 0.6, "end": 0.85, "dmg": 40.0, "range": 2.6, "cone": 120.0, "push": 4.0, "launch": 0.0, "lunge": 1.4},
-	{"anim": "Hybrid_MugSmash", "speed": 1.7, "hit": 0.5, "cancel": 0.8, "end": 0.92, "dmg": 70.0, "range": 3.4, "cone": 360.0, "push": 7.0, "launch": 7.0, "lunge": 0.8, "wave": true},
+	{"anim": "Hybrid_MugPunch", "speed": 1.9, "hit": 0.46, "cancel": 0.6, "end": 0.85, "dmg": 34.0, "range": 2.5, "cone": 120.0, "push": 3.0, "launch": 0.0, "lunge": 1.2,
+		"pose": {"step": 0.32, "drop": 0.12, "twist": 0.7, "lean": 0.3, "wide": 0.1}},
+	{"anim": "Hybrid_MugHook", "speed": 2.1, "hit": 0.46, "cancel": 0.6, "end": 0.85, "dmg": 34.0, "range": 2.7, "cone": 170.0, "push": 3.5, "launch": 0.0, "lunge": 1.0,
+		"pose": {"step": 0.28, "drop": 0.14, "twist": 1.0, "lean": 0.22, "wide": 0.14}},
+	{"anim": "Hybrid_MugPunch", "speed": 2.3, "hit": 0.46, "cancel": 0.6, "end": 0.85, "dmg": 40.0, "range": 2.6, "cone": 120.0, "push": 4.0, "launch": 0.0, "lunge": 1.4,
+		"pose": {"step": 0.4, "drop": 0.16, "twist": 0.85, "lean": 0.38, "wide": 0.12}},
+	{"anim": "Hybrid_MugSmash", "speed": 1.7, "hit": 0.5, "cancel": 0.8, "end": 0.92, "dmg": 70.0, "range": 3.4, "cone": 360.0, "push": 7.0, "launch": 7.0, "lunge": 0.8, "wave": true,
+		"pose": {"step": 0.36, "drop": 0.3, "twist": 0.3, "lean": 0.65, "wide": 0.2}},
 ]
-const CHARGE := {"anim": "MugAttack", "speed": 1.25, "hit": 0.55, "cancel": 0.85, "end": 0.95, "dmg": 110.0, "range": 4.2, "cone": 360.0, "push": 10.0, "launch": 9.0, "lunge": 0.4, "wave": true}
+# 強攻撃: ジョッキを頭の上まで振り上げ、目の前の地面へ叩きつける（腕の動きは attack_pose.gd の _slam_arm）
+const CHARGE := {"anim": "Hybrid_MugSmash", "speed": 1.35, "hit": 0.5, "cancel": 0.85, "end": 0.95, "dmg": 110.0, "range": 4.2, "cone": 360.0, "push": 10.0, "launch": 9.0, "lunge": 0.5, "slam": true,
+	"pose": {"step": 0.42, "drop": 0.48, "twist": 0.15, "lean": 0.7, "wide": 0.32, "slam": true, "hand_h": 0.32, "hand_pitch": 0.9}}
 
 enum State { MOVE, ATTACK, DODGE, HURT, MUSOU, DOWN, WIN }
 
@@ -52,6 +62,7 @@ var anim: AnimationPlayer
 var body_mesh: MeshInstance3D
 var liquid_meshes: Array[MeshInstance3D] = []
 var current_anim := ""
+var attack_pose: AttackPose   # 攻撃中の踏み込み・ひねり・前傾（attack_pose.gd）
 
 
 func _ready() -> void:
@@ -64,6 +75,8 @@ func _ready() -> void:
 	for a: String in ["Hybrid_MugHold", "Hybrid_MugRun", "DanceVictory", "Hybrid_MugHook"]:
 		anim.get_animation(a).loop_mode = Animation.LOOP_LINEAR
 	body_mesh = model.find_child("SobayaV3Body", true, false) as MeshInstance3D
+	attack_pose = AttackPose.new()
+	skeleton.add_child(attack_pose)
 	_attach_mug()
 
 
@@ -182,6 +195,7 @@ func update(delta: float) -> void:
 		State.DOWN, State.WIN:
 			velocity = Vector3.ZERO
 	position += velocity * delta
+	attack_pose.weight = move_toward(attack_pose.weight, 1.0 if state == State.ATTACK else 0.0, delta * (12.0 if state == State.ATTACK else 6.0))
 	body.rotation.y = lerp_angle(body.rotation.y, facing, 1.0 - exp(-delta * 18.0)) if state != State.MUSOU else facing
 
 	# 手の形とジョッキの中身（ビールの量＝無双ゲージ）
@@ -230,14 +244,17 @@ func _update_attack(delta: float) -> void:
 	attack_t += delta
 	var length: float = anim.get_animation(attack.anim).length / attack.speed
 	var p := attack_t / length
+	apply_attack_pose(attack, p)
 	var fwd := Vector3(sin(facing), 0.0, cos(facing))
 	# 振りかぶりから打点までは前へ踏み込む
 	velocity = fwd * (attack.lunge / (length * attack.hit) if p < attack.hit else 0.0)
 	if not attack_hit_done and p >= attack.hit:
 		attack_hit_done = true
 		var hits: int = game.player_attack(global_position + fwd * 0.6, fwd, attack)
+		if attack.get("slam", false):
+			game.slam_impact(global_position + fwd * 0.85)
 		if hits > 0:
-			musou = minf(musou + hits * (1.5 if attack.cone < 360.0 else 1.0), MUSOU_MAX)
+			musou = minf(musou + hits * (MUSOU_PER_HIT if attack.cone < 360.0 else MUSOU_PER_HIT * 0.65), MUSOU_MAX)
 	if p >= attack.cancel and queued_attack != "":
 		if queued_attack == "charge":
 			combo_index = -1
@@ -250,6 +267,13 @@ func _update_attack(delta: float) -> void:
 	if p >= attack.end:
 		state = State.MOVE
 		combo_index = 0
+
+
+## 攻撃の全身の動きを、攻撃の種類と進み具合（0〜1）に合わせる
+func apply_attack_pose(a: Dictionary, p: float) -> void:
+	attack_pose.pose = a.get("pose", {})
+	attack_pose.hit = a.hit if a.hit <= 1.0 else 0.4
+	attack_pose.progress = p
 
 
 func _update_musou(delta: float) -> void:
@@ -265,14 +289,15 @@ func _update_musou(delta: float) -> void:
 		# 締めの一撃
 		musou = 0.0
 		game.player_attack(global_position, Vector3.FORWARD, {"dmg": 140.0, "range": 7.0, "cone": 360.0, "push": 16.0, "launch": 12.0, "wave": true, "musou": true})
-		_start_attack({"anim": "Hybrid_MugSmash", "speed": 1.6, "hit": 2.0, "cancel": 0.9, "end": 0.9, "dmg": 0.0, "range": 0.0, "cone": 0.0, "push": 0.0, "launch": 0.0, "lunge": 0.0})
+		_start_attack({"anim": "Hybrid_MugSmash", "speed": 1.6, "hit": 2.0, "cancel": 0.9, "end": 0.9, "dmg": 0.0, "range": 0.0, "cone": 0.0, "push": 0.0, "launch": 0.0, "lunge": 0.0,
+			"pose": {"step": 0.36, "drop": 0.34, "twist": 0.3, "lean": 0.7, "wide": 0.22}})
 
 
 func take_hit(dmg: float, from: Vector3) -> bool:
 	if invuln > 0.0 or state in [State.DOWN, State.WIN, State.MUSOU, State.DODGE]:
 		return false
 	hp = maxf(hp - dmg, 0.0)
-	musou = minf(musou + dmg * 0.08, MUSOU_MAX)
+	musou = minf(musou + dmg * MUSOU_PER_DAMAGE, MUSOU_MAX)
 	if hp <= 0.0:
 		state = State.DOWN
 		_play("Library_Kneeling_Tired", 0.2, 1.0)
