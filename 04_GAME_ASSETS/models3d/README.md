@@ -68,6 +68,10 @@ godot --path tools/render_sprites --script render_sheets.gd
 
 `tripo/` に、そば屋無双の作り直し用に Tripo Studio（有料プラン）で作った敵7体（工場の警備員・警察官・警部・白バイ隊員・機動隊長・本社警備員・警備本部長）を置いている。Mixamo 形式のリグ付き（65ボーン）・約1万三角形・テクスチャ2K・アニメーションなし。作り方と一覧は [tripo/README.md](tripo/README.md)、元の絵は `04_GAME_ASSETS/tripo_inputs/`。
 
+## 背景・小物（Kenney、CC0）
+
+`kenney/` に、Kenney の3Dモデル9パック（工場・街並み・車・道路・商店・家具・キャンプ用品）を置いている。取得元・版・zip のハッシュは [kenney/README.md](kenney/README.md)。
+
 ## 使い方
 
 - ゲームからはコピーせず、`models/` や `public/models/` からここへの相対symlinkで参照する（ボクセル版と同じ方針）

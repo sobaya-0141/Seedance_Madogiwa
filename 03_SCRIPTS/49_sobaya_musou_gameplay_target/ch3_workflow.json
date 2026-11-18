@@ -1,0 +1,216 @@
+{
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "123": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "conditioning": [
+        "136",
+        0
+      ]
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "123",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "136",
+        1
+      ]
+    }
+  },
+  "122": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ]
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    }
+  },
+  "130": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "122",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "fps": 24,
+      "bit_depth": 8
+    }
+  },
+  "92": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "130",
+        0
+      ],
+      "filename_prefix": "video/MiniMax_H3",
+      "format": "auto",
+      "codec": "auto"
+    }
+  },
+  "200": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Sobaya_gamecg_sheet.png"
+    }
+  },
+  "201": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_police_sheet.png"
+    }
+  },
+  "202": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_motor_police_sheet.png"
+    }
+  },
+  "203": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Mob_crowd_passerby_sheet.png"
+    }
+  },
+  "204": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "Loc_azabu_shotengai_sheet.png"
+    }
+  },
+  "136": {
+    "class_type": "MiniMaxH3ReferenceToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "subject_definitions:\n<Subject 1> is the masked brawler in <Picture 1>, a hulking 180 cm, 100 kg man with a thick, heavy, muscular build, whose face is fully covered by a hard glossy white mask with TWO large round black eye holes that are completely dark inside, ONE short horizontal black mouth slit, glossy red vertical markings running above and below each eye hole exactly as in the reference, and ONE small black dot centered on the forehead; short spiky black hair sticks out above and behind the mask, his neck, ears, arms and hands are neutral gray, and he wears a plain white short-sleeve T-shirt, dark charcoal jeans and white sneakers. In his right hand he holds a large clear glass beer mug with a handle, full of amber beer under a white foam head; he swings it as his weapon, and it never breaks or spills.\n<Subject 2> is the police-officer uniform in <Picture 2>: a dark-navy uniform jacket with gold buttons and a plain gold shield badge, a white shirt with a navy tie, a black duty belt, white gloves, black shoes, a dark-navy peaked cap with a plain round gold emblem, and a black baton in the right hand; about ten to twelve officers wear it, Japanese men of different ages and builds.\n<Subject 3> is the motorcycle-police uniform in <Picture 3>: a glossy white helmet with a blue center stripe and a smoked visor, a sky-blue zip-up uniform jacket with dark-navy epaulettes, a white belt, dark-navy riding breeches with a white side stripe, tall black riding boots and white gloves; about five to eight officers wear it.\n<Subject 4> is the shopping-street people from <Picture 4>: the taiyaki cook, a cheerful Japanese man in his sixties in a white cook's jacket, white apron and white cook's cap, and the passers-by — an elderly woman in a lavender cardigan with a cloth shopping bag, a high-school girl in a navy sailor uniform, a salaryman in a dark-gray suit with a briefcase, a young woman in a camel coat, and a man in a green jacket walking a shiba dog; each of them appears once on the sidewalks or at the stall, and none of them fights.\n<Subject 5> is the Azabu-Juban shopping street in <Picture 5> at sunset: a pink-orange sky, a two-lane asphalt street wet after rain with reflective puddles, brick-tiled sidewalks, small shops with red, green, yellow and purple fabric awnings and glowing windows, a taiyaki stall with a red canopy and a glass case of fish-shaped cakes, a fruit stand, rows of glowing red paper lanterns, a red steel welcome arch over the street, utility poles with power lines, lit curved street lamps and tall glass towers in the distance.\n\nsummary:\n[reference generation] One continuous gameplay take from the chase camera: at sunset in the shopping street of <Subject 5>, <Subject 1> battles a horde of officers of <Subject 2> and motorcycle officers of <Subject 3> with combos and a spinning sweep, splashing them into puddles, while the cook and passers-by of <Subject 4> calmly carry on.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the white mask with its two round eye holes, single mouth slit, red markings and forehead dot, the spiky black hair, gray skin, heavy build, white T-shirt, charcoal jeans, white sneakers and the clear glass beer mug are retained; he is seen mostly from behind.\n<Subject 2> (appears in [Shot 1]): partially_preserved - the navy uniform, gold badge, white gloves, navy cap and baton are retained on many different men.\n<Subject 3> (appears in [Shot 1]): partially_preserved - the white striped helmet, sky-blue jacket, navy breeches and tall black boots are retained on several men.\n<Subject 4> (appears in [Shot 1]): partially_preserved - the cook's white outfit and the passers-by's clothes are retained.\n<Subject 5> (appears in [Shot 1]): fully_preserved - the sunset sky, wet street, awnings, red lanterns, welcome arch, taiyaki stall and street lamps stay the same.\nOnly identity, clothing and design come from the pictures, never their poses, gray studio backgrounds or panel layouts.\n\ndetailed_description:\nThe target video is real-time 3D gameplay footage from a modern AAA console action game, rendered in the same high-end game-CG style as the reference sheets: physically based materials, global illumination, soft contact shadows, crisp specular highlights, subtle motion blur on fast swings, rich saturated colors. There is no HUD and no interface: no health bars, no counters, no icons. The whole chapter is ONE continuous take with no cuts: the camera stays the elevated third-person game camera behind <Subject 1> from the first frame to the last, smoothly following him as he moves and turning gently with him like a player-controlled chase camera; it never cuts, never switches to a close-up, a low angle, a side view or a front view, and never shows his mask from the front for more than a moment. The whole frame is always the game scene: no part of any reference picture appears — no close-up panel of the mask, no gray studio background, no character lineup, no split screen or inset.\n[Shot 1] The game camera follows <Subject 1> running down the middle of the wet street of <Subject 5> at sunset under the glowing red lanterns, the red welcome arch ahead. A horde of officers of <Subject 2> and motorcycle officers of <Subject 3> pours in from beyond the arch and from the side alleys. On the sidewalks, the taiyaki cook of <Subject 4> keeps turning cakes at his red-canopied stall and the passers-by of <Subject 4> keep strolling and chatting, never joining the fight and never looking alarmed; no enemy ever lands on them. From about 00:03.000, <Subject 1> crashes into the horde with a four-hit combo, and the officers he hits fly backward and splash down into the puddles. At about 00:07.000, two officers strike him with their batons at the same moment from both sides: he reels and staggers in a comical hit reaction, then plants his feet. At about 00:08.000, still surrounded, he answers with a spin of one full turn with the beer mug held out and six to eight officers around him are swept off their feet and fly under the lanterns. From about 00:12.000, he keeps advancing toward the arch, knocking down each new wave. The take ends with him pushing on among many dazed officers lying on the wet street. The camera follows him the whole time at the same distance and height.\nEnemies keep pouring in for the whole chapter like a musou action game: whenever some are knocked down, new ones run in from the far end and from both sides, so there are always about fifteen to twenty enemies on screen. Every hit lands with a bright white impact spark, and area attacks send out a ring-shaped golden shockwave across the ground. Every enemy who is hit is knocked flying in a comical, cartoon way, tumbles across the floor and ends up lying dazed with three small yellow stars circling above his head; there is no blood and nobody is seriously hurt. In every frame his mask stays a rigid white mask with two black eye holes and one unchanging mouth slit, never human eyes, eyelids, a nose or lips; his hair stays short, black and spiky and his skin stays neutral gray. Even while he spins, swings or gets hit, his mask stays rigid and unchanged; it never opens, melts or turns into a face. When he is hit he only staggers and recovers at once, like a game hit reaction; he is never hurt. There is no readable text anywhere: no letters on signs, banners, trucks, uniforms or screens, no logos, no subtitles or captions.\n\noverall_soundscape:\nEvening street ambience with distant chatter, a bicycle bell and the sizzle of taiyaki batter under a battle roar: police whistles, running boots splashing through puddles, shouting, whooshing swings, comical impacts and big water splashes.\n\nnon_diegetic_music:\nN/A",
+      "width": 1344,
+      "height": 768,
+      "length": 362,
+      "audio_vae": [
+        "120",
+        0
+      ],
+      "ref_image_size": "match",
+      "ref_images.ref_image_0": [
+        "200",
+        0
+      ],
+      "ref_images.ref_image_1": [
+        "201",
+        0
+      ],
+      "ref_images.ref_image_2": [
+        "202",
+        0
+      ],
+      "ref_images.ref_image_3": [
+        "203",
+        0
+      ],
+      "ref_images.ref_image_4": [
+        "204",
+        0
+      ]
+    }
+  }
+}

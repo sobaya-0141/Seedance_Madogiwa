@@ -6,7 +6,7 @@ config_version=5
 [application]
 
 config/name="そば屋無双 〜ビール工場強奪作戦〜"
-config/description="そば屋がビール工場に乗り込み、警備員と警察官をジョッキでなぎ倒して製造ラインのビールを奪う3Dアクション"
+config/description="そば屋が警備員と警察官をジョッキでなぎ倒す3Dアクション。ビール工場・麻布十番・あくしでんちゅあ本社ビルの3ステージ"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 
