@@ -43,8 +43,8 @@ The skill's `agents/openai.yaml` also declares this Remote MCP dependency for cl
 - `update_generation({ generationId, label?, modelName?, notes? })`: update generation metadata.
 - `upsert_prompt({ generationId, label?, body })`: add a new current prompt revision and retain history.
 - `register_youtube_video({ episodeId, youtubeId, generationId?, featured?, contentKind?, productionNotes? })`: register the official-channel video ID. Defaults: featured=false, contentKind=story, productionNotes=false. Notes require generationId. Idempotent for the same ID/episode; another episode cannot claim the same YouTube ID. Does not publish the YouTube video.
-- `list_youtube_videos({ episodeId? })`: publication rows, state, is_active, checked_at, privacy/processing metadata. States: pending, processing, waiting_public, ready, unavailable, failed.
-- `sync_youtube_videos({})`: check registered videos immediately. Cron also runs every five minutes. Public, processed, embeddable official-channel videos become active automatically. Pending replacements preserve the current active version.
+- `list_youtube_videos({ episodeId? })`: publication rows, state, is_active, checked_at, privacy/processing metadata, `publish_at` (YouTube's scheduled publish time; null when the private video has no schedule, kept after release). States: pending, processing, waiting_public, ready, unavailable, failed.
+- `sync_youtube_videos({})`: check registered videos immediately. Cron also runs every five minutes. Public, processed, embeddable official-channel videos become active automatically. Pending replacements preserve the current active version. A scheduled video stays `waiting_public` and hidden everywhere on the site until YouTube publishes it; the episode is then listed at its release time (newest first), so scheduled videos can be registered ahead of time without reordering.
 - `create_input_upload({ generationId, filename, label, kind, referenceLabel?, groupLabel?, notes?, contentType?, displayOrder? })`: create an input row and return `{ assetId, uploadUrl, expiresAt }`. Kind is `image`, `audio`, `document`, or `other`.
 - `set_video_status({ videoId, status })`: legacy R2 record maintenance only; does not affect YouTube publishing.
 - `set_video_featured({ videoId, featured })`: legacy R2 record maintenance only. For YouTube use register_youtube_video with all current settings.
@@ -85,6 +85,14 @@ Use `tools/youtube_upload.py` in this repository (YouTube Data API v3 resumable 
 Set audience and synthetic-content disclosures according to the actual work. Preserve required VOICEVOX/asset credits. Only add a production-page link if productionNotes=true and that page is intended to be published. A Studio video-registration request authorizes publishing the adopted video: explicitly set public unless the user requests private, unlisted, scheduled publication, or records only. For an existing private ID, update its visibility instead of uploading again. Neither register_youtube_video nor Cron changes YouTube privacy; resolve waiting_public in this registration task and sync again. IDs, URLs and SHA256 may be recorded in the repository. Access/refresh tokens and resumable session URLs must remain private.
 
 Keep the resumable upload session private and use the uploader's resume command after interruption. A lost final response is recovered by querying the session. Expired sessions require checking the channel before starting another upload. Once an ID exists, register it immediately so Cloudflare can continue checking readiness independently.
+
+## Scheduled release (2026-11-19)
+
+Use only when the user explicitly asks for a scheduled release. On YouTube, keep the video private and set its schedule (`status.privacyStatus: "private"` with `status.publishAt`, a future ISO 8601 timestamp with time zone such as `2027-01-01T00:00:00+09:00`). `tools/youtube_upload.py` does not send `publishAt`; upload as private and set the schedule in YouTube Studio, or with an authenticated `videos.update` call. Do not switch to unlisted or create a Premiere.
+
+Register the ID with `register_youtube_video` right away, run `sync_youtube_videos`, and confirm with `list_youtube_videos` that the state is `waiting_public` and `publish_at` matches the intended time. Do not make the video public early. After the scheduled time the site lists the episode within about five minutes with no further action, sorted by its release time. Before that, the episode page, lists, production notes and sitemap show nothing, so a surprise release needs no extra handling. A production-page URL written in the description beforehand returns 404 until release and becomes valid at release.
+
+A `waiting_public` row whose `publish_at` is empty is not scheduled: it was left private or unlisted. Fix its visibility unless the user asked to keep it that way.
 
 ## Linking both directions
 
