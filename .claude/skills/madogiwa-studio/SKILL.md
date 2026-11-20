@@ -60,7 +60,7 @@ Madogiwa Studioを制作物の共有台帳として扱い、Remote MCPで制作�
    - 制作ノートは任意。公開する場合 `productionNotes:true` と対象 `generationId` が必要。プロンプト・モデル・入力素材は存在するセクションだけ表示。ノートなしの動画は `productionNotes:false`。
    - 再登録時も種類・ノート・イチオシを明示して、意図せず既存設定を既定値へ戻さない。
 6. Studio登録ではYouTubeを `public` にする。新規アップロードのmetadataへ `status.privacyStatus: "public"` を明示する。既存IDが非公開なら、その動画を公開へ更新し、再アップロードしない。`register_youtube_video` 自体には公開機能がないため、ID登録だけで止めない。非公開等の明示指定がある場合だけ、その指定を維持する。
-7. `sync_youtube_videos` を一度実行し、`list_youtube_videos` で状態確認。処理中ならその状態とIDを報告する。`waiting_public` で非公開等の指定がない場合は、YouTubeの公開設定を修正してから同期する。Cloudflare Cronは約5分ごとに状態を確認するが、非公開動画を公開へ変更する機能はない。
+7. `sync_youtube_videos` を一度実行し、`list_youtube_videos` で状態確認。処理中ならその状態とIDを報告する。`waiting_public` で非公開等の指定がない場合は、YouTubeの公開設定を修正してから同期する。**予約投稿（`list_youtube_videos` の `publish_at` に未来の日時がある）は想定どおりの待ち状態なので公開設定を触らない。** 予約時刻にYouTubeが公開へ切り替えると、約5分以内に公式サイトへ自動掲載され、一覧では公開時刻の位置（新着の先頭）に並ぶ。公開前は一覧・作品ページ・制作ノートのどこにも出ない。`publish_at` が空の `waiting_public` は予約ではなく公開し忘れとして扱う。Cloudflare Cronは約5分ごとに状態を確認するが、非公開動画を公開へ変更する機能はない。
    新規作品の制作ノートURLは、サイト掲載条件が揃うまで404になる。YouTube公開直後に同期を実行して待ち時間を短くし、処理中なら約5分ごとの自動掲載を待つ。
 8. `ready` かつ `is_active:1` なら公開ページを確認する。差し替えは新IDを同作品に登録し、条件成立まで旧版を維持。チャンネルにある未登録動画は勝手に掲載されない。旧YouTube動画は自動削除しない。
 
