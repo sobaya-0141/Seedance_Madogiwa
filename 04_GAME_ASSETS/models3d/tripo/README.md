@@ -18,6 +18,13 @@
 | `security_head.glb` | 警備本部長（ステージ3のボス） | 9,503 | 同上 |
 | `iisan.glb` | いーさん（窓際メンバー。2026-11-17） | 9,872 | 同上 |
 | `iisan_dogeza.glb` | いーさんに土下座のアニメーション `Dogeza`（立つ→正座→土下座・0.5秒）を付けたもの。`iisan.glb` から `04_GAME_ASSETS/props_blender/pose_iisan_dogeza.py -- --export-anim` で作る（手で編集しない）。そば屋無双の隠しボス用 | 9,872 | 同上 |
+| `bounty_hunter.glb` | 賞金稼ぎ（ステージ4。大きくして親分ボスにも使う。2026-11-24） | 9,649 | 同上 |
+| `river_captain.glb` | 水上警察の船長（ステージ5のボス） | 9,760 | 同上 |
+| `park_ranger.glb` | 公園管理員（ステージ6。大きくして管理所長ボスにも使う） | 9,433 | 同上 |
+| `mecha_sobaya.glb` | メカそば屋（ステージ7のボス。`02_CHARACTERS/33_Mecha_Sobaya.md` のシート照合9項目を Tripo 上で確認済み） | 9,762 | 同上 |
+| `tv_ad.glb` | 番組AD（ステージ8。大きくしてフロアディレクターのボスにも使う） | 9,778 | 同上 |
+| `railway_police.glb` | 鉄道警察隊員（ステージ9。大きくして隊長ボスにも使う） | 9,609 | 同上 |
+| `black_suit_sp.glb` | 黒服のSP（ステージ10。大きくしてSP隊長ボスにも使う） | 9,269 | 同上 |
 
 - アニメーションは入っていない（ボーンは `mixamorig:Hips` などの Mixamo 名）。動きは Mixamo 形式のアニメーションか、ゲーム側でリターゲットして付ける
 - ゲームからはコピーせず、相対symlinkで参照する
@@ -53,3 +60,11 @@
 |---|---|---|
 | `azabu/taxi.glb` | タクシー（黄色・オレンジの線・屋根の行灯） | 9,881 |
 | `azabu/police_car.glb` | パトカー（白黒・赤い警光灯・プッシュバンパー） | 9,540 |
+
+## 屋形船（`yakatabune/`・2026-11-24）
+
+そば屋無双のステージ5（隅田川 屋形船）用。画像1枚 → HD モデル H3.1 → リトポロジー（三角形・1万）→ GLB（テクスチャ 2K）。元の絵は `03_SCRIPTS/49_sobaya_musou_gameplay_target/props/yakatabune/yakatabune.png`、Tripo の ID は `04_GAME_ASSETS/tripo_inputs/tripo_tasks.md`。
+
+| ファイル | 中身 | 三角形 |
+|---|---|---|
+| `yakatabune/yakatabune.glb` | 屋形船（瓦屋根・障子・赤提灯・屋根の甲板） | 10,362 |

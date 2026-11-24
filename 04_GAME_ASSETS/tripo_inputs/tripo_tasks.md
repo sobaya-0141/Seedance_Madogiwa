@@ -55,3 +55,19 @@ Free プランで作った試作（2a290734-…・15e41d68-…）は権利が Tr
 | キャラ | Tripo ID |
 |---|---|
 | iisan（いーさん） | 7894ef92-27ba-4afa-a446-91f0b6647b03 |
+
+## そば屋無双 ステージ4〜10の敵と屋形船（2026-11-24）
+
+元の絵は `03_SCRIPTS/49_sobaya_musou_gameplay_target/Mob_<名前>_sheet.png`（プロンプトは `image_prompts_stage4_10.md`）から正面・背面を切り出した `04_GAME_ASSETS/tripo_inputs/<名前>/front.png`・`back.png`。メカそば屋は `02_CHARACTERS/Mecha_Sobaya_sheet.png` から切り出した。屋形船は画像1枚（`props/yakatabune/yakatabune.png`）。
+敵はマルチビュー（正面＋背面）→ HD モデル H3.1 → リトポロジー（三角形・1万・スマートメッシュ P1.0）→ 自動リギング（人型・Mixamo）→ GLB（2K・スケルトン込み）。屋形船はリギングなし。プライバシー「共有のみ」。7体＋屋形船で 860 クレジット。
+
+| モデル | Tripo ID |
+|---|---|
+| bounty_hunter（賞金稼ぎ） | 5821bc25-2810-479f-aeca-42d3c36f3419 |
+| river_captain（水上警察の船長） | 59b6d6bb-2f2b-4806-ae4a-4afa5950e0bb |
+| park_ranger（公園管理員） | 70875981-0d94-4433-8988-57add6087322 |
+| tv_ad（番組AD） | 45d9e443-7539-4666-9a0a-8508ed282a92 |
+| railway_police（鉄道警察隊員） | 5f21e1c2-45f5-4845-a2a6-f2bedcd7ba78 |
+| black_suit_sp（黒服のSP） | 21144a66-5baa-4d56-a5ea-6dfcfb2b4082 |
+| mecha_sobaya（メカそば屋） | d66eb4c0-833c-4931-a763-f0679ca1f768 |
+| yakatabune（屋形船） | 68345c8b-f7d2-4c99-8a57-7b52e0cd9fb5 |
