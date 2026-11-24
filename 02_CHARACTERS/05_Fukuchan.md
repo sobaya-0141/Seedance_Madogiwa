@@ -21,5 +21,5 @@ NG変更: おしゃれ服、ギュンギュンポーズ。
 画像ファイル：Fukuchan.jpg
 キャラクターシート：Fukuchan_sheet.png（実写4パネル同定シート: 全身正面＋全身背面＋顔アップ2点（半身・正面スマイル）。白ホリゾントのスタジオ写真。Seedance/CapCutの参照画像とキーフレーム生成の第一参照に使う）
 プロンプト用同定句（英語）：Fukuchan — the slim, stylish 170cm 48-year-old black-haired man in a loose black long coat over a white graphic T-shirt, with a lanyard name tag, always smiling warmly
-声ファイル：Fukuchan_voice.wav（本人の声サンプル9秒。YouTube pXtc-nwr-sc 2:21〜2:30の単独発話・通常トーン。Irodori-TTSのボイスクローン参照音声。配役の正典は`VOICE_CAST.md`）
+声ファイル：Fukuchan_voice.wav（本人の声サンプル5.55秒。2026-11-23に自己紹介音声からBGM・他人の声を除いたクリーン版へ差し替え。Irodori-TTSのボイスクローン参照音声。配役の正典は`VOICE_CAST.md`）
 ボクセルモデル：`04_GAME_ASSETS/voxel/models/fukuchan.glb`（二足リグ。再生成は`04_GAME_ASSETS/voxel/tools/build_fukuchan_voxel_model.py`）

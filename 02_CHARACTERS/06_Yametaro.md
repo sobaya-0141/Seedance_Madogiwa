@@ -20,5 +20,5 @@ NG変更: キャラクターデザイン。
 画像ファイル：Yametaro.jpg
 キャラクターシート：Yametaro_sheet.png（3Dチビ人形モデルシート: 四面図（正面・3/4・側面・背面）＋口形差分6点（REST/A/I/U/E/O）。Seedance/CapCutの参照画像とキーフレーム生成の第一参照に使い、口形差分はリップシンクの参照にも使える）
 プロンプト用同定句（英語）：Yametaro — the tiny chibi cartoon middle-aged man with an oversized head, black bowl-cut hair, small round white glasses, pink blush cheeks and a purple shirt (much shorter than every human character)
-声ファイル：Yametaro_voice.wav（本人の声サンプル7秒。YouTube pXtc-nwr-sc 3:46〜3:53の単独発話。Irodori-TTSのボイスクローン参照音声。配役の正典は`VOICE_CAST.md`）
+声ファイル：Yametaro_voice.wav（本人の声サンプル6.0秒。2026-11-23に自己紹介音声からBGMを除いたクリーン版へ差し替え。Irodori-TTSのボイスクローン参照音声。配役の正典は`VOICE_CAST.md`）
 ボクセルモデル：`04_GAME_ASSETS/voxel/models/yametaro.glb`（二足リグ。再生成は`04_GAME_ASSETS/voxel/tools/build_yametaro_voxel_model.py`）
